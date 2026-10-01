@@ -36,7 +36,7 @@ npm test        # roda tests/ (sobe o preview sozinho na porta 8901)
    - `FTP_SERVER` (ex.: `ftp.seudominio.com` ou IP da Hostinger)
    - `FTP_USERNAME` (usuário FTP da Hostinger)
    - `FTP_PASSWORD` (senha FTP)
-2. Todo `push` na branch `main` monta `deploy/` (HTML + imagens com links reescritos) e envia para `public_html/` via FTPS.
+2. Todo `push` na branch `main` monta `deploy/` (HTML + imagens com links reescritos) e envia para a raiz do FTP via FTPS (neste temporário, o document root é a raiz; não usar `public_html/`).
 3. Dados de FTP: painel Hostinger → Hospedagem → Gerenciar → FTP. Crie uma conta FTP apontando para `public_html` se preferir.
 
 Primeiro deploy: confira se o WordPress antigo saiu do `public_html` antes, para não misturar arquivos.
