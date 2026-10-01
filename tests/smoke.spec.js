@@ -92,23 +92,19 @@ test('cta fixo aparece no mobile apos o hero', async ({ page, isMobile }) => {
   await expect(page.locator('body')).not.toHaveClass(/com-cta/);
   await page.locator('#como-funciona').scrollIntoViewIfNeeded();
   await expect(page.locator('body')).toHaveClass(/com-cta/, { timeout: 5000 });
-  const r = await page.locator('#cta-fixo').evaluate((el) => {
-    const b = el.getBoundingClientRect();
-    return { top: b.top, bottom: b.bottom, vh: window.innerHeight };
-  });
-  expect(r.top).toBeGreaterThanOrEqual(0);
-  expect(r.bottom).toBeLessThanOrEqual(r.vh);
-  expect(await page.locator('#cta-fixo').getAttribute('href')).toContain('kiwify');
-  await page.locator('#oferta').scrollIntoViewIfNeeded();
-  await expect(page.locator('body')).not.toHaveClass(/com-cta/, { timeout: 5000 });
-  await page.locator('#como-funciona').scrollIntoViewIfNeeded();
-  await expect(page.locator('body')).toHaveClass(/com-cta/, { timeout: 5000 });
+  await page.waitForTimeout(1500);
   await expect(page.locator('#cta-fixo')).toBeVisible();
-  const r2 = await page.locator('#cta-fixo').evaluate((el) => {
+  await expect(page.locator('.cta-fixo-preco')).toContainText('R$ 57');
+  const r = await page.locator('#cta-fixo').evaluate((el) => {
     const b = el.getBoundingClientRect();
     return { top: b.top, bottom: b.bottom, height: b.height, vh: window.innerHeight };
   });
-  expect(r2.height).toBeGreaterThan(40);
+  expect(r.top).toBeGreaterThanOrEqual(0);
+  expect(r.bottom).toBeLessThanOrEqual(r.vh);
+  expect(r.height).toBeGreaterThan(40);
+  expect(await page.locator('#cta-fixo').getAttribute('href')).toContain('kiwify');
+  await page.locator('#oferta').scrollIntoViewIfNeeded();
+  await expect(page.locator('body')).not.toHaveClass(/com-cta/, { timeout: 5000 });
 });
 
 test('ofertas dinamicas e OG tags', async ({ page }) => {

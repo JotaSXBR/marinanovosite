@@ -17,14 +17,14 @@
 <style>
 /* Tokens da marca original preservados: rosa #FF51C9, roxo #3F0142, Anton + Montserrat */
 :root{
-  --rosa:#FF51C9; --rosa-claro:#F87DFF; --roxo:#3F0142; --roxo-2:#820088;
+  --rosa:#FF51C9; --rosa-texto:#C4008B; --rosa-claro:#F87DFF; --roxo:#3F0142; --roxo-2:#820088;
   --cta:#A80077; --cta-hover:#86025F; --tinta:#2B1226; --cinza:#6B5565;
   --fundo:#FFF7FC; --branco:#FFFFFF; --faixa:#FBE9F5;
   --raio:18px; --max:1120px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.0625rem;color:var(--tinta);background:var(--branco);line-height:1.65;-webkit-font-smoothing:antialiased}
+body{font-family:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.0625rem;color:var(--tinta);background:var(--branco);line-height:1.7;-webkit-font-smoothing:antialiased}
 img{max-width:100%;height:auto;display:block}
 h1,h2,h3,.display{font-family:"Anton",Impact,sans-serif;font-weight:400;line-height:1.08;letter-spacing:.01em}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
@@ -42,7 +42,7 @@ h2{font-size:clamp(1.7rem,3.4vw,2.5rem);margin-bottom:14px}
 header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid #F3D9EA}
 .nav-in{max-width:var(--max);margin:0 auto;padding:0 20px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .marca{font-family:"Anton",sans-serif;font-size:1.25rem;color:var(--roxo);text-decoration:none}
-.marca span{color:var(--rosa)}
+.marca span{color:var(--rosa-texto)}
 .nav-links{display:flex;gap:26px;align-items:center}
 .nav-links a{color:var(--tinta);text-decoration:none;font-size:.92rem;font-weight:500}
 .nav-links a:hover{color:var(--cta)}
@@ -52,19 +52,19 @@ header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);bac
 .hero{background:linear-gradient(180deg,var(--fundo),#fff);padding:56px 0 64px;overflow:hidden}
 .hero-centro{max-width:800px;margin:0 auto;text-align:center}
 .hero h1{font-size:clamp(2.2rem,4.6vw,3.2rem);margin:0 0 16px;text-wrap:balance}
-.hero h1 .rosa{color:var(--rosa)}
+.hero h1 .rosa{color:var(--rosa-texto)}
 .hero .sub{font-size:1.05rem;margin:0 auto 28px}
 h2{text-wrap:balance}
-.selo-prova{display:inline-block;background:#fff;border:1px solid #F3D9EA;border-radius:999px;padding:8px 20px;font-size:.85rem;font-weight:600;margin-bottom:18px}
-.mini-garantia{margin-top:18px;font-size:.85rem;color:var(--cinza)}
+.selo-prova{display:inline-block;background:#fff;border:1px solid #F3D9EA;border-radius:999px;padding:8px 20px;font-size:.9rem;font-weight:600;margin-bottom:18px}
+.mini-garantia{margin-top:18px;font-size:.9rem;color:var(--cinza)}
 /* Faixa de numeros */
 .faixa{background:var(--branco);border-top:1px solid #F3D9EA;border-bottom:1px solid #F3D9EA;padding:34px 0}
 .faixa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
 .faixa-grid>div{padding:6px 12px;border-left:1px solid #F3D9EA}
 .faixa-grid>div:first-child{border-left:0}
 .faixa-num{font-family:"Anton",sans-serif;font-size:1.7rem;color:var(--roxo)}
-.faixa-num em{font-style:normal;color:var(--rosa)}
-.faixa-txt{font-size:.85rem;color:var(--cinza)}
+.faixa-num em{font-style:normal;color:var(--rosa-texto)}
+.faixa-txt{font-size:.9rem;color:var(--cinza)}
 /* Passos: numerados, horizontais */
 .passos{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px}
 .passo{border-top:3px solid var(--rosa);padding-top:16px}
@@ -75,7 +75,7 @@ h2{text-wrap:balance}
 .beneficio{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid #F6E3EF}
 .beneficio b{display:block;font-size:1rem}
 .beneficio p{font-size:.95rem;color:var(--cinza)}
-.marcador{flex:none;width:26px;height:26px;border-radius:50%;background:var(--rosa);color:#fff;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.marcador{flex:none;width:26px;height:26px;border-radius:50%;background:var(--rosa-texto);color:#fff;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-top:2px}
 /* Prova social: carrossel */
 .carrossel{display:grid;grid-auto-flow:column;grid-auto-columns:min(300px,78vw);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:26px 4px 10px;scrollbar-width:thin;align-items:start}
 .carrossel figure{scroll-snap-align:start;background:#fff;border:1px solid #F0D4E6;border-radius:14px;overflow:hidden}
@@ -87,7 +87,7 @@ h2{text-wrap:balance}
 .cel{background:var(--fundo);border:1px solid #F0D4E6;border-radius:var(--raio);padding:26px;min-height:190px}
 .cel h3{font-family:"Montserrat",sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:8px}
 .cel p{font-size:.93rem;color:var(--cinza)}
-.cel .vale{font-size:.8rem;font-weight:700;color:var(--cta);margin-top:10px}
+.cel .vale{font-size:.85rem;font-weight:700;color:var(--cta);margin-top:10px}
 .cel .vale s{color:var(--cinza);font-weight:400;margin-right:6px}
 .cel.app-cel .vale,.cel.comunidade-cel .vale{color:var(--rosa-claro)}
 .cel.app-cel .vale s,.cel.comunidade-cel .vale s{color:#C99AC0}
@@ -116,7 +116,7 @@ h2{text-wrap:balance}
 .oferta-card .por{font-family:"Anton",sans-serif;font-size:2.8rem;color:var(--roxo);margin:0 0 20px;line-height:1}
 .oferta-card .btn{width:100%;padding:16px 10px}
 .oferta-card .selo-oferta{width:76px;margin:18px auto 0}
-.oferta-card .micro{font-size:.82rem;color:var(--cinza);margin:12px 0 0}
+.oferta-card .micro{font-size:.87rem;color:var(--cinza);margin:12px 0 0}
 /* Bio */
 .bio{background:var(--fundo);border-radius:26px;padding:clamp(28px,4vw,52px);display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:center}
 .bio img{border-radius:20px;width:100%}
@@ -127,7 +127,7 @@ h2{text-wrap:balance}
 details{border:1px solid #F0D4E6;border-radius:14px;margin-bottom:10px;background:#fff;overflow:hidden}
 summary{padding:18px 22px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
 summary::-webkit-details-marker{display:none}
-summary::after{content:"+";font-size:1.4rem;color:var(--rosa);font-weight:700;flex:none}
+summary::after{content:"+";font-size:1.4rem;color:var(--rosa-texto);font-weight:700;flex:none}
 details[open] summary::after{content:"-"}
 details p{padding:0 22px 20px;color:var(--cinza);font-size:.97rem}
 /* CTA final */
@@ -136,27 +136,33 @@ details p{padding:0 22px 20px;color:var(--cinza);font-size:.97rem}
 .cta-final p{color:#EFD3E8;max-width:56ch;margin:0 auto 28px}
 .cta-final img{width:150px;margin:0 auto 20px}
 .cta-final .cta-garantia{font-size:.85rem;margin:18px auto 0}
-footer{padding:40px 0 48px;text-align:center;color:var(--cinza);font-size:.88rem}
+footer{padding:40px 0 48px;text-align:center;color:var(--cinza);font-size:.92rem}
 footer nav{display:flex;gap:22px;justify-content:center;margin:14px 0 20px;flex-wrap:wrap}
 footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 /* CTA fixo mobile (ligado via body.com-cta) */
 .cta-fixo{display:none}
 @media (max-width:900px){
-  footer{padding-bottom:110px}
-  .cta-fixo{display:block;position:fixed;left:12px;right:12px;bottom:12px;z-index:60;text-align:center;transform:translateY(140%);transition:transform .35s ease;overflow:visible}
+  footer{padding-bottom:150px}
+  .cta-fixo{display:block;position:fixed;left:10px;right:10px;bottom:10px;z-index:60;background:#fff;border:1px solid #F3D9EA;border-radius:18px;padding:10px 14px 14px;box-shadow:0 -8px 30px rgba(63,1,66,.12);transform:translateY(140%);transition:transform .3s ease;text-align:center}
   body.com-cta .cta-fixo{transform:none}
-  .cta-fixo::before{content:"";position:absolute;inset:-3px;border-radius:999px;padding:3px;background:conic-gradient(from var(--ang,0deg),#FF51C9,#FFD166,#F87DFF,#FF51C9);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:gira-borda 3s linear infinite;pointer-events:none}
+  .cta-fixo-preco{font-size:.85rem;margin:0 0 8px;color:var(--tinta)}
+  .cta-fixo-preco s{color:var(--cinza)}
+  .cta-fixo-preco b{color:var(--cta)}
+  .cta-fixo .btn{position:relative;width:100%;padding:14px 10px;animation:pulso 2s infinite}
   .cta-fixo .estrela{position:absolute;bottom:55%;font-size:14px;pointer-events:none;line-height:1}
 }
-@property --ang{syntax:"<angle>";initial-value:0deg;inherits:false}
-@keyframes gira-borda{to{--ang:360deg}}
+@keyframes pulso{
+  0%{box-shadow:0 0 0 0 rgba(168,0,119,.45)}
+  70%{box-shadow:0 0 0 14px rgba(168,0,119,0)}
+  100%{box-shadow:0 0 0 0 rgba(168,0,119,0)}
+}
 /* Revelacao suave */
 .revelar{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
 .revelar.visivel{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .revelar{opacity:1;transform:none;transition:none}
-  .cta-fixo::before{animation:none}
+  .cta-fixo .btn{animation:none}
   *{transition:none !important}
 }
 @media (max-width:900px){
@@ -399,7 +405,10 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   </div>
 </footer>
 
-<a class="cta-fixo btn" id="cta-fixo" href="https://pay.kiwify.com.br/U4n0qN7" aria-hidden="true" tabindex="-1">Quero entrar para o desafio</a>
+<div class="cta-fixo" aria-hidden="true">
+  <p class="cta-fixo-preco">De <s>R$ 97</s> por <b>R$ 57</b></p>
+  <a class="btn" id="cta-fixo" href="https://pay.kiwify.com.br/U4n0qN7" tabindex="-1">Quero entrar para o desafio</a>
+</div>
 
 <script>
 // Ofertas dinamicas: ?oferta=padrao (atual). Novas ofertas entram no objeto OFERTAS.

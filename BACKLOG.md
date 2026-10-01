@@ -23,7 +23,7 @@ Hoje o link mostra só texto (ver print). Para aparecer a capa como no exemplo d
 
 ## 3. Botão fixo no mobile com animações (CTA sempre visível) ✅ IMPLEMENTADO (base) — ver pesquisa abaixo
 
-**Pesquisa (out/2026):** o padrão vencedor em infoprodutos e ecommerce é barra/botão fixo no rodapé do mobile, surgindo após o CTA do hero sair da tela e sumindo perto da oferta (exatamente o nosso comportamento; estudos citam +5–15% conversão mobile). Achados para evoluir o nosso:
+**Pesquisa (out/2026):** o padrão vencedor em infoprodutos e ecommerce é barra/botão fixo no rodapé do mobile, surgindo após o CTA do hero sair da tela e sumindo perto da oferta (exatamente o nosso comportamento; estudos citam +5–15% conversão mobile). ✅ Aplicado: minibarra com preço (De R$ 97 por R$ 57) + pulse rosa no lugar da borda giratória + estrelas mantidas discretas.
 1. Incluir preço na barra fixa (âncora riscada + preço atual) — item de maior impacto segundo os guias; nosso botão hoje é só texto.
 2. Animação padrão do mercado é o "botão pulsante" (brilho pulsante via box-shadow, ~2s) — mais testado que borda giratória; avaliar trocar ou A/B testar.
 3. Altura mínima 56px, entrada deslizante 200–300ms, 1 único CTA por barra.
