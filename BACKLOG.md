@@ -1,6 +1,6 @@
-# Backlog futuro (fazer depois)
+# Backlog futuro
 
-## 1. Site dinâmico: botões para checkouts/preços diferentes
+## 1. Site dinâmico: botões para checkouts/preços diferentes ✅ IMPLEMENTADO (base)
 
 Objetivo da dona: poder trocar o destino dos botões (outro link Kiwify, outro preço) sem editar o HTML na mão.
 
@@ -11,17 +11,17 @@ Como vamos fazer:
 - Teste Playwright novo: abrir com `?oferta=X` e conferir href dos botões + valores na tela.
 - Deploy continua igual (arquivo único, sem backend).
 
-Pendente da dona: quais ofertas (nome, preço cheio, preço final, link Kiwify de cada uma).
+Pendente da dona: quais ofertas (nome, preço cheio, preço final, link Kiwify de cada uma). Só acrescentar entradas no objeto `OFERTAS`. ✅ Base no ar com `padrao`.
 
-## 2. Preview de link com imagem (WhatsApp/Instagram)
+## 2. Preview de link com imagem (WhatsApp/Instagram) ✅ IMPLEMENTADO
 
 Hoje o link mostra só texto (ver print). Para aparecer a capa como no exemplo do checkout Kiwify:
 - Criar `imagens/og-capa.jpg` 1200x630 (montar a partir da capa atual: fundo rosa + "DESAFIO PILATES EM CASA" + foto; reaproveitar `capa-video-Mari.png` ou `Nath-com-fundo.png`).
 - Adicionar OG/Twitter tags no `<head>`: `og:title`, `og:description`, `og:image` (URL absoluta `https://<dominio-final>/imagens/og-capa.jpg`), `og:type=website`, `twitter:card=summary_large_image`.
 - Atenção: WhatsApp guarda cache do preview; após publicar, forçar releitura (reenviar com parâmetro bobo `?v=2` ou aguardar expirar).
-- Validar com os testes: checar presença das tags no HTML.
+- Validar com os testes: checar presença das tags no HTML. ✅ `og-capa.jpg` 1200x630 gerada + tags no ar. PENDENTE: trocar a URL absoluta para o domínio final (hoje aponta o temporário) e forçar releitura do cache do WhatsApp.
 
-## 3. Botão fixo no mobile com animações (CTA sempre visível)
+## 3. Botão fixo no mobile com animações (CTA sempre visível) ✅ IMPLEMENTADO
 
 Objetivo: no celular, ao rolar para baixo, um botão "Quero entrar para o desafio" fixo no rodapé da tela, com borda animada + microexplosão de estrelinhas douradas/prateadas dentro do botão.
 

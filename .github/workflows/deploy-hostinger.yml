@@ -14,7 +14,7 @@ jobs:
         run: |
           rm -rf deploy && mkdir -p deploy/imagens deploy/prova
           cp nova-landing/index.html nova-landing/privacidade.html nova-landing/termos.html deploy/
-          cp conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.svg deploy/imagens/
+          cp conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.jpg conteudo/imagens/*.svg deploy/imagens/
           cp conteudo/prova/*.jpg deploy/prova/
           sed -i 's#\.\./conteudo/imagens/#imagens/#g; s#\.\./conteudo/prova/#prova/#g' deploy/*.html
           grep -r "conteudo/" deploy/ && exit 1 || echo "links ok"

@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pilates em Casa | Elimine as dores em 20 min por dia</title>
 <meta name="description" content="Pilates em casa com Natália Pereira: treinos de 20 min por dia, sem equipamentos, para aliviar dores, definir e desinchar. 1 ano de acesso, app exclusivo e garantia de 7 dias.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pilates em Casa | Elimine as dores em 20 min por dia">
+<meta property="og:description" content="Treinos de 20 min por dia, sem equipamentos. 1 ano de acesso, app exclusivo e garantia de 7 dias.">
+<meta property="og:image" content="https://violet-fly-798347.hostingersite.com/imagens/og-capa.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233F0142'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='36' font-weight='bold' fill='%23FF51C9' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -134,12 +139,24 @@ details p{padding:0 22px 20px;color:var(--cinza);font-size:.97rem}
 footer{padding:40px 0 48px;text-align:center;color:var(--cinza);font-size:.88rem}
 footer nav{display:flex;gap:22px;justify-content:center;margin:14px 0 20px;flex-wrap:wrap}
 footer a{color:var(--roxo);font-weight:600;text-decoration:none}
+/* CTA fixo mobile (ligado via body.com-cta) */
+.cta-fixo{display:none}
+@media (max-width:900px){
+  footer{padding-bottom:110px}
+  .cta-fixo{display:block;position:fixed;left:12px;right:12px;bottom:12px;z-index:60;text-align:center;transform:translateY(140%);transition:transform .35s ease;overflow:visible}
+  body.com-cta .cta-fixo{transform:none}
+  .cta-fixo::before{content:"";position:absolute;inset:-3px;border-radius:999px;padding:3px;background:conic-gradient(from var(--ang,0deg),#FF51C9,#FFD166,#F87DFF,#FF51C9);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:gira-borda 3s linear infinite;pointer-events:none}
+  .cta-fixo .estrela{position:absolute;bottom:55%;font-size:14px;pointer-events:none;line-height:1}
+}
+@property --ang{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes gira-borda{to{--ang:360deg}}
 /* Revelacao suave */
 .revelar{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
 .revelar.visivel{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .revelar{opacity:1;transform:none;transition:none}
+  .cta-fixo::before{animation:none}
   *{transition:none !important}
 }
 @media (max-width:900px){
@@ -370,8 +387,7 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 </main>
 
 <footer>
-  <div class="wrap">
-    <p><b style="color:var(--roxo)">Pilates em Casa</b> | com Natália Pereira</p>
+  <div class="wrap">    <p><b style="color:var(--roxo)">Pilates em Casa</b> | com Natália Pereira</p>
     <nav aria-label="Contato">
       <a href="https://www.instagram.com/pilatesnaparede.desafio/">Instagram</a>
       <a href="https://api.whatsapp.com/send/?phone=553173080374&text=Eu+quero%21+&type=phone_number&app_absent=0">WhatsApp</a>
@@ -383,7 +399,24 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   </div>
 </footer>
 
+<a class="cta-fixo btn" id="cta-fixo" href="https://pay.kiwify.com.br/U4n0qN7" aria-hidden="true" tabindex="-1">Quero entrar para o desafio</a>
+
 <script>
+// Ofertas dinamicas: ?oferta=padrao (atual). Novas ofertas entram no objeto OFERTAS.
+var OFERTAS = {
+  padrao: {checkout:'https://pay.kiwify.com.br/U4n0qN7', cheio:97, preco:57, total:710}
+};
+(function(){
+  var chave = new URLSearchParams(window.location.search).get('oferta');
+  var of = OFERTAS[chave] || OFERTAS.padrao;
+  document.querySelectorAll('a.btn[href*="kiwify"]').forEach(function(a){ a.href = of.checkout; });
+  var de = document.querySelector('.oferta-card .de');
+  var por = document.querySelector('.oferta-card .por');
+  var total = document.querySelector('.oferta-total');
+  if(de) de.textContent = 'De R$ ' + of.cheio;
+  if(por) por.textContent = 'por R$ ' + of.preco;
+  if(total) total.innerHTML = 'Total: <s>R$ ' + of.total + '</s> em programa e bônus';
+})();
 // Revelacao suave das secoes (respeita reduced-motion via CSS)
 (function(){
   var itens = document.querySelectorAll('.revelar');
@@ -392,6 +425,45 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
     entradas.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('visivel'); obs.unobserve(en.target); } });
   }, {threshold:.12});
   itens.forEach(function(e){ obs.observe(e); });
+})();
+// CTA fixo mobile: aparece apos o hero, some na oferta e no CTA final
+(function(){
+  var btn = document.getElementById('cta-fixo');
+  var hero = document.querySelector('.hero');
+  if(!btn || !hero || !('IntersectionObserver' in window)) return;
+  var passouHero = false, emZona = false;
+  var atualiza = function(){ document.body.classList.toggle('com-cta', passouHero && !emZona); };
+  new IntersectionObserver(function(es){
+    passouHero = !es[0].isIntersecting && es[0].boundingClientRect.top < 0;
+    atualiza();
+  }).observe(hero);
+  var zonas = new IntersectionObserver(function(es){
+    emZona = es.some(function(x){ return x.isIntersecting; });
+    atualiza();
+  }, {threshold:.12});
+  document.querySelectorAll('#oferta, .cta-final').forEach(function(z){ zonas.observe(z); });
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var cores = ['#FFD166','#E8E8EC'], k = 0;
+  setInterval(function(){
+    if(document.hidden || !document.body.classList.contains('com-cta')) return;
+    for(var j = 0; j < 3; j++){
+      var s = document.createElement('span');
+      s.className = 'estrela';
+      s.setAttribute('aria-hidden', 'true');
+      s.textContent = '✦';
+      s.style.left = (20 + Math.random() * 60) + '%';
+      s.style.color = cores[(k++) % 2];
+      btn.appendChild(s);
+      var dx = (Math.random() - .5) * 120, dy = -(30 + Math.random() * 50);
+      s.animate([
+        {transform:'translate(0,0) scale(.4)', opacity:0},
+        {transform:'translate(' + dx * .5 + 'px,' + dy * .5 + 'px) scale(1)', opacity:1, offset:.4},
+        {transform:'translate(' + dx + 'px,' + dy + 'px) scale(.2)', opacity:0}
+      ], {duration:1100, easing:'cubic-bezier(.16,1,.3,1)'}).onfinish = (function(el){
+        return function(){ el.remove(); };
+      })(s);
+    }
+  }, 4000);
 })();
 // Carrosseis em loop continuo: pausam no toque/hover e respeitam reduced-motion
 (function(){
