@@ -21,7 +21,13 @@ Hoje o link mostra só texto (ver print). Para aparecer a capa como no exemplo d
 - Atenção: WhatsApp guarda cache do preview; após publicar, forçar releitura (reenviar com parâmetro bobo `?v=2` ou aguardar expirar).
 - Validar com os testes: checar presença das tags no HTML. ✅ `og-capa.jpg` 1200x630 gerada + tags no ar. PENDENTE: trocar a URL absoluta para o domínio final (hoje aponta o temporário) e forçar releitura do cache do WhatsApp.
 
-## 3. Botão fixo no mobile com animações (CTA sempre visível) ✅ IMPLEMENTADO
+## 3. Botão fixo no mobile com animações (CTA sempre visível) ✅ IMPLEMENTADO (base) — ver pesquisa abaixo
+
+**Pesquisa (out/2026):** o padrão vencedor em infoprodutos e ecommerce é barra/botão fixo no rodapé do mobile, surgindo após o CTA do hero sair da tela e sumindo perto da oferta (exatamente o nosso comportamento; estudos citam +5–15% conversão mobile). Achados para evoluir o nosso:
+1. Incluir preço na barra fixa (âncora riscada + preço atual) — item de maior impacto segundo os guias; nosso botão hoje é só texto.
+2. Animação padrão do mercado é o "botão pulsante" (brilho pulsante via box-shadow, ~2s) — mais testado que borda giratória; avaliar trocar ou A/B testar.
+3. Altura mínima 56px, entrada deslizante 200–300ms, 1 único CTA por barra.
+4. Desktop: barra fixa tem menos efeito (CTAs já visíveis); manter mobile-only por ora.
 
 Objetivo: no celular, ao rolar para baixo, um botão "Quero entrar para o desafio" fixo no rodapé da tela, com borda animada + microexplosão de estrelinhas douradas/prateadas dentro do botão.
 
