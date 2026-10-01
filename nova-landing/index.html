@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilates em Casa | Elimine as dores em 20 min por dia</title>
+<meta name="description" content="Pilates em casa com Natália Pereira: treinos de 20 min por dia, sem equipamentos, para aliviar dores, definir e desinchar. 1 ano de acesso, app exclusivo e garantia de 7 dias.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233F0142'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='36' font-weight='bold' fill='%23FF51C9' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Tokens da marca original preservados: rosa #FF51C9, roxo #3F0142, Anton + Montserrat */
+:root{
+  --rosa:#FF51C9; --rosa-claro:#F87DFF; --roxo:#3F0142; --roxo-2:#820088;
+  --cta:#A80077; --cta-hover:#86025F; --tinta:#2B1226; --cinza:#6B5565;
+  --fundo:#FFF7FC; --branco:#FFFFFF; --faixa:#FBE9F5;
+  --raio:18px; --max:1120px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.0625rem;color:var(--tinta);background:var(--branco);line-height:1.65;-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3,.display{font-family:"Anton",Impact,sans-serif;font-weight:400;line-height:1.08;letter-spacing:.01em}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+section{padding:72px 0}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cta);margin-bottom:12px}
+h2{font-size:clamp(1.7rem,3.4vw,2.5rem);margin-bottom:14px}
+.sub{color:var(--cinza);max-width:62ch}
+/* Botoes: um rotulo unico de compra na pagina inteira */
+.btn{display:inline-block;background:var(--cta);color:#fff;font-weight:700;font-size:1.05rem;padding:16px 38px;border-radius:999px;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;transition:transform .25s ease,background .25s ease}
+.btn:hover{background:var(--cta-hover)}
+.btn:active{transform:scale(.98)}
+.btn-centro{text-align:center;margin-top:32px}
+.ghost{display:inline-block;margin-top:14px;color:var(--roxo);font-weight:600;font-size:.92rem}
+/* Nav */
+header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid #F3D9EA}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 20px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.marca{font-family:"Anton",sans-serif;font-size:1.25rem;color:var(--roxo);text-decoration:none}
+.marca span{color:var(--rosa)}
+.nav-links{display:flex;gap:26px;align-items:center}
+.nav-links a{color:var(--tinta);text-decoration:none;font-size:.92rem;font-weight:500}
+.nav-links a:hover{color:var(--cta)}
+.nav-links a.btn{color:#fff}
+.nav-cta{padding:11px 26px;font-size:.9rem}
+/* Hero: coluna unica centralizada */
+.hero{background:linear-gradient(180deg,var(--fundo),#fff);padding:56px 0 64px;overflow:hidden}
+.hero-centro{max-width:800px;margin:0 auto;text-align:center}
+.hero h1{font-size:clamp(2.2rem,4.6vw,3.2rem);margin:0 0 16px;text-wrap:balance}
+.hero h1 .rosa{color:var(--rosa)}
+.hero .sub{font-size:1.05rem;margin:0 auto 28px}
+h2{text-wrap:balance}
+.selo-prova{display:inline-block;background:#fff;border:1px solid #F3D9EA;border-radius:999px;padding:8px 20px;font-size:.85rem;font-weight:600;margin-bottom:18px}
+.mini-garantia{margin-top:18px;font-size:.85rem;color:var(--cinza)}
+/* Faixa de numeros */
+.faixa{background:var(--branco);border-top:1px solid #F3D9EA;border-bottom:1px solid #F3D9EA;padding:34px 0}
+.faixa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+.faixa-grid>div{padding:6px 12px;border-left:1px solid #F3D9EA}
+.faixa-grid>div:first-child{border-left:0}
+.faixa-num{font-family:"Anton",sans-serif;font-size:1.7rem;color:var(--roxo)}
+.faixa-num em{font-style:normal;color:var(--rosa)}
+.faixa-txt{font-size:.85rem;color:var(--cinza)}
+/* Passos: numerados, horizontais */
+.passos{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px}
+.passo{border-top:3px solid var(--rosa);padding-top:16px}
+.passo b{display:block;margin:0 0 4px;font-size:1rem}
+.passo p{font-size:.95rem;color:var(--cinza)}
+/* Beneficios: lista em 2 colunas, sem cards iguais */
+.beneficios-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;margin-top:30px}
+.beneficio{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid #F6E3EF}
+.beneficio b{display:block;font-size:1rem}
+.beneficio p{font-size:.95rem;color:var(--cinza)}
+.marcador{flex:none;width:26px;height:26px;border-radius:50%;background:var(--rosa);color:#fff;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-top:2px}
+/* Prova social: carrossel */
+.carrossel{display:grid;grid-auto-flow:column;grid-auto-columns:min(300px,78vw);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:26px 4px 10px;scrollbar-width:thin;align-items:start}
+.carrossel figure{scroll-snap-align:start;background:#fff;border:1px solid #F0D4E6;border-radius:14px;overflow:hidden}
+.carrossel img{width:100%;height:auto;display:block}
+.carrossel-titulo{font-family:"Montserrat",sans-serif;font-weight:700;font-size:1rem;margin:28px 0 0}
+.carrossel.grupo{grid-auto-columns:min(230px,64vw)}
+/* Bonus: bento */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:30px}
+.cel{background:var(--fundo);border:1px solid #F0D4E6;border-radius:var(--raio);padding:26px;min-height:190px}
+.cel h3{font-family:"Montserrat",sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:8px}
+.cel p{font-size:.93rem;color:var(--cinza)}
+.cel .vale{font-size:.8rem;font-weight:700;color:var(--cta);margin-top:10px}
+.cel .vale s{color:var(--cinza);font-weight:400;margin-right:6px}
+.cel.app-cel .vale,.cel.comunidade-cel .vale{color:var(--rosa-claro)}
+.cel.app-cel .vale s,.cel.comunidade-cel .vale s{color:#C99AC0}
+.cel.cha-cel{grid-column:span 4;display:grid;grid-template-columns:1fr 170px;gap:18px;align-items:center;background:#fff}
+.cel.cha-cel img{max-height:170px;object-fit:contain;margin:0 auto}
+.cel.app-cel{grid-column:span 2;background:var(--roxo);color:#fff;border-color:var(--roxo)}
+.cel.app-cel p{color:#E9CDE2}
+.cel.mini{grid-column:span 2}
+.cel.comunidade-cel{grid-column:span 2;background:linear-gradient(120deg,var(--roxo-2),var(--roxo));color:#fff;border:0}
+.cel.comunidade-cel p{color:#F2D3EA}
+.cel.comunidade-cel a{color:#fff;font-weight:700}
+.cel.planner-cel{grid-column:span 6;display:grid;grid-template-columns:170px 1fr;gap:20px;align-items:center;background:#fff}
+.cel.planner-cel img{max-height:190px;object-fit:contain;margin:0 auto}
+/* Oferta: pilha de valor + cartao de preco */
+.oferta{background:linear-gradient(120deg,#2B0530,#5A0B57);color:#fff;border-radius:26px;padding:clamp(28px,4vw,52px);display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:start}
+.oferta h2{color:#fff;margin-bottom:6px}
+.oferta .oferta-sub{color:#F2D3EA;font-size:.94rem;margin-bottom:18px}
+.oferta ul{list-style:none}
+.oferta li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.16);font-size:.95rem}
+.oferta li b{white-space:nowrap}
+.oferta li b s{opacity:.55;font-weight:400}
+.oferta-total{margin-top:16px;font-size:1.05rem}
+.oferta-total s{opacity:.6}
+.oferta-card{background:#fff;color:var(--tinta);border-radius:18px;padding:34px 28px;text-align:center}
+.oferta-card .de{color:var(--cinza);text-decoration:line-through;font-size:1.05rem;margin:0}
+.oferta-card .por{font-family:"Anton",sans-serif;font-size:2.8rem;color:var(--roxo);margin:0 0 20px;line-height:1}
+.oferta-card .btn{width:100%;padding:16px 10px}
+.oferta-card .selo-oferta{width:76px;margin:18px auto 0}
+.oferta-card .micro{font-size:.82rem;color:var(--cinza);margin:12px 0 0}
+/* Bio */
+.bio{background:var(--fundo);border-radius:26px;padding:clamp(28px,4vw,52px);display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:center}
+.bio img{border-radius:20px;width:100%}
+.bio blockquote{font-size:1.15rem;font-weight:600;line-height:1.6;margin:14px 0;padding-left:18px;border-left:4px solid var(--rosa)}
+.bio cite{font-style:normal;color:var(--cinza);font-size:.9rem}
+/* FAQ */
+.faq-lista{max-width:760px;margin:26px auto 0}
+details{border:1px solid #F0D4E6;border-radius:14px;margin-bottom:10px;background:#fff;overflow:hidden}
+summary{padding:18px 22px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.4rem;color:var(--rosa);font-weight:700;flex:none}
+details[open] summary::after{content:"-"}
+details p{padding:0 22px 20px;color:var(--cinza);font-size:.97rem}
+/* CTA final */
+.cta-final{background:linear-gradient(rgba(43,5,38,.9),rgba(43,5,38,.9));color:#fff;border-radius:26px;text-align:center;padding:clamp(40px,6vw,72px) clamp(24px,5vw,60px)}
+.cta-final h2{color:#fff;max-width:22ch;margin:0 auto 14px}
+.cta-final p{color:#EFD3E8;max-width:56ch;margin:0 auto 28px}
+.cta-final img{width:150px;margin:0 auto 20px}
+.cta-final .cta-garantia{font-size:.85rem;margin:18px auto 0}
+footer{padding:40px 0 48px;text-align:center;color:var(--cinza);font-size:.88rem}
+footer nav{display:flex;gap:22px;justify-content:center;margin:14px 0 20px;flex-wrap:wrap}
+footer a{color:var(--roxo);font-weight:600;text-decoration:none}
+/* Revelacao suave */
+.revelar{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.revelar.visivel{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .revelar{opacity:1;transform:none;transition:none}
+  *{transition:none !important}
+}
+@media (max-width:900px){
+  .marca{white-space:nowrap;font-size:1.1rem}
+  .nav-links a:not(.btn){display:none}
+  .passos{grid-template-columns:1fr}
+  .bio{grid-template-columns:1fr}
+  .bio img{max-width:300px}
+  .faixa-grid{grid-template-columns:1fr 1fr}
+  .faixa-grid>div:nth-child(3){border-left:0}
+  .beneficios-grid{grid-template-columns:1fr}
+  .cel,.cel.cha-cel,.cel.app-cel,.cel.mini,.cel.comunidade-cel,.cel.planner-cel{grid-column:span 6}
+  .cel.cha-cel,.cel.planner-cel{grid-template-columns:1fr}
+  .oferta{grid-template-columns:1fr}
+  section{padding:54px 0}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="marca" href="#topo">Pilates <span>em Casa</span></a>
+    <nav class="nav-links" aria-label="Principal">
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#resultados">Resultados</a>
+      <a href="#bonus">Bônus</a>
+      <a href="#faq">Dúvidas</a>
+      <a class="btn nav-cta" href="https://pay.kiwify.com.br/U4n0qN7">Quero entrar para o desafio</a>
+    </nav>
+  </div>
+</header>
+
+<main id="topo">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-centro">
+      <div>
+        <div class="selo-prova">Mais de 10 mil alunas em transformação</div>
+        <h1>Menos dores, mais definição em <span class="rosa">20 minutos por dia</span></h1>
+        <p class="sub">Aulas que aliviam dores, recuperam músculos e definem o corpo. App, 1 ano de acesso e acompanhamento de verdade.</p>
+        <a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Quero entrar para o desafio</a>
+        <p class="mini-garantia">Garantia incondicional de 7 dias. Sem risco.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAIXA -->
+  <div class="faixa">
+    <div class="wrap faixa-grid">
+      <div><p class="faixa-num">10 <em>mil</em></p><p class="faixa-txt">alunas em transformação</p></div>
+      <div><p class="faixa-num">20 <em>min</em></p><p class="faixa-txt">de treino por dia</p></div>
+      <div><p class="faixa-num">100<em>%</em></p><p class="faixa-txt">em casa, sem aparelhos</p></div>
+      <div><p class="faixa-num">7 <em>dias</em></p><p class="faixa-txt">de garantia total</p></div>
+    </div>
+  </div>
+
+  <!-- COMO FUNCIONA -->
+  <section id="como-funciona">
+    <div class="wrap">
+      <h2>Do play ao resultado em 3 passos</h2>
+      <p class="sub">Sem complicação, sem espera, sem equipamento.</p>
+      <div class="passos revelar">
+        <div class="passo"><b>Entre e receba o acesso</b><p>Confirme e receba tudo no e-mail, com acesso ao app.</p></div>
+        <div class="passo"><b>Siga a aula do dia</b><p>Aperte o play e treine 20 minutos, no seu ritmo.</p></div>
+        <div class="passo"><b>Repita e evolua</b><p>Volte amanhã e siga a sequência. O resultado vem da constância, não da intensidade.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFICIOS -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <p class="eyebrow">O programa</p>
+      <h2>Feito para virar hábito, não mais uma tentativa</h2>
+      <p class="sub">Um método completo para constância de verdade, não mais uma tentativa frustrada.</p>
+      <div class="beneficios-grid revelar">
+        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>Evolução que você sente a cada semana</b><p>Aulas e cardápios fáceis de seguir para aliviar dores, definir e desinchar com constância.</p></div></div>
+        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>20 minutos que cabem no seu dia</b><p>Treinos curtos e potentes, 20 minutos por dia. Sem desculpa de falta de tempo.</p></div></div>
+        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>Sua sala vira seu estúdio</b><p>Só o peso do seu corpo, sem aparelhos. Treine onde estiver.</p></div></div>
+        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>Um ano inteiro de acesso</b><p>1 ano de treino na plataforma e no app, direto do celular, no seu ritmo.</p></div></div>
+        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>Comece do zero, evolua no seu ritmo</b><p>Base de mobilidade e respiração para iniciantes, desafios para quem já treina.</p></div></div>
+        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>Nunca treine sozinha</b><p>Dúvidas respondidas no grupo em média em até 4 horas, por gente de verdade.</p></div></div>
+      </div>
+      <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Quero entrar para o desafio</a></div>
+    </div>
+  </section>
+
+  <!-- PROVA SOCIAL -->
+  <section id="resultados" style="padding-top:0">
+    <div class="wrap">
+      <p class="eyebrow">Resultados reais</p>
+      <h2>O que as alunas falam sobre o método</h2>
+      <p class="sub">Pessoas reais, com rotinas corridas, que confiaram no processo. Arraste para ver mais. E nunca sozinhas: comunidade ativa, acolhimento diário e histórias que inspiram constância.</p>
+      <h3 class="carrossel-titulo">O que elas contam</h3>
+      <div class="carrossel revelar">
+        <figure><img src="../conteudo/prova/dp1.jpg" width="1080" height="675" alt="Depoimento de aluna sobre o programa celulite zero em 28 dias" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp2.jpg" width="1080" height="675" alt="Depoimento de aluna do Pilates em casa" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp3.jpg" width="1080" height="675" alt="Depoimento de aluna do Pilates em casa" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp4.jpg" width="1080" height="675" alt="Depoimento de aluna do Pilates em casa" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp5.jpg" width="1080" height="675" alt="Depoimento de aluna do Pilates em casa" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp6.jpg" width="1080" height="675" alt="Depoimento de aluna do Pilates em casa" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp7.jpg" width="1080" height="675" alt="Depoimento de aluna do Pilates em casa" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp8.jpg" width="1080" height="675" alt="Depoimento de aluna do Pilates em casa" loading="lazy"></figure>
+      </div>
+      <h3 class="carrossel-titulo">Direto do grupo VIP</h3>
+      <div class="carrossel grupo revelar">
+        <figure><img src="../conteudo/prova/1-1.jpg" width="800" height="1000" alt="Aluna agradecendo a receita no grupo VIP" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/2-1.jpg" width="800" height="1000" alt="Aluna celebrando progresso no grupo VIP" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/3-1.jpg" width="800" height="1000" alt="Depoimento sobre flacidez e menopausa no grupo VIP" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/1.jpg" width="800" height="1000" alt="Conversa no grupo VIP do Pilates em casa" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/2.jpg" width="800" height="1000" alt="Conversa no grupo VIP do Pilates em casa" loading="lazy"></figure>
+      </div>
+      <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Quero entrar para o desafio</a></div>
+    </div>
+  </section>
+
+  <!-- BONUS -->
+  <section id="bonus" style="padding-top:0">
+    <div class="wrap">
+      <p class="eyebrow">Incluído hoje</p>
+      <h2>Bônus que aceleram seu resultado</h2>
+      <p class="sub">Direto da nossa nutricionista. Tudo incluído no acesso de hoje.</p>
+      <div class="bento revelar">
+        <div class="cel cha-cel">
+          <div><h3>Chá Secreto</h3><p>A receita que desincha e acelera o metabolismo de forma natural. Gestantes, lactantes e hipertensas: consulte seu médico antes.</p><p class="vale"><s>R$ 47</s> incluso hoje</p></div>
+          <img src="../conteudo/imagens/cha-secreto.png" alt="Xícara do chá secreto" loading="lazy">
+        </div>
+        <div class="cel app-cel"><h3>App exclusivo</h3><p>Suas aulas no bolso. Treine onde estiver, na palma da mão.</p><p class="vale"><s>R$ 97</s> incluso hoje</p></div>
+        <div class="cel mini"><h3>Plano Alimentar</h3><p>Coma bem sem dieta maluca, com comida de verdade e opções veganas e vegetarianas.</p><p class="vale"><s>R$ 67</s> incluso hoje</p></div>
+        <div class="cel mini"><h3>380+ Receitas Saudáveis</h3><p>Nunca mais fique sem ideia do que comer para manter o resultado.</p><p class="vale"><s>R$ 97</s> incluso hoje</p></div>
+        <div class="cel mini"><h3>Jejum Intermitente</h3><p>Um impulso a mais na redução de medidas, com protocolo simples.</p><p class="vale"><s>R$ 47</s> incluso hoje</p></div>
+        <div class="cel mini"><h3>Celulite Zero</h3><p>Pele mais lisa com cuidado natural, sem procedimentos caros.</p><p class="vale"><s>R$ 37</s> incluso hoje</p></div>
+        <div class="cel mini"><h3>Marmita Fitness</h3><p>Semana alimentar organizada com marmitas práticas, sem esforço.</p><p class="vale"><s>R$ 37</s> incluso hoje</p></div>
+        <div class="cel comunidade-cel"><h3>Comunidade Exclusiva</h3><p>Apoio diário de quem vive a mesma jornada, com acesso ao grupo durante 1 ano. <a href="https://api.whatsapp.com/send/?phone=553173080374&text=Eu+quero%21+&type=phone_number&app_absent=0">Falar no WhatsApp</a></p><p class="vale"><s>R$ 147</s> incluso hoje</p></div>
+        <div class="cel planner-cel">
+          <img src="../conteudo/imagens/mockup-e-book-1.png" alt="Planner de Resultados do Pilates em Casa" loading="lazy">
+          <div><h3>Planner de Resultados</h3><p>Tem dificuldade de manter a constância? Este diário de transformação registra cada treino para você ver sua evolução nos seus próprios registros.</p><p class="vale"><s>R$ 37</s> incluso hoje</p></div>
+        </div>
+      </div>
+      <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Quero entrar para o desafio</a></div>
+    </div>
+  </section>
+
+  <!-- OFERTA -->
+  <section id="oferta" style="padding-top:0">
+    <div class="wrap">
+      <div class="oferta revelar">
+        <div>
+          <h2>O que você leva hoje</h2>
+          <p class="oferta-sub">Programa completo com 28 aulas gravadas + todos os bônus, com 1 ano de acesso à plataforma.</p>
+          <ul>
+            <li><span>Programa Pilates em casa (1 ano, 28 aulas)</span><b>R$ 97</b></li>
+            <li><span>App exclusivo</span><b><s>R$ 97</s> grátis</b></li>
+            <li><span>Chá Secreto</span><b><s>R$ 47</s> grátis</b></li>
+            <li><span>Plano Alimentar</span><b><s>R$ 67</s> grátis</b></li>
+            <li><span>380+ Receitas Saudáveis</span><b><s>R$ 97</s> grátis</b></li>
+            <li><span>Jejum Intermitente</span><b><s>R$ 47</s> grátis</b></li>
+            <li><span>Celulite Zero</span><b><s>R$ 37</s> grátis</b></li>
+            <li><span>Marmita Fitness</span><b><s>R$ 37</s> grátis</b></li>
+            <li><span>Planner de Resultados</span><b><s>R$ 37</s> grátis</b></li>
+            <li><span>Comunidade Exclusiva</span><b><s>R$ 147</s> grátis</b></li>
+          </ul>
+          <p class="oferta-total">Total: <s>R$ 710</s> em programa e bônus</p>
+        </div>
+        <div class="oferta-card">
+          <p class="de">De R$ 97</p>
+          <p class="por">por R$ 57</p>
+          <a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Quero entrar para o desafio</a>
+          <img class="selo-oferta" src="../conteudo/imagens/Satisfacao-Garantida.svg" alt="Selo de satisfação garantida" loading="lazy" width="120" height="120">
+          <p class="micro">Pagamento único, sem mensalidade e sem taxas extras. 1 ano de acesso à plataforma. Pagamento seguro pela Kiwify, com garantia incondicional de 7 dias.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BIO -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="bio revelar">
+        <img src="../conteudo/imagens/Nath-com-fundo.png" alt="Natália Pereira, fisioterapeuta e instrutora de Pilates" loading="lazy" width="880" height="880">
+        <div>
+          <h2>Natália Pereira, fisioterapeuta e instrutora de Pilates em casa</h2>
+          <blockquote>Você vai se sentir abraçada, capaz e acompanhada a cada aula, no seu tempo.</blockquote>
+          <p class="sub">Formada há mais de 11 anos, Natália criou este programa para você se movimentar com segurança em casa e redescobrir o prazer de cuidar de si. Fortaleça core e assoalho pélvico, melhore postura e mobilidade, reduza dores e ganhe energia em qualquer fase, incluindo a menopausa.</p>
+          <cite>1º lugar na categoria bem-estar físico na Kiwify em 2024</cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="padding-top:0">
+    <div class="wrap">
+      <div style="text-align:center">
+        <h2>Perguntas e respostas</h2>
+      </div>
+      <div class="faq-lista revelar">
+        <details><summary>Quais são as formas de pagamento? É seguro?</summary><p>Você paga com Pix ou cartão pela Kiwify, com dados protegidos pela plataforma.</p></details>
+        <details><summary>Como funciona a garantia de 7 dias?</summary><p>Se por qualquer motivo você não ficar satisfeita em até 7 dias, basta pedir o reembolso integral, sem perguntas.</p></details>
+        <details><summary>Os treinos são só para fazer em casa?</summary><p>Sim, todos os treinos acontecem em casa, sem equipamentos, usando só o peso do corpo.</p></details>
+        <details><summary>Como vou acessar? Tem aplicativo?</summary><p>Você recebe o acesso por e-mail e assiste pela plataforma ou pelo app exclusivo no celular.</p></details>
+        <details><summary>Serve para todos os níveis?</summary><p>Sim, do básico ao avançado. Os primeiros módulos preparam a base com mobilidade, alongamento e respiração.</p></details>
+        <details><summary>Tenho dores ou lesão. Posso fazer?</summary><p>As aulas começam pela base, com mobilidade e respiração, e você evolui no seu ritmo. Mas dor e lesão pedem avaliação individual: fale com seu médico ou fisioterapeuta antes de começar e respeite seus limites.</p></details>
+        <details><summary>Estou grávida, no pós-parto ou sou menor de idade?</summary><p>Nesses casos só com liberação médica, e menores de 18 anos com responsável. O programa não substitui acompanhamento profissional.</p></details>
+        <details><summary>O programa é para emagrecer ou definir?</summary><p>Os dois. O método trabalha seca, definição, desinchaço e fortalecimento do corpo todo.</p></details>
+        <details><summary>Precisa de equipamentos?</summary><p>Não. Todos os treinos usam apenas o peso do corpo.</p></details>
+        <details><summary>O que são os guias nutricionais?</summary><p>Materiais com plano alimentar, receitas saudáveis, jejum intermitente e o passo a passo do Chá Secreto.</p></details>
+        <details><summary>Para quem é este programa?</summary><p>Para mulheres que querem aliviar dores, definir o corpo e desinchar em casa, com pouco tempo por dia, em qualquer idade ou nível, com acolhimento e constância.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="cta-final revelar">
+        <img src="../conteudo/imagens/Satisfacao-Garantida.svg" alt="Selo de satisfação garantida" loading="lazy" width="120" height="120">
+        <h2>Não é só emagrecer ou definir. É se reencontrar no processo.</h2>
+        <p>Pilates em casa + app exclusivo + todos os bônus, com 1 ano de acesso para fazer a sua jornada no seu ritmo.</p>
+        <a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Quero entrar para o desafio</a>
+        <p class="cta-garantia">Garantia incondicional de 7 dias: se não ficar satisfeita, devolvemos 100% do valor, sem perguntas.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b style="color:var(--roxo)">Pilates em Casa</b> | com Natália Pereira</p>
+    <nav aria-label="Contato">
+      <a href="https://www.instagram.com/pilatesnaparede.desafio/">Instagram</a>
+      <a href="https://api.whatsapp.com/send/?phone=553173080374&text=Eu+quero%21+&type=phone_number&app_absent=0">WhatsApp</a>
+      <a href="https://pay.kiwify.com.br/U4n0qN7">Entrar para o desafio</a>
+      <a href="privacidade.html">Privacidade</a>
+      <a href="termos.html">Termos</a>
+    </nav>
+    <p>© 2023–2026 Pilates em Casa - Todos os Direitos Reservados</p>
+  </div>
+</footer>
+
+<script>
+// Revelacao suave das secoes (respeita reduced-motion via CSS)
+(function(){
+  var itens = document.querySelectorAll('.revelar');
+  if(!('IntersectionObserver' in window)){ itens.forEach(function(e){ e.classList.add('visivel'); }); return; }
+  var obs = new IntersectionObserver(function(entradas){
+    entradas.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('visivel'); obs.unobserve(en.target); } });
+  }, {threshold:.12});
+  itens.forEach(function(e){ obs.observe(e); });
+})();
+// Carrosseis em loop continuo: pausam no toque/hover e respeitam reduced-motion
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.carrossel').forEach(function(el){
+    Array.from(el.children).forEach(function(f){
+      var clone = f.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      el.appendChild(clone);
+    });
+    var originais = Array.from(el.children).slice(0, el.children.length / 2);
+    var parado = false;
+    ['pointerenter','pointerdown','focusin','touchstart'].forEach(function(ev){
+      el.addEventListener(ev, function(){ parado = true; }, {passive:true});
+    });
+    ['pointerleave','pointerup','focusout','touchend'].forEach(function(ev){
+      el.addEventListener(ev, function(){ parado = false; }, {passive:true});
+    });
+    var indiceAtual = function(){
+      var borda = el.getBoundingClientRect().left;
+      for(var i = 0; i < originais.length; i++){
+        var r = originais[i].getBoundingClientRect();
+        if(r.left + r.width > borda + 4) return i;
+      }
+      return originais.length - 1;
+    };
+    var visivel = true;
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(entradas){
+        visivel = entradas[0].isIntersecting;
+      }, {threshold:.05}).observe(el);
+    }
+    setInterval(function(){
+      if(parado || document.hidden || !visivel) return;
+      var i = indiceAtual();
+      var borda = el.getBoundingClientRect().left;
+      if(i >= originais.length - 1){
+        el.scrollTo({left:0, behavior:'smooth'});
+      } else {
+        var alvo = originais[i + 1];
+        var destino = el.scrollLeft + (alvo.getBoundingClientRect().left - borda);
+        el.scrollTo({left:destino, behavior:'smooth'});
+      }
+    }, 4000);
+  });
+})();
+</script>
+</body>
+</html>

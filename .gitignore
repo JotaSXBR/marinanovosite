@@ -1,0 +1,14 @@
+# deps
+node_modules/
+
+# build de deploy (gerado pela Action)
+deploy/
+
+# testes
+tests/test-results/
+tests/playwright-report/
+
+# logs e SO
+*.log
+.DS_Store
+Thumbs.db

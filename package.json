@@ -1,0 +1,10 @@
+{
+  "name": "marina-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Rebuild estatico do Pilates em Casa (antes Mari Coach Fit)",
+  "scripts": {
+    "dev": "python3 -m http.server 8901 --bind 0.0.0.0",
+    "test": "npm --prefix tests test"
+  }
+}

@@ -1,0 +1,31 @@
+name: Deploy para Hostinger
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Montar pasta de deploy
+        run: |
+          rm -rf deploy && mkdir -p deploy/imagens deploy/prova
+          cp nova-landing/index.html nova-landing/privacidade.html nova-landing/termos.html deploy/
+          cp conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.svg deploy/imagens/
+          cp conteudo/prova/*.jpg deploy/prova/
+          sed -i 's#\.\./conteudo/imagens/#imagens/#g; s#\.\./conteudo/prova/#prova/#g' deploy/*.html
+          grep -r "conteudo/" deploy/ && exit 1 || echo "links ok"
+
+      - name: Enviar via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          local-dir: ./deploy/
+          server-dir: public_html/

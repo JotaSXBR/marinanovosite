@@ -1,0 +1,22 @@
+# AGENTS.md
+
+## State
+- Rebuild do maricoachfit.com (WordPress/Elementor) em andamento.
+- `site-original/` — espelho wget da home + `/links/` com CSS/JS/fontes (~15 MB). Não editar; é arquivo.
+- `conteudo/imagens/` — 23 imagens originais reaproveitáveis (sem thumbnails). `conteudo/prova/` — 13 depoimentos normalizados (8× 1080x675 + 5× 800x1000, fundo branco, sem corte). `conteudo/layout/` — HTML de referência.
+- `INVENTARIO.md` — mapa do que foi baixado, vídeo (embed YouTube `youtu.be/WDEG6QFKQlo`, sem MP4 próprio) e problemas do original.
+- `ANALISE-COPY.md` — auditoria de copy seção por seção (skill `copywriting`), proposta de reordenação e backlog. Ler antes de mexer em textos.
+- `QUESTIONARIO.md` — perguntas para a dona (oferta, público, prova, produto, marca, jurídico). Aguardando respostas; aplicar na landing quando chegarem.
+- `nova-landing/index.html` — rebuild estático single-file (CSS/JS inline, sem build). Título/marca "Pilates em Casa". Imagens via `../conteudo/imagens/`, checkout Kiwify `U4n0qN7`, oferta De R$97 por R$57 (pilha R$710, 9 bônus). `privacidade.html` + `termos.html` (LGPD/CDC padrão). Sem vídeo (dona pediu remoção). Abrir o arquivo direto no browser p/ preview.
+- `tests/` (`npm test`) — Playwright smoke da landing (título/H1/CTAs, oferta com preço, imagens 200, FAQ, páginas legais). Config sobe o preview sozinho via `webServer` na porta 8901. Requer deps de sistema do Chromium (ver abaixo).
+- Dev: `npm run dev` (serve a raiz na 8901). Deploy: push na `main` → Action monta `deploy/` (gitignored) e envia p/ `public_html` via FTPS (secrets `FTP_SERVER/USERNAME/PASSWORD`). Ver `README.md`.
+- Skills: `design-taste-frontend`, `playwright-cli`, `copywriting` (via `npx skills`, pin em `skills-lock.json`).
+- Sem build/test/lint além de `tests/`.
+
+## Working here
+- Do not assume a stack. Ask or inspect before adding tooling.
+- When a stack is chosen, update this file with: exact install/dev/build/test/lint commands, entrypoints, and monorepo boundaries.
+- Prefer editing existing files over creating new ones; keep new files only when needed.
+
+## Skills
+- `design-taste-frontend` is installed for landing-page / portfolio / redesign work. Follow its brief-inference + design-read workflow when doing frontend design; ignore it for non-design tasks.
