@@ -20,3 +20,14 @@ Hoje o link mostra só texto (ver print). Para aparecer a capa como no exemplo d
 - Adicionar OG/Twitter tags no `<head>`: `og:title`, `og:description`, `og:image` (URL absoluta `https://<dominio-final>/imagens/og-capa.jpg`), `og:type=website`, `twitter:card=summary_large_image`.
 - Atenção: WhatsApp guarda cache do preview; após publicar, forçar releitura (reenviar com parâmetro bobo `?v=2` ou aguardar expirar).
 - Validar com os testes: checar presença das tags no HTML.
+
+## 3. Botão fixo no mobile com animações (CTA sempre visível)
+
+Objetivo: no celular, ao rolar para baixo, um botão "Quero entrar para o desafio" fixo no rodapé da tela, com borda animada + microexplosão de estrelinhas douradas/prateadas dentro do botão.
+
+Como vamos fazer (só CSS + JS leve, sem biblioteca):
+- **Fixo + inteligente:** `position:fixed; bottom:0` só abaixo de 768px; aparece após rolar ~600px (IntersectionObserver no hero como gatilho) e se esconde perto do CTA final e da dobra de oferta (para não duplicar botão na tela). Respeita `prefers-reduced-motion` (vira botão fixo estático).
+- **Borda animada:** `conic-gradient` girando via `@property --angulo` + `@keyframes` (fallback: borda sólida rosa em navegador antigo), só `transform/opacity` no loop para não pesar o mobile.
+- **Estrelas:** 6–8 partículas (✦ via CSS/`content`, dourado `#FFD166` + prata `#E8E8EC`) emitidas dentro do botão a cada ~4s com Web Animations API (`element.animate`, sem reflow de layout). Pausam com a aba oculta (`document.hidden`) e com `prefers-reduced-motion`.
+- **Acessibilidade:** `aria-hidden` nas partículas, botão com mesmo rótulo e destino dos demais (regra de CTA único), altura mínima 48px, não cobre o conteúdo (adicionar `padding-bottom` de respiro no `footer` no mobile).
+- **Teste Playwright novo:** no viewport mobile, rolar a página e conferir que o botão aparece, tem o href do checkout e não sobrepõe o CTA da oferta (checar `getBoundingClientRect` sem interseção).
