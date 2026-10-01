@@ -28,4 +28,3 @@ jobs:
           port: 21
           protocol: ftps
           local-dir: ./deploy/
-          server-dir: /
