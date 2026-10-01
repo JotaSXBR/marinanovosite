@@ -107,6 +107,19 @@ test('cta fixo aparece no mobile apos o hero', async ({ page, isMobile }) => {
   await expect(page.locator('body')).not.toHaveClass(/com-cta/, { timeout: 5000 });
 });
 
+test('menu hamburguer no mobile, sem cta no topo', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'somente mobile');
+  await page.goto(PAGE);
+  await expect(page.locator('#nav-toggle')).toBeVisible();
+  await expect(page.locator('.nav-links .nav-cta')).not.toBeVisible();
+  await page.locator('#nav-toggle').click();
+  await expect(page.locator('body')).toHaveClass(/menu-aberto/);
+  await expect(page.locator('.nav-links a[href="#resultados"]')).toBeVisible();
+  await page.locator('.nav-links a[href="#resultados"]').click();
+  await expect(page).toHaveURL(/#resultados/);
+  await expect(page.locator('body')).not.toHaveClass(/menu-aberto/);
+});
+
 test('ofertas dinamicas e OG tags', async ({ page }) => {
   await page.goto(PAGE + '?oferta=padrao');
   await expect(page.locator('.oferta-card .por')).toContainText('R$ 57');

@@ -46,6 +46,7 @@ header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);bac
 .nav-links{display:flex;gap:26px;align-items:center}
 .nav-links a{color:var(--tinta);text-decoration:none;font-size:.92rem;font-weight:500}
 .nav-links a:hover{color:var(--cta)}
+.nav-toggle{display:none}
 .nav-links a.btn{color:#fff}
 .nav-cta{padding:11px 26px;font-size:.9rem}
 /* Hero: coluna unica centralizada */
@@ -167,7 +168,16 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 }
 @media (max-width:900px){
   .marca{white-space:nowrap;font-size:1.1rem}
-  .nav-links a:not(.btn){display:none}
+  .nav-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:0;padding:10px;cursor:pointer}
+  .nav-toggle span{display:block;width:24px;height:2px;background:var(--roxo);border-radius:2px;transition:transform .25s ease,opacity .25s ease}
+  body.menu-aberto .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  body.menu-aberto .nav-toggle span:nth-child(2){opacity:0}
+  body.menu-aberto .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  .nav-links{display:none;position:absolute;top:68px;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;padding:8px 20px 18px;border-bottom:1px solid #F3D9EA;box-shadow:0 20px 30px rgba(63,1,66,.1)}
+  body.menu-aberto .nav-links{display:flex}
+  .nav-links a{padding:13px 4px;font-size:1rem;border-top:1px solid #F6E3EF}
+  .nav-links a:first-child{border-top:0}
+  .nav-links .nav-cta{display:none}
   .passos{grid-template-columns:1fr}
   .bio{grid-template-columns:1fr}
   .bio img{max-width:300px}
@@ -186,7 +196,10 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 <header class="nav">
   <div class="nav-in">
     <a class="marca" href="#topo">Pilates <span>em Casa</span></a>
-    <nav class="nav-links" aria-label="Principal">
+    <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-links">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </button>
+    <nav class="nav-links" id="nav-links" aria-label="Principal">
       <a href="#como-funciona">Como funciona</a>
       <a href="#resultados">Resultados</a>
       <a href="#bonus">Bônus</a>
@@ -411,6 +424,24 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 </div>
 
 <script>
+// Menu mobile
+(function(){
+  var btn = document.getElementById('nav-toggle');
+  var nav = document.getElementById('nav-links');
+  if(!btn || !nav) return;
+  btn.addEventListener('click', function(){
+    var aberto = document.body.classList.toggle('menu-aberto');
+    btn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+    btn.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
+  });
+  nav.addEventListener('click', function(e){
+    if(e.target.closest('a')){
+      document.body.classList.remove('menu-aberto');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-label', 'Abrir menu');
+    }
+  });
+})();
 // Ofertas dinamicas: ?oferta=padrao (atual). Novas ofertas entram no objeto OFERTAS.
 var OFERTAS = {
   padrao: {checkout:'https://pay.kiwify.com.br/U4n0qN7', cheio:97, preco:57, total:710}
