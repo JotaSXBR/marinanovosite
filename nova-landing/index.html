@@ -87,7 +87,9 @@ h2{text-wrap:balance}
 .ba-camada{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
 .ba-antes{background:linear-gradient(135deg,#E9D9E4,#F7EDF4);color:var(--cinza)}
 .ba-depois{background:linear-gradient(135deg,#FBD9EC,#FDEBF6);color:var(--cinza)}
-.ba-camada b{font-size:.85rem;letter-spacing:.14em;text-transform:uppercase}
+.ba-camada b{font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;position:absolute;top:14px;z-index:2;background:rgba(255,255,255,.92);padding:5px 16px;border-radius:999px;color:var(--roxo)}
+.ba-antes b{left:14px}
+.ba-depois b{right:14px}
 .ba-camada span{font-size:.9rem}
 .ba-camada img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ba-depois{clip-path:inset(0 0 0 50%)}
@@ -258,8 +260,8 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
     <div class="wrap">
       <p class="antes-texto">Não é falta de esforço. É falta de sistema: treino com progressão, sequência e acompanhamento de verdade.</p>
       <div class="ba revelar" id="antes-depois">
-        <div class="ba-camada ba-antes"><b>Antes</b><span>foto real em breve</span></div>
-        <div class="ba-camada ba-depois"><b>Depois</b><span>foto real em breve</span></div>
+        <div class="ba-camada ba-antes"><img src="../conteudo/prova/antes.jpg" alt="Antes do programa Pilates em Casa" loading="lazy" width="800" height="1000"><b>Antes</b></div>
+        <div class="ba-camada ba-depois"><img src="../conteudo/prova/depois.jpg" alt="Depois do programa Pilates em Casa" loading="lazy" width="800" height="1000"><b>Depois</b></div>
         <div class="ba-linha"></div>
         <div class="ba-puxador" aria-hidden="true">&#8596;</div>
         <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois">
