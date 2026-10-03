@@ -9,7 +9,7 @@ test('titulo, H1 e CTA de checkout', async ({ page }) => {
   await page.goto(PAGE);
   await expect(page).toHaveTitle(/Pilates em Casa/);
   await expect(page.locator('h1')).toHaveCount(1);
-  await expect(page.locator('h1')).toContainText('20 minutos');
+  await expect(page.locator('h1')).toContainText('rotina real');
   const ctas = page.locator(`a.btn[href="${CHECKOUT}"]`);
   expect(await ctas.count()).toBeGreaterThan(0);
   expect(errors).toEqual([]);
@@ -40,13 +40,9 @@ test('todas as imagens locais retornam 200', async ({ page }) => {
     const res = await page.request.get(src);
     expect(res.status(), src).toBe(200);
   }
-  // hero sem foto: confere imagem da bio carregada apos rolagem
-  await page.locator('.bio img').scrollIntoViewIfNeeded();
-  await page.waitForFunction(() => {
-    const i = document.querySelector('.bio img');
-    return i && i.complete && i.naturalWidth > 0;
-  });
-  const heroW = await page.locator('.bio img').evaluate((i) => i.naturalWidth);
+  // hero com foto do app: confere carregamento apos rolagem ao topo
+  await page.goto(PAGE);
+  const heroW = await page.locator('.hero-foto img').evaluate((i) => i.naturalWidth);
   expect(heroW).toBeGreaterThan(0);
 });
 

@@ -49,12 +49,13 @@ header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);bac
 .nav-toggle{display:none}
 .nav-links a.btn{color:#fff}
 .nav-cta{padding:11px 26px;font-size:.9rem}
-/* Hero: coluna unica centralizada */
+/* Hero: split texto + app, centralizado */
 .hero{background:linear-gradient(180deg,var(--fundo),#fff);padding:56px 0 64px;overflow:hidden}
-.hero-centro{max-width:800px;margin:0 auto;text-align:center}
-.hero h1{font-size:clamp(2.2rem,4.6vw,3.2rem);margin:0 0 16px;text-wrap:balance}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;max-width:1120px;margin:0 auto;text-align:left}
+.hero h1{font-size:clamp(1.9rem,4vw,2.6rem);margin:0 0 16px;text-wrap:balance}
 .hero h1 .rosa{color:var(--rosa-texto)}
-.hero .sub{font-size:1.05rem;margin:0 auto 28px}
+.hero .sub{font-size:1.05rem;margin:0 0 28px}
+.hero-foto img{border-radius:26px;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top;box-shadow:0 24px 60px rgba(63,1,66,.18)}
 h2{text-wrap:balance}
 /* Faixa de numeros */
 .faixa{background:var(--branco);border-top:1px solid #F3D9EA;border-bottom:1px solid #F3D9EA;padding:34px 0}
@@ -176,6 +177,8 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   .nav-links a{padding:13px 4px;font-size:1rem;border-top:1px solid #F6E3EF}
   .nav-links a:first-child{border-top:0}
   .nav-links .nav-cta{display:none}
+  .hero-grid{grid-template-columns:1fr;gap:32px}
+  .hero-foto img{max-height:520px}
   .passos{grid-template-columns:1fr}
   .bio{grid-template-columns:1fr}
   .bio img{max-width:300px}
@@ -212,11 +215,14 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 
   <!-- HERO -->
   <section class="hero">
-    <div class="wrap hero-centro">
+    <div class="wrap hero-grid">
       <div>
-        <h1>Pilates para mulheres com rotina real: seca e definição em <span class="rosa">20 minutos por dia</span></h1>
-        <p class="sub">Fisioterapeuta há 13 anos. Criei um método além da aula convencional: alívio de dores, com progressão e acompanhamento real.</p>
+        <h1>Pilates para mulher com rotina real: aliviar as dores, <span class="rosa">secar e definir</span>, em casa, com aulas curtas, progressivas e guiadas por fisioterapeuta.</h1>
+        <p class="sub">Aulas no app, 1 ano de acesso e acompanhamento de verdade, no celular, TV, computador ou tablet.</p>
         <a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a>
+      </div>
+      <div class="hero-foto">
+        <img src="../conteudo/imagens/app-plataforma.jpg" alt="Aplicativo Pilates em Casa com as aulas do programa" fetchpriority="high" width="760" height="1651">
       </div>
     </div>
   </section>
@@ -224,9 +230,9 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   <!-- FAIXA -->
   <div class="faixa">
     <div class="wrap faixa-grid">
-      <div><p class="faixa-num">+10 <em>mil</em></p><p class="faixa-txt">alunas transformadas</p></div>
-      <div><p class="faixa-num">+10</p><p class="faixa-txt">países com alunas</p></div>
+      <div><p class="faixa-num">+10 <em>mil</em></p><p class="faixa-txt">alunas transformadas em mais de 10 países</p></div>
       <div><p class="faixa-num">20 <em>min</em></p><p class="faixa-txt">de treino por dia</p></div>
+      <div><p class="faixa-num">100<em>%</em></p><p class="faixa-txt">em casa, sem aparelhos</p></div>
       <div><p class="faixa-num">7 <em>dias</em></p><p class="faixa-txt">de garantia total</p></div>
     </div>
   </div>
