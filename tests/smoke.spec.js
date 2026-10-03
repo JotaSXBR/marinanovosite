@@ -127,7 +127,7 @@ test('ofertas dinamicas e OG tags', async ({ page }) => {
 
 test('comparador antes/depois move a divisoria', async ({ page }) => {
   await page.goto(PAGE);
-  await expect(page.locator('.antes-texto')).toContainText('sistema de verdade');
+  await expect(page.locator('.antes-texto')).toContainText('falta de sistema');
   await page.locator('#antes-depois input').fill('80');
   const clip = await page.locator('.ba-depois').evaluate((el) => el.style.clipPath);
   expect(clip).toContain('80%');
