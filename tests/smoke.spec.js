@@ -20,7 +20,7 @@ test('oferta com preco, sem video antigo', async ({ page }) => {
   await expect(page.locator('#video-moldura')).toHaveCount(0);
   await expect(page.locator('#oferta')).toContainText('R$ 57');
   await expect(page.locator('#oferta')).toContainText('R$ 97');
-  await expect(page.locator('#oferta')).toContainText('R$ 710');
+  await expect(page.locator('#oferta')).toContainText('R$ 613');
   for (const slug of ['privacidade.html', 'termos.html']) {
     const res = await page.request.get(`/nova-landing/${slug}`);
     expect(res.status(), slug).toBe(200);

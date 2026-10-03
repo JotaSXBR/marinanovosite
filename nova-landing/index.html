@@ -105,6 +105,7 @@ h2{text-wrap:balance}
 .cel h3{font-family:"Montserrat",sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:8px}
 .cel p{font-size:.93rem;color:var(--cinza)}
 .cel .vale{font-size:.85rem;font-weight:700;color:var(--cta);margin-top:10px}
+.cel .ressalva{font-size:.7rem;font-style:italic}
 .cel .vale s{color:var(--cinza);font-weight:400;margin-right:6px}
 .cel.app-cel .vale,.cel.comunidade-cel .vale{color:var(--rosa-claro)}
 .cel.app-cel .vale s,.cel.comunidade-cel .vale s{color:#C99AC0}
@@ -113,7 +114,7 @@ h2{text-wrap:balance}
 .cel.app-cel{grid-column:span 2;background:var(--roxo);color:#fff;border-color:var(--roxo)}
 .cel.app-cel p{color:#E9CDE2}
 .cel.mini{grid-column:span 2}
-.cel.comunidade-cel{grid-column:span 2;background:linear-gradient(120deg,var(--roxo-2),var(--roxo));color:#fff;border:0}
+.cel.comunidade-cel{grid-column:span 4;background:linear-gradient(120deg,var(--roxo-2),var(--roxo));color:#fff;border:0}
 .cel.comunidade-cel p{color:#F2D3EA}
 .cel.comunidade-cel a{color:#fff;font-weight:700}
 .cel.planner-cel{grid-column:span 6;display:grid;grid-template-columns:170px 1fr;gap:20px;align-items:center;background:#fff}
@@ -342,16 +343,15 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
       <p class="sub">Direto da nossa nutricionista. Tudo incluído no acesso de hoje.</p>
       <div class="bento revelar">
         <div class="cel cha-cel">
-          <div><h3>Chá Secreto</h3><p>A receita que desincha e acelera o metabolismo de forma natural. Gestantes, lactantes e hipertensas: consulte seu médico antes.</p><p class="vale"><s>R$ 47</s> incluso hoje</p></div>
+          <div><h3>Chá Secreto</h3><p>A receita que desincha e acelera o metabolismo de forma natural.</p><p class="ressalva">Gestantes, lactantes e hipertensas: consulte seu médico antes.</p><p class="vale"><s>R$ 47</s> incluso hoje</p></div>
           <img src="../conteudo/imagens/cha-secreto.png" alt="Xícara do chá secreto" loading="lazy">
         </div>
-        <div class="cel app-cel"><h3>App exclusivo</h3><p>Suas aulas no bolso. Treine onde estiver, na palma da mão.</p><p class="vale"><s>R$ 97</s> incluso hoje</p></div>
         <div class="cel mini"><h3>Plano Alimentar</h3><p>Coma bem sem dieta maluca, com comida de verdade e opções veganas e vegetarianas.</p><p class="vale"><s>R$ 67</s> incluso hoje</p></div>
         <div class="cel mini"><h3>380+ Receitas Saudáveis</h3><p>Nunca mais fique sem ideia do que comer para manter o resultado.</p><p class="vale"><s>R$ 97</s> incluso hoje</p></div>
-        <div class="cel mini"><h3>Jejum Intermitente</h3><p>Um impulso a mais na redução de medidas, com protocolo simples.</p><p class="vale"><s>R$ 47</s> incluso hoje</p></div>
+        <div class="cel mini"><h3>Jejum Intermitente</h3><p>Protocolos eficazes para potencializar a redução de medidas e melhorar sua saúde.</p><p class="vale"><s>R$ 47</s> incluso hoje</p></div>
         <div class="cel mini"><h3>Celulite Zero</h3><p>Pele mais lisa com cuidado natural, sem procedimentos caros.</p><p class="vale"><s>R$ 37</s> incluso hoje</p></div>
         <div class="cel mini"><h3>Marmita Fitness</h3><p>Semana alimentar organizada com marmitas práticas, sem esforço.</p><p class="vale"><s>R$ 37</s> incluso hoje</p></div>
-        <div class="cel comunidade-cel"><h3>Comunidade Exclusiva</h3><p>Apoio diário de quem vive a mesma jornada, com acesso ao grupo durante 1 ano. <a href="https://api.whatsapp.com/send/?phone=553173080374&text=Eu+quero%21+&type=phone_number&app_absent=0">Falar no WhatsApp</a></p><p class="vale"><s>R$ 147</s> incluso hoje</p></div>
+        <div class="cel comunidade-cel"><h3>Grupo VIP</h3><p>Apoio diário meu e das alunas, com acesso vitalício ao grupo.</p><p class="vale"><s>R$ 147</s> incluso hoje</p></div>
         <div class="cel planner-cel">
           <img src="../conteudo/imagens/mockup-e-book-1.png" alt="Planner de Resultados do Pilates em Casa" loading="lazy">
           <div><h3>Planner de Resultados</h3><p>Tem dificuldade de manter a constância? Este diário de transformação registra cada treino para você ver sua evolução nos seus próprios registros.</p><p class="vale"><s>R$ 37</s> incluso hoje</p></div>
@@ -370,7 +370,6 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
           <p class="oferta-sub">Programa completo com 28 aulas gravadas + todos os bônus, com 1 ano de acesso à plataforma.</p>
           <ul>
             <li><span>Programa Pilates em casa (1 ano, 28 aulas)</span><b>R$ 97</b></li>
-            <li><span>App exclusivo</span><b><s>R$ 97</s> grátis</b></li>
             <li><span>Chá Secreto</span><b><s>R$ 47</s> grátis</b></li>
             <li><span>Plano Alimentar</span><b><s>R$ 67</s> grátis</b></li>
             <li><span>380+ Receitas Saudáveis</span><b><s>R$ 97</s> grátis</b></li>
@@ -378,9 +377,9 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
             <li><span>Celulite Zero</span><b><s>R$ 37</s> grátis</b></li>
             <li><span>Marmita Fitness</span><b><s>R$ 37</s> grátis</b></li>
             <li><span>Planner de Resultados</span><b><s>R$ 37</s> grátis</b></li>
-            <li><span>Comunidade Exclusiva</span><b><s>R$ 147</s> grátis</b></li>
+            <li><span>Grupo VIP</span><b><s>R$ 147</s> grátis</b></li>
           </ul>
-          <p class="oferta-total">Total: <s>R$ 710</s> em programa e bônus</p>
+          <p class="oferta-total">Total: <s>R$ 613</s> em programa e bônus</p>
         </div>
         <div class="oferta-card">
           <p class="de">De R$ 97</p>
