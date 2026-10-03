@@ -66,14 +66,9 @@ h2{text-wrap:balance}
 .faixa-num{font-family:"Anton",sans-serif;font-size:1.7rem;color:var(--roxo)}
 .faixa-num em{font-style:normal;color:var(--rosa-texto)}
 .faixa-txt{font-size:.9rem;color:var(--cinza)}
-/* Como funciona: passos + celular */
-.como-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
-.passos{display:grid;grid-template-columns:1fr;gap:24px;margin-top:30px}
+/* Celular: moldura do app */
 .phone{width:min(300px,78vw);margin:0 auto;background:#14060f;border-radius:46px;padding:14px;box-shadow:0 24px 60px rgba(63,1,66,.25)}
 .phone img{border-radius:32px;width:100%;aspect-ratio:9/18.5;object-fit:cover;object-position:top;display:block}
-.passo{border-top:3px solid var(--rosa);padding-top:16px}
-.passo b{display:block;margin:0 0 4px;font-size:1rem}
-.passo p{font-size:.95rem;color:var(--cinza)}
 /* Beneficios: lista em 2 colunas, sem cards iguais */
 .beneficios-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;margin-top:30px}
 .beneficio{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid #F6E3EF}
@@ -223,7 +218,6 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
       <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </button>
     <nav class="nav-links" id="nav-links" aria-label="Principal">
-      <a href="#como-funciona">Como funciona</a>
       <a href="#resultados">Resultados</a>
       <a href="#bonus">Bônus</a>
       <a href="#faq">Dúvidas</a>
@@ -271,24 +265,6 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
         <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois">
       </div>
       <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a></div>
-    </div>
-  </section>
-
-  <!-- COMO FUNCIONA -->
-  <section id="como-funciona">
-    <div class="wrap como-grid revelar">
-      <div>
-        <h2>Do play ao resultado em 3 passos</h2>
-        <p class="sub">Sem complicação, sem espera, sem equipamento.</p>
-        <div class="passos">
-          <div class="passo"><b>Entre e receba o acesso</b><p>Confirme e receba tudo no e-mail, com acesso pelo app da Kiwify.</p></div>
-          <div class="passo"><b>Siga a aula do dia</b><p>Aperte o play e treine 20 minutos, no seu ritmo.</p></div>
-          <div class="passo"><b>Repita e evolua</b><p>Volte amanhã e siga a sequência. O resultado vem da constância, não da intensidade.</p></div>
-        </div>
-      </div>
-      <div class="phone">
-        <img src="../conteudo/imagens/app-plataforma.jpg" alt="Aplicativo com as aulas do Pilates em Casa" loading="lazy" width="760" height="1651">
-      </div>
     </div>
   </section>
 
@@ -399,21 +375,20 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   <section style="padding-top:0">
     <div class="wrap">
       <div class="bio revelar">
-        <img src="../conteudo/imagens/Nath-com-fundo.png" alt="Natália Pereira, fisioterapeuta e instrutora de Pilates" loading="lazy" width="880" height="880">
+        <div class="phone">
+          <img src="../conteudo/imagens/app-plataforma.jpg" alt="Aplicativo com as aulas do Pilates em Casa" loading="lazy" width="760" height="1651">
+        </div>
         <div>
-          <h2>Natália Pereira, fisioterapeuta e instrutora de Pilates em casa</h2>
-          <blockquote>Você vai se sentir abraçada, capaz e acompanhada a cada aula, no seu tempo.</blockquote>
-          <p class="sub">Aqui, o Pilates em casa não é só sobre movimento, é sobre transformação. <b>Você vai:</b></p>
+          <h2>Aqui, o Pilates em casa não é só sobre movimento, é sobre transformação. Você vai:</h2>
           <ul class="trans-lista">
-            <li>Fortalecer abdômen e core, com ajuda até em casos de diástase</li>
-            <li>Cuidar do assoalho pélvico, da postura, do equilíbrio e da força para o dia a dia</li>
-            <li>Ganhar mobilidade e flexibilidade, com menos dores</li>
-            <li>Ter mais energia e segurança em qualquer fase, incluindo a menopausa</li>
-            <li>Secar, definir e tonificar o corpo com leveza e constância</li>
-            <li>Melhorar o desempenho em outros esportes, com menos risco de lesão</li>
+            <li>Fortalecer o abdômen, o core e até reverter casos de diástase</li>
+            <li>Trabalhar o assoalho pélvico, melhorar a postura, equilíbrio e a força funcional</li>
+            <li>Aumentar a mobilidade, a flexibilidade e reduzir dores</li>
+            <li>Ganhar energia e segurança, especialmente durante a menopausa</li>
+            <li>Secar, definir e tonificar todo o corpo, com leveza e consistência</li>
           </ul>
-          <p class="sub fecho">Começando do zero ou voltando a cuidar de si, no seu tempo. Vem comigo? Vai ser uma honra guiar a sua jornada.</p>
-          <cite>1º lugar na categoria bem-estar físico na Kiwify em 2024</cite>
+          <p class="sub fecho">Não importa se você está começando do zero ou voltando agora a cuidar de si. Você vai se sentir abraçada, capaz e acompanhada, a cada aula, no seu tempo. É corpo leve, mente ativa e um estilo de vida possível. Vem comigo? Vai ser uma honra te guiar nessa jornada.</p>
+          <cite>Natália Pereira, fisioterapeuta há 13 anos e instrutora de Pilates em casa. 1º lugar na categoria bem-estar físico na Kiwify em 2024</cite>
         </div>
       </div>
     </div>

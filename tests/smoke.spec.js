@@ -86,7 +86,7 @@ test('cta fixo aparece no mobile apos o hero', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'somente mobile');
   await page.goto(PAGE);
   await expect(page.locator('body')).not.toHaveClass(/com-cta/);
-  await page.locator('#como-funciona').scrollIntoViewIfNeeded();
+  await page.locator('#resultados').scrollIntoViewIfNeeded();
   await expect(page.locator('body')).toHaveClass(/com-cta/, { timeout: 5000 });
   await page.waitForTimeout(1500);
   await expect(page.locator('#cta-fixo')).toBeVisible();
