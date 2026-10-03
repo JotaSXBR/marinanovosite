@@ -69,12 +69,13 @@ h2{text-wrap:balance}
 /* Celular: moldura do app */
 .phone{width:min(300px,78vw);margin:0 auto;background:#14060f;border-radius:46px;padding:14px;box-shadow:0 24px 60px rgba(63,1,66,.25)}
 .phone img{border-radius:32px;width:100%;aspect-ratio:760/1651;object-fit:cover;object-position:top;display:block}
-/* Beneficios: lista em 2 colunas, sem cards iguais */
-.beneficios-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;margin-top:30px}
-.beneficio{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid #F6E3EF}
-.beneficio b{display:block;font-size:1rem}
-.beneficio p{font-size:.95rem;color:var(--cinza)}
-.marcador{flex:none;width:26px;height:26px;border-radius:50%;background:var(--rosa-texto);color:#fff;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-top:2px}
+/* Guia: como funciona em etapas */
+.etapa{border-top:3px solid var(--rosa);padding:20px 0}
+.etapa b{display:block;font-size:1.05rem;margin-bottom:6px}
+.etapa p{font-size:.95rem;color:var(--cinza);max-width:70ch}
+.guia-fecho{text-align:center;margin-top:36px}
+.guia-fecho .linha{font-family:"Anton",sans-serif;font-size:clamp(1.2rem,2.6vw,1.6rem);line-height:1.3}
+.guia-fecho .quad{margin-top:14px;color:var(--cinza);font-size:.95rem}
 /* Prova social: carrossel */
 .carrossel{display:grid;grid-auto-flow:column;grid-auto-columns:min(300px,78vw);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:26px 4px 10px;scrollbar-width:thin;align-items:start}
 .carrossel figure{scroll-snap-align:start;background:#fff;border:1px solid #F0D4E6;border-radius:14px;overflow:hidden}
@@ -196,13 +197,11 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   .nav-links .nav-cta{display:none}
   .hero-grid{grid-template-columns:1fr;gap:32px}
   .hero-foto img{max-height:520px}
-  .como-grid{grid-template-columns:1fr;gap:32px}
   .bio{grid-template-columns:1fr}
   .bio img{max-width:300px}
   .trans-lista{grid-template-columns:1fr}
   .faixa-grid{grid-template-columns:1fr 1fr}
   .faixa-grid>div:nth-child(3){border-left:0}
-  .beneficios-grid{grid-template-columns:1fr}
   .cel,.cel.cha-cel,.cel.mini,.cel.duo,.cel.comunidade-cel,.cel.planner-cel{grid-column:span 6}
   .cel.cha-cel,.cel.planner-cel{grid-template-columns:1fr}
   .oferta{grid-template-columns:1fr}
@@ -270,21 +269,22 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
     </div>
   </section>
 
-  <!-- BENEFICIOS -->
+  <!-- COMO FUNCIONA -->
   <section style="padding-top:0">
     <div class="wrap">
-      <p class="eyebrow">O programa</p>
-      <h2>Feito para virar hábito, não mais uma tentativa</h2>
-      <p class="sub">Um método completo para constância de verdade, não mais uma tentativa frustrada.</p>
-      <div class="beneficios-grid revelar">
-        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>Evolução que você sente a cada semana</b><p>Aulas e cardápios fáceis de seguir para aliviar dores e fortalecer o corpo dia após dia.</p></div></div>
-        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>20 minutos que cabem no seu dia</b><p>Treinos curtos e potentes, 20 minutos por dia. Sem desculpa de falta de tempo.</p></div></div>
-        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>Sua sala vira seu estúdio</b><p>Só o peso do seu corpo, sem aparelhos. Treine onde estiver.</p></div></div>
-        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>Um ano inteiro de acesso</b><p>1 ano para treinar no seu ritmo, no celular, TV, computador ou tablet.</p></div></div>
-        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>Comece do zero, evolua no seu ritmo</b><p>Base de mobilidade e respiração para iniciantes, desafios para quem já treina.</p></div></div>
-        <div class="beneficio"><span class="marcador" aria-hidden="true">✓</span><div><b>Nunca treine sozinha</b><p>Grupo de alunas para tirar dúvidas e trocar experiências e resultados.</p></div></div>
+      <h2>Como funciona o Pilates em Casa</h2>
+      <p class="sub">Um programa simples para você treinar em casa, no seu tempo e sem equipamentos.</p>
+      <div class="revelar" style="margin-top:30px">
+        <div class="etapa"><b>Receba o acesso</b><p>Assim que confirmar sua compra, você recebe imediatamente o acesso no e-mail, com as instruções para entrar na área de membros e assistir no celular, TV, computador ou tablet.</p></div>
+        <div class="etapa"><b>Siga as 28 aulas</b><p>São 28 aulas gravadas para acompanhar sua evolução no seu ritmo: base de mobilidade e respiração para começar do zero, desafios para quem já treina. Separe 20 minutos por dia, dê o play e acompanhe. Sem aparelhos, só você e seu corpo.</p></div>
+        <div class="etapa"><b>Evolua e repita</b><p>Crie constância e perceba sua evolução semana após semana, com cardápios fáceis para acompanhar sua rotina. Terminou as 28? Volte e repita, aumentando o ritmo: você tem 1 ano inteiro de acesso.</p></div>
+        <div class="etapa"><b>Acesso e suporte</b><p>Tire dúvidas no grupo de suporte e acesse tudo sem complicação: sem academia, sem aparelhos e sem mensalidade, um único pagamento por 1 ano de acesso.</p></div>
       </div>
-      <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a></div>
+      <div class="guia-fecho revelar">
+        <p class="linha">É assim que você transforma o Pilates em hábito: 20 minutos, aula, constância, evolução.</p>
+        <p class="quad">Você não precisa de uma hora livre. Não precisa de academia. Não precisa de equipamentos. E não precisa começar sabendo Pilates. Só precisa dar o play e começar.</p>
+        <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a></div>
+      </div>
     </div>
   </section>
 
