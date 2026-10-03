@@ -55,7 +55,8 @@ header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);bac
 .hero h1{font-size:clamp(1.9rem,4vw,2.6rem);margin:0 0 16px;text-wrap:balance}
 .hero h1 .rosa{color:var(--rosa-texto)}
 .hero .sub{font-size:1.05rem;margin:0 0 28px}
-.hero-foto img{border-radius:26px;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top;box-shadow:0 24px 60px rgba(63,1,66,.18)}
+.hero-foto img{border-radius:26px;width:100%;box-shadow:0 24px 60px rgba(63,1,66,.18)}
+.hero-h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(1.25rem,2.6vw,1.8rem);line-height:1.15;color:var(--rosa-texto);margin:0 0 16px;text-wrap:balance}
 h2{text-wrap:balance}
 /* Faixa de numeros */
 .faixa{background:var(--branco);border-top:1px solid #F3D9EA;border-bottom:1px solid #F3D9EA;padding:34px 0}
@@ -65,8 +66,11 @@ h2{text-wrap:balance}
 .faixa-num{font-family:"Anton",sans-serif;font-size:1.7rem;color:var(--roxo)}
 .faixa-num em{font-style:normal;color:var(--rosa-texto)}
 .faixa-txt{font-size:.9rem;color:var(--cinza)}
-/* Passos: numerados, horizontais */
-.passos{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px}
+/* Como funciona: passos + celular */
+.como-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.passos{display:grid;grid-template-columns:1fr;gap:24px;margin-top:30px}
+.phone{width:min(300px,78vw);margin:0 auto;background:#14060f;border-radius:46px;padding:14px;box-shadow:0 24px 60px rgba(63,1,66,.25)}
+.phone img{border-radius:32px;width:100%;aspect-ratio:9/18.5;object-fit:cover;object-position:top;display:block}
 .passo{border-top:3px solid var(--rosa);padding-top:16px}
 .passo b{display:block;margin:0 0 4px;font-size:1rem}
 .passo p{font-size:.95rem;color:var(--cinza)}
@@ -82,6 +86,19 @@ h2{text-wrap:balance}
 .carrossel img{width:100%;height:auto;display:block}
 .carrossel-titulo{font-family:"Montserrat",sans-serif;font-weight:700;font-size:1rem;margin:28px 0 0}
 .carrossel.grupo{grid-auto-columns:min(230px,64vw)}
+/* Antes e depois: comparador deslizante */
+.antes-texto{font-size:1.1rem;font-weight:600;max-width:40ch;margin:34px auto 0;text-align:center}
+.ba{position:relative;max-width:640px;margin:22px auto 0;border-radius:18px;overflow:hidden;aspect-ratio:4/3;background:var(--fundo);border:1px solid #F0D4E6;touch-action:pan-y}
+.ba-camada{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.ba-antes{background:linear-gradient(135deg,#E9D9E4,#F7EDF4);color:var(--cinza)}
+.ba-depois{background:linear-gradient(135deg,#FBD9EC,#FDEBF6);color:var(--cinza)}
+.ba-camada b{font-size:.85rem;letter-spacing:.14em;text-transform:uppercase}
+.ba-camada span{font-size:.9rem}
+.ba-camada img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ba-depois{clip-path:inset(0 0 0 50%)}
+.ba-linha{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;box-shadow:0 0 12px rgba(63,1,66,.35);transform:translateX(-50%);pointer-events:none}
+.ba-puxador{position:absolute;top:50%;left:50%;width:48px;height:48px;border-radius:50%;background:var(--cta);color:#fff;font-weight:700;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 4px 16px rgba(63,1,66,.35)}
+.ba input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
 /* Bonus: bento */
 .bento{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:30px}
 .cel{background:var(--fundo);border:1px solid #F0D4E6;border-radius:var(--raio);padding:26px;min-height:190px}
@@ -179,7 +196,7 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   .nav-links .nav-cta{display:none}
   .hero-grid{grid-template-columns:1fr;gap:32px}
   .hero-foto img{max-height:520px}
-  .passos{grid-template-columns:1fr}
+  .como-grid{grid-template-columns:1fr;gap:32px}
   .bio{grid-template-columns:1fr}
   .bio img{max-width:300px}
   .faixa-grid{grid-template-columns:1fr 1fr}
@@ -217,12 +234,13 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <h1>Pilates para mulher com rotina real: aliviar as dores, <span class="rosa">secar e definir</span>, em casa, com aulas curtas, progressivas e guiadas por fisioterapeuta.</h1>
-        <p class="sub">Aulas no app, 1 ano de acesso e acompanhamento de verdade, no celular, TV, computador ou tablet.</p>
+        <h1>Pilates para mulher com rotina real</h1>
+        <h2 class="hero-h2">aliviar as dores, secar e definir, em casa, com aulas curtas, progressivas e guiadas por fisioterapeuta.</h2>
+        <p class="sub">Depois de 13 anos como fisioterapeuta e instrutora de pilates, criei um método que nenhuma aula convencional entrega. O Pilates em Casa reúne alívio de dores, definição e força, com progressão, segurança e acompanhamento real, feito para encaixar na sua rotina.</p>
         <a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a>
       </div>
       <div class="hero-foto">
-        <img src="../conteudo/imagens/app-plataforma.jpg" alt="Aplicativo Pilates em Casa com as aulas do programa" fetchpriority="high" width="760" height="1651">
+        <img src="../conteudo/imagens/Nath-com-fundo.png" alt="Natália Pereira, instrutora de Pilates" fetchpriority="high" width="880" height="880">
       </div>
     </div>
   </section>
@@ -239,13 +257,18 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 
   <!-- COMO FUNCIONA -->
   <section id="como-funciona">
-    <div class="wrap">
-      <h2>Do play ao resultado em 3 passos</h2>
-      <p class="sub">Sem complicação, sem espera, sem equipamento.</p>
-      <div class="passos revelar">
-        <div class="passo"><b>Entre e receba o acesso</b><p>Confirme e receba tudo no e-mail, com acesso pelo app da Kiwify.</p></div>
-        <div class="passo"><b>Siga a aula do dia</b><p>Aperte o play e treine 20 minutos, no seu ritmo.</p></div>
-        <div class="passo"><b>Repita e evolua</b><p>Volte amanhã e siga a sequência. O resultado vem da constância, não da intensidade.</p></div>
+    <div class="wrap como-grid revelar">
+      <div>
+        <h2>Do play ao resultado em 3 passos</h2>
+        <p class="sub">Sem complicação, sem espera, sem equipamento.</p>
+        <div class="passos">
+          <div class="passo"><b>Entre e receba o acesso</b><p>Confirme e receba tudo no e-mail, com acesso pelo app da Kiwify.</p></div>
+          <div class="passo"><b>Siga a aula do dia</b><p>Aperte o play e treine 20 minutos, no seu ritmo.</p></div>
+          <div class="passo"><b>Repita e evolua</b><p>Volte amanhã e siga a sequência. O resultado vem da constância, não da intensidade.</p></div>
+        </div>
+      </div>
+      <div class="phone">
+        <img src="../conteudo/imagens/app-plataforma.jpg" alt="Aplicativo com as aulas do Pilates em Casa" loading="lazy" width="760" height="1651">
       </div>
     </div>
   </section>
@@ -293,11 +316,18 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
         <figure><img src="../conteudo/prova/1.jpg" width="800" height="1000" alt="Conversa no grupo VIP do Pilates em casa" loading="lazy"></figure>
         <figure><img src="../conteudo/prova/2.jpg" width="800" height="1000" alt="Conversa no grupo VIP do Pilates em casa" loading="lazy"></figure>
       </div>
+      <p class="antes-texto">Você entenderá que nunca teve resultado satisfatório porque nunca treinou com sistema de verdade.</p>
+      <div class="ba revelar" id="antes-depois">
+        <div class="ba-camada ba-antes"><b>Antes</b><span>foto real em breve</span></div>
+        <div class="ba-camada ba-depois"><b>Depois</b><span>foto real em breve</span></div>
+        <div class="ba-linha"></div>
+        <div class="ba-puxador" aria-hidden="true">&#8596;</div>
+        <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois">
+      </div>
       <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a></div>
     </div>
   </section>
 
-  <!-- BONUS -->
   <section id="bonus" style="padding-top:0">
     <div class="wrap">
       <p class="eyebrow">Incluído hoje</p>
@@ -507,6 +537,23 @@ var OFERTAS = {
       })(s);
     }
   }, 4000);
+})();
+// Antes/depois: range controla a divisoria
+(function(){
+  var box = document.getElementById('antes-depois');
+  if(!box) return;
+  var range = box.querySelector('input');
+  var depois = box.querySelector('.ba-depois');
+  var linha = box.querySelector('.ba-linha');
+  var bola = box.querySelector('.ba-puxador');
+  var move = function(){
+    var v = Number(range.value);
+    depois.style.clipPath = 'inset(0 0 0 ' + v + '%)';
+    linha.style.left = v + '%';
+    bola.style.left = v + '%';
+  };
+  range.addEventListener('input', move);
+  move();
 })();
 // Carrosseis em loop continuo: pausam no toque/hover e respeitam reduced-motion
 (function(){

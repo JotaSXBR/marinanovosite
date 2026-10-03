@@ -125,6 +125,14 @@ test('ofertas dinamicas e OG tags', async ({ page }) => {
   expect(og).toContain('og-capa.jpg');
 });
 
+test('comparador antes/depois move a divisoria', async ({ page }) => {
+  await page.goto(PAGE);
+  await expect(page.locator('.antes-texto')).toContainText('sistema de verdade');
+  await page.locator('#antes-depois input').fill('80');
+  const clip = await page.locator('.ba-depois').evaluate((el) => el.style.clipPath);
+  expect(clip).toContain('80%');
+});
+
 test('FAQ abre e ancora de contato existem', async ({ page }) => {
   await page.goto(PAGE);
   const first = page.locator('details').first();
