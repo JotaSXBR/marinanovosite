@@ -28,6 +28,10 @@ body{font-family:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;font
 img{max-width:100%;height:auto;display:block}
 h1,h2,h3,.display{font-family:"Anton",Impact,sans-serif;font-weight:400;line-height:1.08;letter-spacing:.01em}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+/* Centralizacao geral (pedido da dona) */
+p,h1,h2,h3,.sub,.eyebrow,.carrossel-titulo,.trans-lista{text-align:center}
+.trans-lista{list-style:none}
+.trans-lista li{border-left:0;padding-left:0}
 section{padding:72px 0}
 .eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cta);margin-bottom:12px}
 h2{font-size:clamp(1.7rem,3.4vw,2.5rem);margin-bottom:14px}
@@ -70,7 +74,7 @@ h2{text-wrap:balance}
 .phone{width:min(300px,78vw);margin:0 auto;background:#14060f;border-radius:46px;padding:14px;box-shadow:0 24px 60px rgba(63,1,66,.25)}
 .phone img{border-radius:32px;width:100%;aspect-ratio:760/1651;object-fit:cover;object-position:top;display:block}
 /* Guia: como funciona em etapas */
-.etapa{border-top:3px solid var(--rosa);padding:20px 0}
+.etapa{border-top:3px solid var(--rosa);padding:20px 0;text-align:center}
 .etapa b{display:block;font-size:1.05rem;margin-bottom:6px}
 .etapa p{font-size:.95rem;color:var(--cinza);max-width:70ch}
 .guia-fecho{text-align:center;margin-top:36px}
@@ -185,13 +189,7 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 }
 @media (max-width:900px){
   .marca{white-space:nowrap;font-size:1.1rem}
-  h2{text-align:center;text-wrap:balance}
-  .sub{margin-left:auto;margin-right:auto;text-align:justify;hyphens:auto}
-  .cel p,.etapa p,details p,.trans-lista li,.oferta-sub{text-align:left}
-  details p,.etapa p,.bio .fecho{text-align:justify;hyphens:none}
-  .eyebrow{text-align:center}
-  .carrossel-titulo{text-align:center}
-  .bio .fecho-cta{text-align:center}
+  h2{text-wrap:balance}
   .nav-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:0;padding:10px;cursor:pointer}
   .nav-toggle span{display:block;width:24px;height:2px;background:var(--roxo);border-radius:2px;transition:transform .25s ease,opacity .25s ease}
   body.menu-aberto .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
