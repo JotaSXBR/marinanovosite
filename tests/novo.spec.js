@@ -12,11 +12,11 @@ test('preview novo carrega sem erros e tem skip link', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test('preview novo tem botoes de pausa e legendas fora da foto', async ({ page }) => {
+test('preview novo tem botoes de pausa e pilulas dentro da foto', async ({ page }) => {
   await page.goto(NOVO);
   expect(await page.locator('button[data-pausa]').count()).toBe(2);
-  expect(await page.locator('.ba-legenda').count()).toBe(5);
-  expect(await page.locator('.ba b').count()).toBe(0);
+  expect(await page.locator('.ba-legenda').count()).toBe(0);
+  expect(await page.locator('.ba b').count()).toBe(10);
   // grupo VIP sem clones de loop (rolagem manual + grade no desktop)
   expect(await page.locator('.carrossel.grupo figure').count()).toBe(5);
 });

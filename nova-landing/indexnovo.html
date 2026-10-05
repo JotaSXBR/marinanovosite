@@ -107,6 +107,9 @@ h2{text-wrap:balance}
 .ba-camada{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
 .ba-antes{background:linear-gradient(135deg,#E9D9E4,#F7EDF4);color:var(--cinza)}
 .ba-depois{background:linear-gradient(135deg,#FBD9EC,#FDEBF6);color:var(--cinza)}
+.ba-camada b{font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;position:absolute;top:14px;z-index:2;background:rgba(255,255,255,.92);padding:5px 16px;border-radius:999px;color:var(--roxo);transition:opacity .25s ease}
+.ba-antes b{left:14px}
+.ba-depois b{right:14px}
 .ba-camada span{font-size:.9rem}
 .ba-camada img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ba-depois{clip-path:inset(0 0 0 50%)}
@@ -197,6 +200,32 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 
 }
 
+/* Poeira bokeh animada (CSS puro): profundidade com tamanhos, blur e velocidades distintos */
+.poeira{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+main,footer{position:relative;z-index:1}
+.poeira span{position:absolute;border-radius:50%;opacity:0;animation:flutuar linear infinite}
+@keyframes flutuar{
+  0%{transform:translate3d(0,12vh,0) scale(1);opacity:0}
+  15%{opacity:var(--op)}
+  50%{transform:translate3d(4vw,-38vh,0) scale(1.15)}
+  85%{opacity:var(--op)}
+  100%{transform:translate3d(-3vw,-88vh,0) scale(1);opacity:0}
+}
+.poeira span:nth-child(1){left:4%;top:92%;width:18px;height:18px;background:#FF51C9;--op:0.31;filter:blur(1px);animation-duration:24s;animation-delay:-3s}
+.poeira span:nth-child(2){left:16%;top:95%;width:34px;height:34px;background:#820088;--op:0.2;filter:blur(4px);animation-duration:31s;animation-delay:-11s}
+.poeira span:nth-child(3){left:28%;top:90%;width:12px;height:12px;background:#F87DFF;--op:0.42;filter:blur(0);animation-duration:19s;animation-delay:-7s}
+.poeira span:nth-child(4){left:41%;top:94%;width:23px;height:23px;background:#FF51C9;--op:0.25;filter:blur(2px);animation-duration:27s;animation-delay:-15s}
+.poeira span:nth-child(5){left:53%;top:91%;width:14px;height:14px;background:#A80077;--op:0.34;filter:blur(1px);animation-duration:21s;animation-delay:-1s}
+.poeira span:nth-child(6){left:63%;top:96%;width:39px;height:39px;background:#F87DFF;--op:0.17;filter:blur(5px);animation-duration:34s;animation-delay:-20s}
+.poeira span:nth-child(7){left:72%;top:90%;width:17px;height:17px;background:#FF51C9;--op:0.31;filter:blur(1px);animation-duration:23s;animation-delay:-9s}
+.poeira span:nth-child(8){left:82%;top:93%;width:26px;height:26px;background:#820088;--op:0.21;filter:blur(3px);animation-duration:29s;animation-delay:-5s}
+.poeira span:nth-child(9){left:90%;top:91%;width:13px;height:13px;background:#F87DFF;--op:0.39;filter:blur(0);animation-duration:18s;animation-delay:-13s}
+.poeira span:nth-child(10){left:10%;top:88%;width:29px;height:29px;background:#A80077;--op:0.18;filter:blur(4px);animation-duration:32s;animation-delay:-24s}
+.poeira span:nth-child(11){left:47%;top:97%;width:10px;height:10px;background:#FF51C9;--op:0.42;filter:blur(0);animation-duration:17s;animation-delay:-17s}
+.poeira span:nth-child(12){left:77%;top:89%;width:21px;height:21px;background:#F87DFF;--op:0.25;filter:blur(2px);animation-duration:26s;animation-delay:-27s}
+@media (prefers-reduced-motion:reduce){
+  .poeira{display:none}
+}
 /* A11y + ajustes finos (auditoria: guidelines + WCAG) */
 .skip{position:absolute;left:12px;top:-70px;z-index:100;background:var(--roxo);color:#fff;padding:10px 18px;border-radius:0 0 12px 12px;font-weight:700;text-decoration:none;transition:top .2s ease}
 .skip:focus{top:0;color:#fff}
@@ -211,7 +240,6 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
 .ba:focus-within .ba-puxador{outline:3px solid #fff;outline-offset:3px}
 .pausa{background:none;border:1px solid #F0D4E6;border-radius:999px;padding:8px 18px;font-size:.85rem;font-weight:600;color:var(--cta);cursor:pointer;margin:14px auto 0;display:block}
 .pausa-linha{text-align:center}
-.ba-legenda{display:flex;justify-content:space-between;padding:12px 4px 0;font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--roxo)}
 .faq-grupo{font-weight:700;color:var(--roxo);margin:24px 0 12px}
 /* Revelacao suave */
 .revelar{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
@@ -258,6 +286,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
 </head>
 <body>
 <a class="skip" href="#topo">Pular para o conteúdo</a>
+<div class="poeira" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 
 <header class="nav">
   <div class="nav-in">
@@ -308,45 +337,40 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
       <div class="pausa-linha"><button class="pausa" data-pausa="comparadores" aria-pressed="false">Pausar movimento</button></div>
       <div class="ba-grade">
         <div class="ba" id="antes-depois">
-          <div class="ba-camada ba-antes"><img src="../conteudo/prova/antes.jpg" alt="Antes do programa Pilates em Casa — aluna 1" loading="lazy" width="720" height="1280"></div>
-          <div class="ba-camada ba-depois"><img src="../conteudo/prova/depois.jpg" alt="Depois do programa Pilates em Casa — aluna 1" loading="lazy" width="720" height="1280"></div>
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/antes.jpg" alt="Antes do programa Pilates em Casa — aluna 1" loading="lazy" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/depois.jpg" alt="Depois do programa Pilates em Casa — aluna 1" loading="lazy" width="720" height="1280"><b>Depois</b></div>
           <div class="ba-linha"></div>
           <div class="ba-puxador" aria-hidden="true">&#8596;</div>
           <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois — aluna 1">
         </div>
-        <div class="ba-legenda" aria-hidden="true"><span>Antes</span><span>Depois</span></div>
         <div class="ba">
-          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a2-antes.jpg" alt="Antes do programa Pilates em Casa — aluna 2" loading="lazy" width="720" height="1280"></div>
-          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a2-depois.jpg" alt="Depois do programa Pilates em Casa — aluna 2" loading="lazy" width="720" height="1280"></div>
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a2-antes.jpg" alt="Antes do programa Pilates em Casa — aluna 2" loading="lazy" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a2-depois.jpg" alt="Depois do programa Pilates em Casa — aluna 2" loading="lazy" width="720" height="1280"><b>Depois</b></div>
           <div class="ba-linha"></div>
           <div class="ba-puxador" aria-hidden="true">&#8596;</div>
           <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois — aluna 2">
         </div>
-        <div class="ba-legenda" aria-hidden="true"><span>Antes</span><span>Depois</span></div>
         <div class="ba">
-          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a3-antes.jpg" alt="Antes do programa Pilates em Casa — aluna 3" loading="lazy" width="720" height="1280"></div>
-          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a3-depois.jpg" alt="Depois do programa Pilates em Casa — aluna 3" loading="lazy" width="720" height="1280"></div>
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a3-antes.jpg" alt="Antes do programa Pilates em Casa — aluna 3" loading="lazy" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a3-depois.jpg" alt="Depois do programa Pilates em Casa — aluna 3" loading="lazy" width="720" height="1280"><b>Depois</b></div>
           <div class="ba-linha"></div>
           <div class="ba-puxador" aria-hidden="true">&#8596;</div>
           <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois — aluna 3">
         </div>
-        <div class="ba-legenda" aria-hidden="true"><span>Antes</span><span>Depois</span></div>
         <div class="ba">
-          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a4-antes.jpg" alt="Antes do programa Pilates em Casa — aluna 4" loading="lazy" width="720" height="1280"></div>
-          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a4-depois.jpg" alt="Depois do programa Pilates em Casa — aluna 4" loading="lazy" width="720" height="1280"></div>
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a4-antes.jpg" alt="Antes do programa Pilates em Casa — aluna 4" loading="lazy" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a4-depois.jpg" alt="Depois do programa Pilates em Casa — aluna 4" loading="lazy" width="720" height="1280"><b>Depois</b></div>
           <div class="ba-linha"></div>
           <div class="ba-puxador" aria-hidden="true">&#8596;</div>
           <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois — aluna 4">
         </div>
-        <div class="ba-legenda" aria-hidden="true"><span>Antes</span><span>Depois</span></div>
         <div class="ba">
-          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a5-antes.jpg" alt="Antes do programa Pilates em Casa — aluna 5" loading="lazy" width="720" height="1280"></div>
-          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a5-depois.jpg" alt="Depois do programa Pilates em Casa — aluna 5" loading="lazy" width="720" height="1280"></div>
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a5-antes.jpg" alt="Antes do programa Pilates em Casa — aluna 5" loading="lazy" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a5-depois.jpg" alt="Depois do programa Pilates em Casa — aluna 5" loading="lazy" width="720" height="1280"><b>Depois</b></div>
           <div class="ba-linha"></div>
           <div class="ba-puxador" aria-hidden="true">&#8596;</div>
           <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois — aluna 5">
         </div>
-        <div class="ba-legenda" aria-hidden="true"><span>Antes</span><span>Depois</span></div>
       </div>
       <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a></div>
     </div>
@@ -621,49 +645,68 @@ var OFERTAS = {
   }, {threshold:.12});
   document.querySelectorAll('#oferta, .cta-final').forEach(function(z){ zonas.observe(z); });
 })();
-// Antes/depois: range controla a divisoria
+// Antes/depois: range controla a divisoria; autoplay vai e volta em 3.5s por
+// lado com easing cossenoidal (desacelera nas pontas, acelera no meio) e
+// pequena mola no puxador ao virar de lado. Pausa no toque e fora da tela.
 (function(){
-  document.querySelectorAll('.ba').forEach(function(box){
+  var reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var PERIODO = 7000;
+  var itens = [];
+  document.querySelectorAll('.ba').forEach(function(box, idx){
     var range = box.querySelector('input');
     var depois = box.querySelector('.ba-depois');
     var linha = box.querySelector('.ba-linha');
     var bola = box.querySelector('.ba-puxador');
     var tagAntes = box.querySelector('.ba-antes b');
     var tagDepois = box.querySelector('.ba-depois b');
-    var legenda = box.nextElementSibling;
-    if(legenda && legenda.classList.contains('ba-legenda')){
-      tagAntes = legenda.children[0] || tagAntes;
-      tagDepois = legenda.children[1] || tagDepois;
-    }
-    var move = function(){
-      var v = Number(range.value);
+    var st = {
+      range: range, depois: depois, linha: linha, bola: bola,
+      tagAntes: tagAntes, tagDepois: tagDepois,
+      pausaAte: 0, naTela: false, fase: (idx * 0.37) % 1,
+      prevV: 50, dir: 1, mola: 0, molaV: 0
+    };
+    var aplica = function(v, px){
+      range.value = v;
       depois.style.clipPath = 'inset(0 0 0 ' + v + '%)';
-      linha.style.left = v + '%';
-      bola.style.left = v + '%';
+      linha.style.left = 'calc(' + v + '% + ' + px + 'px)';
+      bola.style.left = 'calc(' + v + '% + ' + px + 'px)';
       if(tagAntes) tagAntes.style.opacity = v < 8 ? '0' : '1';
       if(tagDepois) tagDepois.style.opacity = v > 92 ? '0' : '1';
     };
-    range.addEventListener('input', move);
-    move();
-    // LOOP automatico: vai e volta em 2s por lado, pausa no toque e fora da tela
-    var dir = 1, pausaAte = 0, naTela = false;
+    range.addEventListener('input', function(){ aplica(Number(range.value), 0); });
+    aplica(50, 0);
     ['pointerdown','focusin','touchstart'].forEach(function(ev){
-      range.addEventListener(ev, function(){ pausaAte = Date.now() + 8000; }, {passive:true});
+      range.addEventListener(ev, function(){ st.pausaAte = Date.now() + 8000; }, {passive:true});
     });
     if('IntersectionObserver' in window){
-      new IntersectionObserver(function(es){ naTela = es[0].isIntersecting; }, {threshold:.2}).observe(box);
-    } else { naTela = true; }
-    if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-      setInterval(function(){
-        if(document.hidden || !naTela || Date.now() < pausaAte || window.__pausaComparadores) return;
-        var v = Number(range.value) + dir * 2;
-        if(v >= 100){ v = 100; dir = -1; }
-        if(v <= 0){ v = 0; dir = 1; }
-        range.value = v;
-        move();
-      }, 40);
-    }
+      new IntersectionObserver(function(es){ st.naTela = es[0].isIntersecting; }, {threshold:.2}).observe(box);
+    } else { st.naTela = true; }
+    st.aplica = aplica;
+    itens.push(st);
   });
+  if(reduz || !itens.length || !('requestAnimationFrame' in window)) return;
+  var quadro = function(t){
+    requestAnimationFrame(quadro);
+    if(document.hidden || window.__pausaComparadores) return;
+    for(var k = 0; k < itens.length; k++){
+      var st = itens[k];
+      if(!st.naTela || Date.now() < st.pausaAte) continue;
+      var p = (((t / PERIODO) + st.fase) % 1 + 1) % 1;
+      var tri = p < 0.5 ? p * 2 : 2 - p * 2;
+      var v = (0.5 - 0.5 * Math.cos(Math.PI * tri)) * 100;
+      var dv = v - st.prevV;
+      st.prevV = v;
+      if((dv > 0.001 && st.dir < 0) || (dv < -0.001 && st.dir > 0)){
+        st.dir = dv > 0 ? 1 : -1;
+        st.molaV += st.dir * -3.5;
+      }
+      st.molaV += -st.mola * 0.15;
+      st.molaV *= 0.8;
+      st.mola += st.molaV;
+      st.aplica(v, st.mola);
+    }
+  };
+  requestAnimationFrame(quadro);
 })();
 // Carrosseis em loop continuo: pausam no toque/hover e respeitam reduced-motion
 (function(){
