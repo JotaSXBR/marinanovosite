@@ -92,7 +92,7 @@ h2{text-wrap:balance}
 .ba-camada{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
 .ba-antes{background:linear-gradient(135deg,#E9D9E4,#F7EDF4);color:var(--cinza)}
 .ba-depois{background:linear-gradient(135deg,#FBD9EC,#FDEBF6);color:var(--cinza)}
-.ba-camada b{font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;position:absolute;top:14px;z-index:2;background:rgba(255,255,255,.92);padding:5px 16px;border-radius:999px;color:var(--roxo)}
+.ba-camada b{font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;position:absolute;top:14px;z-index:2;background:rgba(255,255,255,.92);padding:5px 16px;border-radius:999px;color:var(--roxo);transition:opacity .25s ease}
 .ba-antes b{left:14px}
 .ba-depois b{right:14px}
 .ba-camada span{font-size:.9rem}
@@ -550,11 +550,15 @@ var OFERTAS = {
   var depois = box.querySelector('.ba-depois');
   var linha = box.querySelector('.ba-linha');
   var bola = box.querySelector('.ba-puxador');
+  var tagAntes = box.querySelector('.ba-antes b');
+  var tagDepois = box.querySelector('.ba-depois b');
   var move = function(){
     var v = Number(range.value);
     depois.style.clipPath = 'inset(0 0 0 ' + v + '%)';
     linha.style.left = v + '%';
     bola.style.left = v + '%';
+    if(tagAntes) tagAntes.style.opacity = v < 8 ? '0' : '1';
+    if(tagDepois) tagDepois.style.opacity = v > 92 ? '0' : '1';
   };
   range.addEventListener('input', move);
   move();
