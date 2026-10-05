@@ -196,7 +196,9 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   .cta-fixo-preco{font-size:.85rem;margin:0 0 8px;color:var(--tinta)}
   .cta-fixo-preco s{color:var(--cinza)}
   .cta-fixo-preco b{color:var(--cta)}
-  .cta-fixo .btn{position:relative;width:100%;padding:14px 10px}
+  .cta-fixo .btn{position:relative;width:100%;padding:14px 10px;overflow:hidden}
+  .cta-fixo .btn::after{content:"";position:absolute;top:-20%;bottom:-20%;left:-30%;width:38px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);animation:brilho 4.2s ease-in-out infinite}
+@keyframes brilho{0%{left:-30%}55%,100%{left:130%}}
 
 }
 /* A11y + ajustes finos (auditoria: guidelines + WCAG) */
@@ -221,6 +223,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
   html{scroll-behavior:auto}
   .revelar{opacity:1;transform:none;transition:none}
   .cta-fixo .btn{animation:none}
+  .cta-fixo .btn::after{display:none}
   *{transition:none !important}
 }
 @media (max-width:900px){
