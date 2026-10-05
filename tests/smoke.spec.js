@@ -141,6 +141,6 @@ test('FAQ abre e ancora de contato existem', async ({ page }) => {
   const first = page.locator('details').first();
   await first.locator('summary').click();
   await expect(first).toHaveAttribute('open', '');
-  await expect(page.locator('a[href*="instagram.com/pilatesnaparede"]')).toHaveCount(1);
+  await expect(page.locator('a[href*="instagram.com/pilatesemcasa"]')).toHaveCount(1);
   await expect(page.locator('a[href*="whatsapp"]')).toBeTruthy();
 });
