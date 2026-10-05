@@ -88,7 +88,8 @@ h2{text-wrap:balance}
 .carrossel.grupo{grid-auto-columns:min(230px,64vw)}
 /* Antes e depois: comparador deslizante */
 .antes-texto{font-size:1.1rem;font-weight:600;max-width:40ch;margin:34px auto 0;text-align:center}
-.ba{position:relative;max-width:480px;margin:22px auto 0;border-radius:18px;overflow:hidden;aspect-ratio:3/4;background:var(--fundo);border:1px solid #F0D4E6;touch-action:pan-y}
+.ba{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:9/16;background:var(--fundo);border:1px solid #F0D4E6;touch-action:pan-y;max-width:420px;margin-left:auto;margin-right:auto;width:100%}
+.ba-grade{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:26px}
 .ba-camada{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
 .ba-antes{background:linear-gradient(135deg,#E9D9E4,#F7EDF4);color:var(--cinza)}
 .ba-depois{background:linear-gradient(135deg,#FBD9EC,#FDEBF6);color:var(--cinza)}
@@ -212,6 +213,7 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   .cel.cha-cel,.cel.planner-cel{grid-template-columns:1fr}
   .oferta{grid-template-columns:1fr}
   .oferta-card .selo-oferta{width:110px}
+  .ba-grade{grid-template-columns:1fr;max-width:420px;margin-left:auto;margin-right:auto}
   section{padding:54px 0}
 }
 </style>
@@ -264,12 +266,42 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   <section style="padding-top:0">
     <div class="wrap">
       <p class="antes-texto">Não é falta de esforço. É falta de sistema: treino com progressão, sequência e acompanhamento de verdade.</p>
-      <div class="ba revelar" id="antes-depois">
-        <div class="ba-camada ba-antes"><img src="../conteudo/prova/antes.jpg" alt="Antes do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Antes</b></div>
-        <div class="ba-camada ba-depois"><img src="../conteudo/prova/depois.jpg" alt="Depois do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Depois</b></div>
-        <div class="ba-linha"></div>
-        <div class="ba-puxador" aria-hidden="true">&#8596;</div>
-        <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois">
+      <div class="ba-grade revelar">
+        <div class="ba" id="antes-depois">
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/antes.jpg" alt="Antes do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/depois.jpg" alt="Depois do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Depois</b></div>
+          <div class="ba-linha"></div>
+          <div class="ba-puxador" aria-hidden="true">&#8596;</div>
+          <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois">
+        </div>
+        <div class="ba">
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a2-antes.jpg" alt="Antes do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a2-depois.jpg" alt="Depois do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Depois</b></div>
+          <div class="ba-linha"></div>
+          <div class="ba-puxador" aria-hidden="true">&#8596;</div>
+          <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois">
+        </div>
+        <div class="ba">
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a3-antes.jpg" alt="Antes do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a3-depois.jpg" alt="Depois do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Depois</b></div>
+          <div class="ba-linha"></div>
+          <div class="ba-puxador" aria-hidden="true">&#8596;</div>
+          <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois">
+        </div>
+        <div class="ba">
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a4-antes.jpg" alt="Antes do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a4-depois.jpg" alt="Depois do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Depois</b></div>
+          <div class="ba-linha"></div>
+          <div class="ba-puxador" aria-hidden="true">&#8596;</div>
+          <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois">
+        </div>
+        <div class="ba">
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a5-antes.jpg" alt="Antes do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a5-depois.jpg" alt="Depois do programa Pilates em Casa" loading="lazy" width="720" height="1280"><b>Depois</b></div>
+          <div class="ba-linha"></div>
+          <div class="ba-puxador" aria-hidden="true">&#8596;</div>
+          <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois">
+        </div>
       </div>
       <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a></div>
     </div>
@@ -544,24 +576,24 @@ var OFERTAS = {
 })();
 // Antes/depois: range controla a divisoria
 (function(){
-  var box = document.getElementById('antes-depois');
-  if(!box) return;
-  var range = box.querySelector('input');
-  var depois = box.querySelector('.ba-depois');
-  var linha = box.querySelector('.ba-linha');
-  var bola = box.querySelector('.ba-puxador');
-  var tagAntes = box.querySelector('.ba-antes b');
-  var tagDepois = box.querySelector('.ba-depois b');
-  var move = function(){
-    var v = Number(range.value);
-    depois.style.clipPath = 'inset(0 0 0 ' + v + '%)';
-    linha.style.left = v + '%';
-    bola.style.left = v + '%';
-    if(tagAntes) tagAntes.style.opacity = v < 8 ? '0' : '1';
-    if(tagDepois) tagDepois.style.opacity = v > 92 ? '0' : '1';
-  };
-  range.addEventListener('input', move);
-  move();
+  document.querySelectorAll('.ba').forEach(function(box){
+    var range = box.querySelector('input');
+    var depois = box.querySelector('.ba-depois');
+    var linha = box.querySelector('.ba-linha');
+    var bola = box.querySelector('.ba-puxador');
+    var tagAntes = box.querySelector('.ba-antes b');
+    var tagDepois = box.querySelector('.ba-depois b');
+    var move = function(){
+      var v = Number(range.value);
+      depois.style.clipPath = 'inset(0 0 0 ' + v + '%)';
+      linha.style.left = v + '%';
+      bola.style.left = v + '%';
+      if(tagAntes) tagAntes.style.opacity = v < 8 ? '0' : '1';
+      if(tagDepois) tagDepois.style.opacity = v > 92 ? '0' : '1';
+    };
+    range.addEventListener('input', move);
+    move();
+  });
 })();
 // Carrosseis em loop continuo: pausam no toque/hover e respeitam reduced-motion
 (function(){

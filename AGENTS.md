@@ -3,7 +3,7 @@
 ## State
 - Rebuild do maricoachfit.com (WordPress/Elementor) em andamento.
 - `site-original/` — espelho wget da home + `/links/` com CSS/JS/fontes (~15 MB). Não editar; é arquivo.
-- `conteudo/imagens/` — 23 imagens originais reaproveitáveis (sem thumbnails). `conteudo/prova/` — 15 imagens (8 depoimentos 1080x675 + 5 grupo 800x1000 + antes/depois 800x1000, fundo branco, sem corte). `conteudo/layout/` — HTML de referência.
+- `conteudo/imagens/` — 23 imagens originais reaproveitáveis (sem thumbnails). `conteudo/prova/` — 23 imagens (8 depoimentos + 5 grupo + 5 pares antes/depois 9:16 com cinturas alinhadas e rostos removidos). `conteudo/layout/` — HTML de referência.
 - `INVENTARIO.md` — mapa do que foi baixado, vídeo (embed YouTube `youtu.be/WDEG6QFKQlo`, sem MP4 próprio) e problemas do original.
 - `ANALISE-COPY.md` — auditoria de copy seção por seção (skill `copywriting`), proposta de reordenação e backlog. Ler antes de mexer em textos.
 - `QUESTIONARIO.md` — perguntas para a dona (oferta, público, prova, produto, marca, jurídico). Aguardando respostas; aplicar na landing quando chegarem.
