@@ -140,9 +140,10 @@ h2{text-wrap:balance}
 /* Bio */
 .bio{background:var(--fundo);border-radius:26px;padding:clamp(28px,4vw,52px);display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:center}
 .bio img{border-radius:20px;width:100%}
-.trans-lista{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 28px;margin:18px 0}
-.trans-lista li{font-size:.93rem;padding-left:16px;border-left:3px solid var(--rosa);line-height:1.55}
-.bio .fecho{margin-top:14px;font-weight:600;text-wrap:pretty}
+.trans-lista{list-style:none;display:grid;grid-template-columns:1fr;gap:12px;margin:18px auto;max-width:640px;text-align:left}
+.trans-lista li{position:relative;font-size:.95rem;font-weight:600;line-height:1.6;padding-left:28px}
+.trans-lista li::before{content:"";position:absolute;left:0;top:.52em;width:11px;height:11px;border-radius:50%;background:var(--rosa)}
+.bio .fecho{margin-top:14px;font-weight:600;font-size:1.12rem;text-wrap:pretty}
 .bio .fecho-cta{font-family:"Anton",sans-serif;font-size:clamp(1.3rem,2.6vw,1.7rem);line-height:1.25;color:var(--rosa-texto);margin-top:20px}
 /* FAQ */
 .faq-lista{max-width:760px;margin:26px auto 0}
