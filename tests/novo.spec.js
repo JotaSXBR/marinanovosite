@@ -17,8 +17,8 @@ test('preview novo tem botoes de pausa e pilulas dentro da foto', async ({ page 
   expect(await page.locator('button[data-pausa]').count()).toBe(2);
   expect(await page.locator('.ba-legenda').count()).toBe(0);
   expect(await page.locator('.ba b').count()).toBe(10);
-  // grupo VIP sem clones de loop (rolagem manual + grade no desktop)
-  expect(await page.locator('.carrossel.grupo figure').count()).toBe(5);
+  // grupo VIP voltou a ser carrossel com loop (originais sem aria-hidden = 5)
+  expect(await page.locator('.carrossel.grupo figure:not([aria-hidden])').count()).toBe(5);
 });
 
 test('preview novo: carrossel de depoimentos avanca em loop', async ({ page }) => {
