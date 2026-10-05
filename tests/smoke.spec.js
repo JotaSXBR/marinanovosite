@@ -130,6 +130,7 @@ test('comparador antes/depois move a divisoria', async ({ page }) => {
   await expect(page.locator('.antes-texto')).toContainText('falta de sistema');
   expect(await page.locator('.ba').count()).toBe(5);
   const ultimo = page.locator('.ba').last();
+  await ultimo.locator('input').dispatchEvent('pointerdown');
   await ultimo.locator('input').fill('80');
   const clip = await ultimo.locator('.ba-depois').evaluate((el) => el.style.clipPath);
   expect(clip).toContain('80%');
