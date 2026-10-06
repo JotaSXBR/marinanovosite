@@ -101,7 +101,7 @@ html[data-tema="escuro"] .tema-toggle .icone-lua{display:none}
 .hero-h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(1.25rem,2.6vw,1.8rem);line-height:1.15;color:var(--rosa-texto);margin:0 0 16px;text-wrap:balance}
 h2{text-wrap:balance}
 /* Faixa de numeros */
-.faixa{background:var(--branco);border-top:1px solid var(--borda-suave);border-bottom:1px solid var(--borda-suave);padding:34px 0}
+.faixa{background:var(--branco);padding:34px 0}
 .faixa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
 .faixa-grid>div{padding:6px 12px;border-left:1px solid var(--borda-suave)}
 .faixa-grid>div:first-child{border-left:0}
@@ -222,7 +222,8 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 /* CTA fixo mobile (ligado via body.com-cta) */
 .cta-fixo{display:none}
 @media (max-width:900px){
-  footer{padding-bottom:150px}
+  footer{padding-bottom:48px}
+  body.com-cta footer{padding-bottom:150px}
   .cta-fixo{display:block;position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;background:var(--sup);border:1px solid var(--borda-suave);border-radius:18px;padding:10px 14px 14px;box-shadow:0 -8px 30px rgba(63,1,66,.12);transform:translateY(140%);transition:transform .3s ease,visibility .3s;text-align:center;visibility:hidden}
   body.com-cta .cta-fixo{transform:none;visibility:visible}
   .cta-fixo-preco{font-size:.85rem;margin:0 0 8px;color:var(--tinta)}
@@ -259,7 +260,9 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
   *{transition:none !important}
 }
 @media (max-width:900px){
-  .marca{white-space:nowrap;font-size:1.1rem}
+  .marca{white-space:nowrap;font-size:1.1rem;margin-right:auto}
+  .nav-toggle{order:3}
+  .tema-toggle{order:2}
   h2{text-wrap:balance}
   .nav-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:0;padding:10px;cursor:pointer}
   .nav-toggle span{display:block;width:24px;height:2px;background:var(--roxo);border-radius:2px;transition:transform .25s ease,opacity .25s ease}
@@ -271,7 +274,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
   .nav-links a{padding:13px 4px;font-size:1rem;border-top:1px solid var(--borda-suave)}
   .nav-links a:first-child{border-top:0}
   .nav-links .nav-cta{display:none}
-  .hero-grid{grid-template-columns:1fr;gap:32px}
+  .hero-grid{grid-template-columns:1fr;gap:32px;text-align:center}
   .hero-foto img{max-height:520px}
   .bio{grid-template-columns:1fr}
   .bio img{max-width:300px}
@@ -616,19 +619,20 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
   var btn = document.getElementById('tema-toggle');
   if(!btn) return;
   var rotulo = function(){
-    var t = document.documentElement.getAttribute('data-tema') || 'sistema';
-    btn.setAttribute('aria-label', 'Tema atual: ' + t + '. Ativar para alternar.');
+    var atual = document.documentElement.getAttribute('data-tema');
+    var ef = atual ? atual : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'sistema (escuro)' : 'sistema (claro)');
+    btn.setAttribute('aria-label', 'Tema atual: ' + ef + '. Ativar para alternar entre claro e escuro.');
   };
   btn.addEventListener('click', function(){
     var atual = document.documentElement.getAttribute('data-tema');
-    var proximo = atual === null ? 'claro' : (atual === 'claro' ? 'escuro' : null);
-    try{
-      if(proximo === null){ localStorage.removeItem('tema'); }
-      else { localStorage.setItem('tema', proximo); }
-    }catch(e){}
-    if(proximo === null){ document.documentElement.removeAttribute('data-tema'); }
-    else { document.documentElement.setAttribute('data-tema', proximo); }
-    rotulo();
+    var escuroEfetivo = atual ? atual === 'escuro' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var proximo = escuroEfetivo ? 'claro' : 'escuro';
+    try{ localStorage.setItem('tema', proximo); }catch(e){}
+    document.documentElement.setAttribute('data-tema', proximo);
+    var rot2 = function(){
+      btn.setAttribute('aria-label', 'Tema atual: ' + proximo + '. Ativar para alternar entre claro e escuro.');
+    };
+    rot2();
   });
   rotulo();
 })();
