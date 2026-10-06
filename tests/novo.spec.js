@@ -1,8 +1,8 @@
 const { test, expect } = require('@playwright/test');
 
-const NOVO = '/nova-landing/indexnovo.html';
+const NOVO = '/nova-landing/index.html';
 
-test('preview novo carrega sem erros e tem skip link', async ({ page }) => {
+test('index carrega sem erros e tem skip link', async ({ page }) => {
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   await page.goto(NOVO);
@@ -12,7 +12,7 @@ test('preview novo carrega sem erros e tem skip link', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test('preview novo tem botoes de pausa e pilulas dentro da foto', async ({ page }) => {
+test('index tem botoes de pausa e pilulas dentro da foto', async ({ page }) => {
   await page.goto(NOVO);
   expect(await page.locator('button[data-pausa]').count()).toBe(2);
   expect(await page.locator('.ba-legenda').count()).toBe(0);
@@ -21,7 +21,7 @@ test('preview novo tem botoes de pausa e pilulas dentro da foto', async ({ page 
   expect(await page.locator('.carrossel.grupo figure:not([aria-hidden])').count()).toBe(5);
 });
 
-test('preview novo: carrossel de depoimentos avanca em loop', async ({ page }) => {
+test('index: carrossel de depoimentos avanca em loop', async ({ page }) => {
   await page.goto(NOVO);
   await page.locator('#carrossel-depo').scrollIntoViewIfNeeded();
   const antes = await page.locator('#carrossel-depo').evaluate((el) => el.scrollLeft);
@@ -32,7 +32,7 @@ test('preview novo: carrossel de depoimentos avanca em loop', async ({ page }) =
   );
 });
 
-test('preview novo: pausar comparadores congela a divisoria', async ({ page }) => {
+test('index: pausar comparadores congela a divisoria', async ({ page }) => {
   await page.goto(NOVO);
   await page.locator('.ba').first().scrollIntoViewIfNeeded();
   await page.locator('button[data-pausa="comparadores"]').click();
