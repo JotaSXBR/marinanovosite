@@ -56,6 +56,16 @@ test('index: toggle alterna claro/escuro e persiste, sem noindex', async ({ page
   await expect(page.locator('html')).toHaveAttribute('data-tema', segundo);
 });
 
+test('index: animacoes de entrada aplicam sem estourar layout', async ({ page }) => {
+  await page.goto(NOVO);
+  expect(await page.locator('.animar').count()).toBeGreaterThan(10);
+  await page.locator('#oferta').scrollIntoViewIfNeeded();
+  await expect(page.locator('.oferta-card .por.pulso-unico')).toHaveCount(1);
+  await page.waitForTimeout(1200);
+  const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(over).toBeLessThanOrEqual(1);
+});
+
 test('index: modo escuro do sistema aplica tokens escuros', async ({ browser }) => {
   const ctx = await browser.newContext({ colorScheme: 'dark' });
   const page = await ctx.newPage();
