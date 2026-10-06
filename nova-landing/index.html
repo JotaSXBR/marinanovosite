@@ -52,8 +52,8 @@ h1,h2,h3,.display{font-family:"Anton",Impact,sans-serif;font-weight:400;line-hei
 .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
 /* Blocos: cards contidos alternando rosa/lilas (hero de fora; oferta/bio/cta/faixa mantem o proprio fundo) */
 .wrap.bloco{border-radius:18px;padding:44px 28px}
-.bloco-rosa{background:rgba(255,81,201,.08);background:light-dark(rgba(255,81,201,.08),rgba(255,81,201,.15))}
-.bloco-lilas{background:rgba(130,0,136,.07);background:light-dark(rgba(130,0,136,.07),rgba(248,125,255,.12))}
+.bloco-rosa{background:rgba(255,81,201,.08);background:light-dark(rgba(255,81,201,.08),rgba(255,81,201,.19))}
+.bloco-lilas{background:rgba(130,0,136,.07);background:light-dark(rgba(130,0,136,.07),rgba(248,125,255,.08))}
 /* Centralizacao geral (pedido da dona) */
 p,h1,h2,h3,.sub,.eyebrow,.carrossel-titulo,.trans-lista{text-align:center}
 .trans-lista{list-style:none}
@@ -139,7 +139,7 @@ h2{text-wrap:balance}
 .ba-camada{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
 .ba-antes{background:linear-gradient(135deg,#E9D9E4,#F7EDF4);color:var(--cinza)}
 .ba-depois{background:linear-gradient(135deg,#FBD9EC,#FDEBF6);color:var(--cinza)}
-.ba-camada b{font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;position:absolute;top:14px;z-index:2;background:rgba(255,255,255,.92);padding:5px 16px;border-radius:999px;color:var(--roxo);transition:opacity .25s ease}
+.ba-camada b{font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;position:absolute;top:14px;z-index:2;background:#fff;padding:5px 16px;border-radius:999px;color:#3F0142;box-shadow:0 2px 10px rgba(63,1,66,.25);transition:opacity .25s ease}
 .ba-antes b{left:14px}
 .ba-depois b{right:14px}
 .ba-camada span{font-size:.9rem}
@@ -163,7 +163,7 @@ h2{text-wrap:balance}
 .cel.mini{grid-column:span 2}
 .bento>.cel.mini:nth-child(even){background:var(--faixa)}
 .cel.duo{grid-column:span 3}
-.cel.comunidade-cel{grid-column:span 3;background:linear-gradient(120deg,var(--roxo-2),var(--roxo));color:#fff;border:0}
+.cel.comunidade-cel{grid-column:span 3;background:linear-gradient(120deg,#820088,#3F0142);color:#fff;border:0}
 .cel.comunidade-cel p{color:#F2D3EA}
 .cel.comunidade-cel a{color:#fff;font-weight:700}
 .cel.planner-cel{grid-column:span 6;display:grid;grid-template-columns:170px 1fr;gap:20px;align-items:center;background:var(--sup)}
@@ -186,7 +186,7 @@ h2{text-wrap:balance}
 .oferta-card .por{font-family:"Anton",sans-serif;font-size:2.8rem;color:var(--roxo);margin:0 0 20px;line-height:1}
 .oferta-card .btn{width:100%;padding:16px 10px}
 .oferta-card .selo-oferta{width:140px;margin:18px auto 0}
-.oferta-card .micro{font-size:.87rem;color:var(--cinza);margin:12px 0 0}
+.oferta-card .micro{font-size:.87rem;color:var(--cinza);margin:12px 0 0;text-align:justify;text-wrap:balance;hyphens:none}
 .oferta-card .micro b{color:var(--cta)}
 .duvida{font-size:.88rem;margin-top:12px}
 .oferta-card .duvida{color:var(--cinza)}
@@ -300,11 +300,13 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
   .oferta{grid-template-columns:1fr}
   .oferta li b{white-space:normal;text-align:right;flex:none}
   .oferta-card .selo-oferta{width:110px}
+  .oferta-card{padding:30px 20px}
+  .oferta-card .micro{font-size:.82rem}
   .ba-grade{grid-template-columns:1fr;max-width:420px;margin-left:auto;margin-right:auto}
   .ba-grade .ba{grid-column:auto}
   .ba-grade .ba:nth-child(4),.ba-grade .ba:nth-child(5){grid-column:auto}
-  section{padding:54px 0}
-  .wrap.bloco{padding:34px 20px}
+  section{padding:44px 0}
+  .wrap.bloco{padding:30px 20px}
 }
 </style>
 <noscript><style>.revelar,.animar{opacity:1 !important;transform:none !important;animation:none !important}</style></noscript>
@@ -507,7 +509,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
           <p class="por">por&nbsp;R$&nbsp;57</p>
           <a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a>
           <img class="selo-oferta" src="../conteudo/imagens/Satisfacao-Garantida.svg" alt="Selo de satisfação garantida" loading="lazy" width="120" height="120">
-          <p class="micro">Pagamento único, sem <b>mensalidade</b> e sem <b>taxas extras</b>. 1 ano de acesso à plataforma. Pagamento seguro pela <span translate="no">Kiwify</span>, com garantia incondicional de 7 dias.</p>
+          <p class="micro">Pagamento único, sem <b>mensalidade</b> e sem <b>taxas extras</b>. 1 ano de acesso à plataforma. Pagamento seguro pela <span translate="no">Kiwify</span>, com garantia incondicional de 7&nbsp;dias.</p>
           <p class="duvida">Com dúvidas? <a href="https://wa.me/5511998987824?text=Ol%C3%A1!%20Vim%20pelo%20site%20Pilates%20em%20Casa%20e%20quero%20tirar%20uma%20d%C3%BAvida%20antes%20de%20come%C3%A7ar.">Fale no <span translate="no">WhatsApp</span></a></p>
         </div>
       </div>
