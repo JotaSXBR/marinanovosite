@@ -165,7 +165,8 @@ h2{text-wrap:balance}
 .cel.comunidade-cel a{color:#fff;font-weight:700}
 .cel.planner-cel{grid-column:span 3;display:grid;grid-template-columns:170px 1fr;gap:20px;align-items:center;background:var(--sup)}
 .cel.app-cel{grid-column:span 3;display:grid;grid-template-columns:1fr 130px;gap:18px;align-items:center}
-.cel.app-cel img{height:230px;width:auto;max-width:100%;margin:0 auto}
+.cel.app-cel .phone{width:96px;max-width:100%;margin:0 auto;background:#14060f;border-radius:24px;padding:7px;box-shadow:0 16px 40px rgba(63,1,66,.25)}
+.cel.app-cel .phone img{border-radius:17px;width:100%;height:auto;aspect-ratio:760/1651;object-fit:cover;object-position:top;display:block}
 .cel.planner-cel img{max-height:190px;object-fit:contain;margin:0 auto}
 /* Oferta: pilha de valor + cartao de preco */
 .oferta{background:linear-gradient(120deg,#2B0530,#5A0B57);color:#fff;border:1px solid rgba(255,81,201,.25);border-radius:18px;padding:clamp(28px,4vw,52px);display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:start}
@@ -297,7 +298,6 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
   .recebe-grid{grid-template-columns:1fr}
   .cel,.cel.cha-cel,.cel.mini,.cel.duo,.cel.comunidade-cel,.cel.planner-cel{grid-column:span 6}
   .cel.cha-cel,.cel.planner-cel,.cel.app-cel{grid-template-columns:1fr}
-  .cel.app-cel img{height:240px}
   .oferta{grid-template-columns:1fr}
   .oferta li b{white-space:normal;text-align:right;flex:none}
   .oferta-card .selo-oferta{width:110px}
@@ -482,7 +482,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         </div>
         <div class="cel app-cel">
           <div><h3>Sua plataforma de treino</h3><p>Aulas organizadas passo a passo com a instrutora, para assistir em qualquer tela, com app para Android e Apple.</p></div>
-          <img src="../conteudo/imagens/mockup-celular-app.png" alt="Celular exibindo o aplicativo Pilates em Casa" loading="lazy" width="640" height="1129">
+          <div class="phone"><img src="../conteudo/imagens/app-plataforma.jpg" alt="Aplicativo com as aulas do Pilates em Casa" loading="lazy" width="760" height="1651"></div>
         </div>
       </div>
       <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a></div>
