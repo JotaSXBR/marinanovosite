@@ -12,6 +12,7 @@
 - `tests/` (`npm test`) — Playwright smoke da landing (título/H1/CTAs, oferta com preço, imagens 200, FAQ, páginas legais). Config sobe o preview sozinho via `webServer` na porta 8901. Requer deps de sistema do Chromium (ver abaixo).
 - Dev: `npm run dev` (serve a raiz na 8901). Deploy: push na `main` → Action monta `deploy/` (gitignored) e envia p/ raiz do FTP via FTPS (secrets `FTP_SERVER/USERNAME/PASSWORD`). Ver `README.md`.
 - Skills: `design-taste-frontend` + `frontend-design` (criação UI), `web-design-guidelines` (auditoria UI), `accessibility` (WCAG), `copywriting`, `playwright-cli`, `find-skills` (via `npx skills`, pin em `skills-lock.json`).
+- Tema claro/escuro: segue o sistema por padrão, toggle sol/lua no nav alterna e persiste (`localStorage tema` + `html[data-tema]` + tokens `light-dark()`).
 - Sem build/test/lint além de `tests/`.
 
 ## Working here

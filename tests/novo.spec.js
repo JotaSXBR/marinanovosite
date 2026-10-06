@@ -41,3 +41,29 @@ test('index: pausar comparadores congela a divisoria', async ({ page }) => {
   const v2 = await page.locator('.ba input').first().evaluate((el) => el.value);
   expect(v1).toBe(v2);
 });
+
+test('index: toggle alterna claro/escuro e persiste, sem noindex', async ({ page }) => {
+  await page.goto(NOVO);
+  await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.getAttribute('data-tema'))).toBeNull();
+  const sistemaEscuro = await page.evaluate(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const primeiro = sistemaEscuro ? 'claro' : 'escuro';
+  const segundo = sistemaEscuro ? 'escuro' : 'claro';
+  await page.locator('#tema-toggle').click();
+  await expect(page.locator('html')).toHaveAttribute('data-tema', primeiro);
+  expect(await page.evaluate(() => localStorage.getItem('tema'))).toBe(primeiro);
+  await page.locator('#tema-toggle').click();
+  await expect(page.locator('html')).toHaveAttribute('data-tema', segundo);
+});
+
+test('index: modo escuro do sistema aplica tokens escuros', async ({ browser }) => {
+  const ctx = await browser.newContext({ colorScheme: 'dark' });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(String(e)));
+  await page.goto(NOVO);
+  const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  expect(bg).not.toBe('rgb(255, 255, 255)');
+  expect(errors).toEqual([]);
+  await ctx.close();
+});
