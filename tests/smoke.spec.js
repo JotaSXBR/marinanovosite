@@ -21,6 +21,8 @@ test('oferta com preco, sem video antigo', async ({ page }) => {
   await expect(page.locator('#oferta')).toContainText('R$ 57');
   await expect(page.locator('#oferta')).toContainText('R$ 97');
   await expect(page.locator('#oferta')).toContainText('R$ 613');
+  await expect(page.locator('#oferta')).toContainText('App Pilates em Casa');
+  await expect(page.locator('#bonus')).toContainText('Sua plataforma de treino');
   for (const slug of ['privacidade.html', 'termos.html']) {
     const res = await page.request.get(`/nova-landing/${slug}`);
     expect(res.status(), slug).toBe(200);
