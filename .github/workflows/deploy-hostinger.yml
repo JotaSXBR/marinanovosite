@@ -34,6 +34,3 @@ jobs:
           port: 21
           protocol: ftps
           local-dir: ./deploy/
-          # LIMPEZA PONTUAL (uso único): apaga tudo na raiz do FTP antes de subir.
-          # Remover esta linha logo após o deploy de limpeza (ver BACKLOG/histórico).
-          dangerous-clean-slate: true
