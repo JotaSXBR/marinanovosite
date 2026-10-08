@@ -13,7 +13,7 @@ jobs:
       - name: Montar pasta de deploy
         run: |
           rm -rf deploy && mkdir -p deploy/imagens deploy/prova
-          cp nova-landing/index.html nova-landing/indexnovo.html nova-landing/privacidade.html nova-landing/termos.html deploy/
+          cp nova-landing/index.html nova-landing/indexnovo.html nova-landing/indexdesign.html nova-landing/privacidade.html nova-landing/termos.html deploy/
           cp nova-landing/.htaccess deploy/ 2>/dev/null || true
           cp conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.jpg conteudo/imagens/*.svg deploy/imagens/
           cp conteudo/prova/*.jpg deploy/prova/
