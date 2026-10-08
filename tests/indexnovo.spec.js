@@ -52,6 +52,41 @@ test('oferta: parcelamento em 2 pontos sem redundancia', async ({ page }) => {
     els.filter((el) => (el.textContent || '').includes('10,69')).length)).toBe(0);
 });
 
+test('modo escuro suave mantem contraste AA', async ({ browser }) => {
+  const ctx = await browser.newContext({ colorScheme: 'dark' });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(String(e)));
+  await page.goto(PAGE);
+  const min = await page.evaluate(() => {
+    const lum = (c) => {
+      const m = c.match(/[\d.]+/g).map(Number);
+      const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+      const [r, g, b] = [f(m[0]), f(m[1]), f(m[2])];
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const cr = (a, b) => {
+      const x = lum(a), y = lum(b);
+      const [hi, lo] = x > y ? [x, y] : [y, x];
+      return (hi + 0.05) / (lo + 0.05);
+    };
+    const pares = [
+      ['body', 'body'],
+      ['.hero .sub', 'body'],
+      ['.oferta-card .por', '.oferta-card'],
+      ['.trans-painel .fecho strong', '.trans-painel'],
+      ['.faq-lista summary', '.faq-lista details'],
+    ];
+    return Math.min(...pares.map(([ts, bs]) => {
+      const t = document.querySelector(ts), b = document.querySelector(bs);
+      return cr(getComputedStyle(t).color, getComputedStyle(b).backgroundColor);
+    }));
+  });
+  expect(min).toBeGreaterThanOrEqual(4.5);
+  expect(errors).toEqual([]);
+  await ctx.close();
+});
+
 test('faq: sanfona enxuta com auto-fecho', async ({ page }) => {
   await page.goto(PAGE);
   await page.locator('.faq-lista').scrollIntoViewIfNeeded();
