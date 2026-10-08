@@ -162,6 +162,21 @@ h2{text-wrap:balance}
   .ba-mobile-nav.ativo{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:18px}
   .ba-contador.ativo{display:block;text-align:center;font-size:.85rem;color:var(--cinza);margin:10px 0 0}
 }
+/* Depoimentos e grupo VIP no celular: 1 foto por vez (só indexnovo) */
+.foto-nav{display:none}
+.foto-contador{display:none}
+.carrossel.so-um figure.ativo{animation:fotoEntra .35s ease}
+@keyframes fotoEntra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (max-width:900px){
+  .carrossel.so-um{display:block;overflow:hidden}
+  .carrossel.so-um figure{display:none;margin:0}
+  .carrossel.so-um figure.ativo{display:block}
+  .foto-nav.ativo{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:18px}
+  .foto-contador.ativo{display:block;text-align:center;font-size:.85rem;color:var(--cinza);margin:10px 0 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .carrossel.so-um figure.ativo{animation:none}
+}
 /* Bonus: bento */
 .bento{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:30px}
 .cel{background:var(--fundo);border:1px solid var(--borda);border-radius:var(--raio);padding:26px;min-height:190px}
@@ -471,6 +486,12 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         <figure><img src="../conteudo/prova/dp7.jpg" width="1080" height="675" alt="Depoimento de aluna: começou sem expectativa e em menos de um mês a diferença é notável, com resultado real nas celulites" loading="lazy"></figure>
         <figure><img src="../conteudo/prova/dp8.jpg" width="1080" height="675" alt="Depoimento de Mellissa Bittencourt: radiante na metade do programa, com as pernas mais lisinhas e orientações fáceis de seguir" loading="lazy"></figure>
       </div>
+      <div class="foto-nav" id="depo-nav" hidden>
+        <button type="button" class="ba-seta" data-nav="prev" aria-label="Ver depoimento anterior">‹</button>
+        <div class="ba-dots" id="depo-dots" role="group" aria-label="Escolher depoimento"></div>
+        <button type="button" class="ba-seta" data-nav="next" aria-label="Ver próximo depoimento">›</button>
+      </div>
+      <p class="foto-contador" id="depo-contador" hidden>1 de 8</p>
       <h3 class="carrossel-titulo">Direto do grupo VIP</h3>
       <div class="carrossel grupo" tabindex="0" role="region" aria-label="Conversas do grupo VIP">
         <figure><img src="../conteudo/prova/1-1.jpg" width="800" height="1000" alt="Conversa no grupo VIP: alunas trocam receita de tapioca com banana, canela e pasta de amendoim e elogiam o material do programa" loading="lazy"></figure>
@@ -479,6 +500,12 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         <figure><img src="../conteudo/prova/1.jpg" width="800" height="1000" alt="Conversa no grupo VIP: Mirian Prado diz que é o melhor grupo de que já participou e Alexandre Mendonça concorda" loading="lazy"></figure>
         <figure><img src="../conteudo/prova/2.jpg" width="800" height="1000" alt="Conversa no grupo VIP: aluna Tatuzinho comemora ter perdido o primeiro quilo em 14 dias de aulas e diz que entrar no projeto foi uma das melhores escolhas" loading="lazy"></figure>
       </div>
+      <div class="foto-nav" id="grupo-nav" hidden>
+        <button type="button" class="ba-seta" data-nav="prev" aria-label="Ver conversa anterior do grupo VIP">‹</button>
+        <div class="ba-dots" id="grupo-dots" role="group" aria-label="Escolher conversa do grupo VIP"></div>
+        <button type="button" class="ba-seta" data-nav="next" aria-label="Ver próxima conversa do grupo VIP">›</button>
+      </div>
+      <p class="foto-contador" id="grupo-contador" hidden>1 de 5</p>
       <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a></div>
     </div>
   </section>
@@ -981,6 +1008,89 @@ var OFERTAS = {
       }
     }, 4000);
   });
+})();
+// Depoimentos e grupo VIP no celular: 1 foto por vez em rotação (só indexnovo).
+// No computador mantém o carrossel de rolagem original.
+(function(){
+  var reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var TEMPO = 4000;
+  var rotativo = function(cfg){
+    var lista = document.querySelector(cfg.lista);
+    var nav = document.getElementById(cfg.nav);
+    var dotsBox = document.getElementById(cfg.dots);
+    var contador = document.getElementById(cfg.contador);
+    if(!lista) return;
+    var figuras = Array.prototype.slice.call(lista.querySelectorAll('figure:not([aria-hidden])'));
+    if(!figuras.length) return;
+    var st = {idx: 0, naTela: true, timer: null};
+    var mostra = function(i){
+      st.idx = ((i % figuras.length) + figuras.length) % figuras.length;
+      figuras.forEach(function(f, k){
+        if(k === st.idx){ f.classList.add('ativo'); }
+        else{ f.classList.remove('ativo'); }
+      });
+      if(contador) contador.textContent = (st.idx + 1) + ' de ' + figuras.length;
+      if(dotsBox) Array.prototype.forEach.call(dotsBox.children, function(d, k){
+        if(k === st.idx){ d.setAttribute('aria-current', 'true'); }
+        else{ d.removeAttribute('aria-current'); }
+      });
+    };
+    var passo = function(){
+      if(!mq.matches || document.hidden || window.__pausaCarrossel || !st.naTela) return;
+      mostra(st.idx + 1);
+    };
+    var reinicia = function(){
+      if(st.timer){ clearInterval(st.timer); st.timer = null; }
+      if(!reduz){ st.timer = setInterval(passo, TEMPO); }
+    };
+    if(dotsBox){
+      figuras.forEach(function(_, k){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', cfg.rotulo + ' ' + (k + 1) + ' de ' + figuras.length);
+        if(k === 0) b.setAttribute('aria-current', 'true');
+        b.addEventListener('click', function(){ mostra(k); reinicia(); });
+        dotsBox.appendChild(b);
+      });
+    }
+    if(nav){
+      nav.addEventListener('click', function(e){
+        var btn = e.target.closest('[data-nav]');
+        if(!btn) return;
+        mostra(st.idx + (btn.getAttribute('data-nav') === 'prev' ? -1 : 1));
+        reinicia();
+      });
+    }
+    var eraMobile = null;
+    var aplicarModo = function(){
+      var mobile = mq.matches;
+      if(mobile === eraMobile) return;
+      eraMobile = mobile;
+      if(mobile){
+        lista.classList.add('so-um');
+        if(nav){ nav.hidden = false; nav.classList.add('ativo'); }
+        if(contador){ contador.hidden = false; contador.classList.add('ativo'); }
+        mostra(st.idx);
+      } else {
+        lista.classList.remove('so-um');
+        figuras.forEach(function(f){ f.classList.remove('ativo'); });
+        if(nav){ nav.hidden = true; nav.classList.remove('ativo'); }
+        if(contador){ contador.hidden = true; contador.classList.remove('ativo'); }
+      }
+    };
+    aplicarModo();
+    if(mq.addEventListener){ mq.addEventListener('change', aplicarModo); }
+    else if(mq.addListener){ mq.addListener(aplicarModo); }
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ st.naTela = es[0].isIntersecting; }, {threshold:.05}).observe(lista);
+    }
+    if(!reduz){
+      setTimeout(reinicia, cfg.atraso || 0);
+    }
+  };
+  rotativo({lista:'#carrossel-depo', nav:'depo-nav', dots:'depo-dots', contador:'depo-contador', rotulo:'Mostrar depoimento', atraso:500});
+  rotativo({lista:'.carrossel.grupo', nav:'grupo-nav', dots:'grupo-dots', contador:'grupo-contador', rotulo:'Mostrar conversa', atraso:2500});
 })();
 // Botoes pausar/retomar movimento + labels contextuais nos CTAs + deep-link no FAQ
 (function(){
