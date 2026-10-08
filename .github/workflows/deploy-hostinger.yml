@@ -14,7 +14,10 @@ jobs:
         run: |
           command -v php >/dev/null && php -l nova-landing/index.php && php -l nova-landing/private/ofertas.php || echo "php ausente no runner, lint pulado"
           rm -rf deploy && mkdir -p deploy/imagens deploy/prova deploy/private
-          cp nova-landing/index.html nova-landing/index.php nova-landing/indexnovo.html nova-landing/indexdesign.html nova-landing/privacidade.html nova-landing/termos.html deploy/
+          cp nova-landing/index.html nova-landing/index.php nova-landing/privacidade.html nova-landing/termos.html deploy/
+          # indexnovo/indexdesign NÃO publicam: são variantes locais de experimento
+          # (testes Playwright usam o preview local). Não subir = a Action apaga
+          # as cópias antigas do servidor no próximo deploy incremental.
           cp nova-landing/.htaccess deploy/ 2>/dev/null || true
           cp nova-landing/private/ofertas.php deploy/private/
           cp nova-landing/private/.htaccess deploy/private/
