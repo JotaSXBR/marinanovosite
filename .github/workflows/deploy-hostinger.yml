@@ -12,13 +12,18 @@ jobs:
 
       - name: Montar pasta de deploy
         run: |
-          rm -rf deploy && mkdir -p deploy/imagens deploy/prova
-          cp nova-landing/index.html nova-landing/indexnovo.html nova-landing/indexdesign.html nova-landing/privacidade.html nova-landing/termos.html deploy/
+          command -v php >/dev/null && php -l nova-landing/index.php && php -l nova-landing/private/ofertas.php || echo "php ausente no runner, lint pulado"
+          rm -rf deploy && mkdir -p deploy/imagens deploy/prova deploy/private
+          cp nova-landing/index.html nova-landing/index.php nova-landing/indexnovo.html nova-landing/indexdesign.html nova-landing/privacidade.html nova-landing/termos.html deploy/
           cp nova-landing/.htaccess deploy/ 2>/dev/null || true
+          cp nova-landing/private/ofertas.php deploy/private/
+          cp nova-landing/private/.htaccess deploy/private/
           cp conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.jpg conteudo/imagens/*.svg deploy/imagens/
           cp conteudo/prova/*.jpg deploy/prova/
-          sed -i 's#\.\./conteudo/imagens/#imagens/#g; s#\.\./conteudo/prova/#prova/#g' deploy/*.html
+          sed -i 's#\.\./conteudo/imagens/#imagens/#g; s#\.\./conteudo/prova/#prova/#g' deploy/*.html deploy/*.php
           grep -r "conteudo/" deploy/ && exit 1 || echo "links ok"
+          # garantia: index.php publicado não contém checkout hardcoded (só via ofertas.php)
+          ! grep -o 'pay\.kiwify\.com\.br/[A-Za-z0-9]*' deploy/index.php && echo "php sem checkout hardcoded ok"
 
       - name: Enviar via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

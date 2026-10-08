@@ -21,9 +21,20 @@ test('index tem botoes de pausa e pilulas dentro da foto', async ({ page }) => {
   expect(await page.locator('.carrossel.grupo figure:not([aria-hidden])').count()).toBe(5);
 });
 
-test('index: carrossel de depoimentos avanca em loop', async ({ page }) => {
+test('index: carrossel de depoimentos avanca em loop', async ({ page, isMobile }) => {
   await page.goto(NOVO);
   await page.locator('#carrossel-depo').scrollIntoViewIfNeeded();
+  const soUm = await page.locator('#carrossel-depo.so-um').count();
+  if (isMobile && soUm) {
+    const antes = await page.locator('#carrossel-depo').evaluate((el) =>
+      Array.from(el.querySelectorAll('figure:not([aria-hidden])')).findIndex((f) => f.classList.contains('ativo')));
+    await page.waitForFunction(
+      (x) => Array.from(document.querySelectorAll('#carrossel-depo figure:not([aria-hidden])')).findIndex((f) => f.classList.contains('ativo')) !== x,
+      antes,
+      { timeout: 8000 }
+    );
+    return;
+  }
   const antes = await page.locator('#carrossel-depo').evaluate((el) => el.scrollLeft);
   await page.waitForFunction(
     (x) => document.querySelector('#carrossel-depo').scrollLeft > x + 5,

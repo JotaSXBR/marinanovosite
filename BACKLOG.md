@@ -1,6 +1,13 @@
 # Backlog futuro
 
-## 1. Site dinâmico: botões para checkouts/preços diferentes ✅ IMPLEMENTADO (base)
+## 1. Site dinâmico: botões para checkouts/preços diferentes ✅ IMPLEMENTADO (server-side)
+
+> SUPERSEDE o plano original com objeto `OFERTAS` no JS (vazava tudo no fonte).
+> Implementado em out/2026: `nova-landing/index.php` resolve `?o=CODIGO` no
+> servidor lendo `nova-landing/private/ofertas.php` (bloqueado por `.htaccess`
+> + guarda 403); HTML entregue contém só a oferta ativa; secreta = `noindex`
+> automático; `?oferta=` antigo mantido como alias. `index.html` virou snapshot
+> estático da padrão (conteúdo = `indexdesign.html` promovido a principal).
 
 Objetivo da dona: poder trocar o destino dos botões (outro link Kiwify, outro preço) sem editar o HTML na mão.
 

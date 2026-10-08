@@ -1,4 +1,8 @@
-# Pilates em Casa - headers de cache (aproveita o ponto do Lighthouse)
+# Pilates em Casa
+# Principal dinâmico: index.php resolve a oferta no servidor (?o=CODIGO).
+DirectoryIndex index.php index.html
+
+# Headers de cache (aproveita o ponto do Lighthouse)
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType image/jpeg "access plus 6 months"
@@ -12,3 +16,23 @@
 <IfModule mod_headers.c>
   Header unset ETag
 </IfModule>
+
+# Oferta é resolvida no servidor: nunca cachear o HTML com ?o= (evita
+# entregar preço de um visitante no cache para outro).
+<IfModule mod_headers.c>
+  <If "%{QUERY_STRING} =~ /o=/">
+    Header set Cache-Control "private, no-store"
+  </If>
+</IfModule>
+
+# Defesa em profundidade: se a pasta private/ for alcançada, negar PHP nela
+# (o private/.htaccess já nega tudo; isto cobre o caso de AllowOverride off).
+<FilesMatch "(^|/)(ofertas)\.php$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
+</FilesMatch>

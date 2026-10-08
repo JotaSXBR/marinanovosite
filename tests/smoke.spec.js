@@ -71,14 +71,26 @@ test('carrossel nao quebra o layout ao rolar', async ({ page }) => {
   for (const d of crops) expect(d).toBeLessThan(3);
 });
 
-test('carrosseis avancam sozinhos em loop', async ({ page }) => {
+test('carrosseis avancam sozinhos em loop', async ({ page, isMobile }) => {
   await page.goto(PAGE);
   await page.locator('.carrossel').first().scrollIntoViewIfNeeded();
-  const antes = await page.locator('.carrossel').first().evaluate((el) => el.scrollLeft);  await page.waitForFunction(
-    (x) => document.querySelector('.carrossel').scrollLeft > x + 5,
-    antes,
-    { timeout: 8000 }
-  );
+  const soUm = await page.locator('.carrossel.so-um').first().count();
+  if (isMobile && soUm) {
+    // no celular o rotativo troca a foto ativa (1 por vez), sem rolagem
+    const antes = await page.locator('#carrossel-depo').evaluate((el) =>
+      Array.from(el.querySelectorAll('figure:not([aria-hidden])')).findIndex((f) => f.classList.contains('ativo')));
+    await page.waitForFunction(
+      (x) => Array.from(document.querySelectorAll('#carrossel-depo figure:not([aria-hidden])')).findIndex((f) => f.classList.contains('ativo')) !== x,
+      antes,
+      { timeout: 8000 }
+    );
+  } else {
+    const antes = await page.locator('.carrossel').first().evaluate((el) => el.scrollLeft);  await page.waitForFunction(
+      (x) => document.querySelector('.carrossel').scrollLeft > x + 5,
+      antes,
+      { timeout: 8000 }
+    );
+  }
   // o avancar nao pode mover a rolagem da pagina
   const y1 = await page.evaluate(() => window.scrollY);
   await page.waitForTimeout(4500);
@@ -129,14 +141,15 @@ test('ofertas dinamicas e OG tags', async ({ page }) => {
   expect(og).toContain('og-capa.jpg');
 });
 
-test('comparador antes/depois move a divisoria', async ({ page }) => {
+test('comparador antes/depois move a divisoria', async ({ page, isMobile }) => {
   await page.goto(PAGE);
   await expect(page.locator('.antes-texto')).toContainText('falta de sistema');
   expect(await page.locator('.ba').count()).toBe(5);
-  const ultimo = page.locator('.ba').last();
-  await ultimo.locator('input').dispatchEvent('pointerdown');
-  await ultimo.locator('input').fill('80');
-  const clip = await ultimo.locator('.ba-depois').evaluate((el) => el.style.clipPath);
+  // no celular só o 1º comparador fica visível (rotativo); no desktop todos
+  const alvo = isMobile ? page.locator('.ba').first() : page.locator('.ba').last();
+  await alvo.locator('input').dispatchEvent('pointerdown');
+  await alvo.locator('input').fill('80');
+  const clip = await alvo.locator('.ba-depois').evaluate((el) => el.style.clipPath);
   expect(clip).toContain('80%');
 });
 
