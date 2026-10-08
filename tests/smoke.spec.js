@@ -29,6 +29,27 @@ test('oferta com preco, sem video antigo', async ({ page }) => {
   }
 });
 
+test('paginas legais no design da landing com voltar do browser', async ({ page }) => {
+  for (const [slug, titulo] of [['privacidade.html', 'Política de Privacidade'], ['termos.html', 'Termos de Uso']]) {
+    await page.goto(`/nova-landing/${slug}`);
+    await expect(page.locator('.legal h1')).toContainText(titulo);
+    // mesmo design: marca, toggle de tema e rodapé da landing
+    await expect(page.locator('.marca')).toContainText('Pilates');
+    await expect(page.locator('#tema-toggle')).toBeVisible();
+    await expect(page.locator('.rodape-marca')).toContainText('Pilates em Casa');
+    // voltar usa history.back, com fallback para a raiz (nunca domínio fixo)
+    const voltar = page.locator('[data-voltar].btn');
+    await expect(voltar).toContainText('Voltar');
+    expect(await voltar.getAttribute('href')).toBe('./');
+  }
+  // vindo da landing, o voltar retorna para ela via histórico
+  await page.goto(PAGE);
+  await page.locator('a[href="privacidade.html"]').click();
+  await expect(page.locator('.legal h1')).toContainText('Política de Privacidade');
+  await page.locator('[data-voltar].btn').click();
+  await expect(page).toHaveURL(new RegExp(PAGE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$'));
+});
+
 test('todas as imagens locais retornam 200', async ({ page }) => {
   await page.goto(PAGE);
   // usa o atributo src declarado (nao depende de lazy-load da viewport)

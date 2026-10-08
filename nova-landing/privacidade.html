@@ -3,40 +3,157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Política de Privacidade | Mari Coach Fit</title>
-<meta name="description" content="Como o Mari Coach Fit trata seus dados pessoais, conforme a LGPD (Lei 13.709/2018).">
+<title>Política de Privacidade | Pilates em Casa</title>
+<meta name="description" content="Como o Pilates em Casa trata seus dados pessoais, conforme a LGPD (Lei 13.709/2018).">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FFF7FC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#2F1D2A" media="(prefers-color-scheme: dark)">
+<script>(function(){try{var t=localStorage.getItem('tema');if(t==='escuro'||t==='claro'){document.documentElement.setAttribute('data-tema',t);}}catch(e){}})();</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233F0142'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='36' font-weight='bold' fill='%23FF51C9' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--roxo:#3F0142;--cta:#A80077;--tinta:#2B1226;--cinza:#6B5565}
+:root{
+  color-scheme:light dark;
+  --rosa:#FF51C9; --roxo:#3F0142; --roxo-2:#820088;
+  --cta:#A80077; --cta-hover:#86025F;
+  --rosa-texto:light-dark(#C4008B,#F470C4);
+  --roxo:light-dark(#3F0142,#E3A9D4);
+  --tinta:light-dark(#2B1226,#F8EAF3);
+  --cinza:light-dark(#6B5565,#D3BECD);
+  --fundo:light-dark(#FFF7FC,#3A2434);
+  --branco:light-dark(#FFFFFF,#2F1D2A);
+  --faixa:light-dark(#FBE9F5,#422A41);
+  --sup:light-dark(#FFFFFF,#3E2A38);
+  --borda:light-dark(#F0D4E6,#5E3D55);
+  --borda-suave:light-dark(#F3D9EA,#593850);
+  --raio:18px; --max:1120px;
+}
+html[data-tema="claro"]{color-scheme:light}
+html[data-tema="escuro"]{color-scheme:dark}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--tinta);line-height:1.7;padding:40px 20px}
-main{max-width:760px;margin:0 auto}
-h1{font-size:1.8rem;color:var(--roxo);margin-bottom:6px}
-h2{font-size:1.15rem;color:var(--roxo);margin:26px 0 8px}
-p,li{font-size:.96rem;margin-bottom:10px}
-ul{padding-left:22px}
-a{color:var(--cta)}
-.voltar{display:inline-block;margin-top:30px;font-weight:600}
+html{scroll-behavior:smooth}
+body{font-family:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.0625rem;color:var(--tinta);background:var(--branco);line-height:1.7;-webkit-font-smoothing:antialiased}
+h1,h2{font-family:"Anton",Impact,sans-serif;font-weight:400;line-height:1.15;letter-spacing:.01em;text-wrap:balance}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+.skip{position:absolute;left:12px;top:-70px;z-index:100;background:var(--roxo);color:#fff;padding:10px 18px;border-radius:0 0 12px 12px;font-weight:700;text-decoration:none;transition:top .2s ease}
+.skip:focus{top:0;color:#fff}
+a:focus-visible,button:focus-visible{outline:3px solid var(--cta);outline-offset:2px}
+header.nav{position:sticky;top:0;z-index:50;background:light-dark(rgba(255,255,255,.94),rgba(47,29,42,.94));backdrop-filter:blur(10px);border-bottom:1px solid var(--borda-suave)}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 20px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.marca{font-family:"Anton",sans-serif;font-size:1.25rem;color:var(--roxo);text-decoration:none}
+.marca span{color:var(--rosa-texto)}
+.tema-toggle{background:none;border:1px solid var(--borda);border-radius:999px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tinta);flex:none;padding:0}
+.tema-toggle svg{width:20px;height:20px}
+.tema-toggle .icone-sol{display:none}
+@media (prefers-color-scheme:dark){
+  html:not([data-tema]) .tema-toggle .icone-sol{display:block}
+  html:not([data-tema]) .tema-toggle .icone-lua{display:none}
+}
+html[data-tema="escuro"] .tema-toggle .icone-sol{display:block}
+html[data-tema="escuro"] .tema-toggle .icone-lua{display:none}
+main{padding:56px 0 72px}
+.legal{background:light-dark(rgba(255,81,201,.08),rgba(255,81,201,.19));border-radius:18px;padding:clamp(28px,4vw,52px);max-width:860px;margin:0 auto}
+.legal h1{font-size:clamp(1.7rem,3.4vw,2.4rem);margin-bottom:6px;text-align:center}
+.legal .atualizado{text-align:center;color:var(--cinza);font-size:.92rem;margin-bottom:8px}
+.legal h2{font-size:1.25rem;color:var(--rosa-texto);margin:26px 0 8px}
+.legal p,.legal li{font-size:.97rem;margin-bottom:10px;color:var(--tinta)}
+.legal ul{padding-left:22px}
+.legal a{color:var(--cta)}
+.btn{display:inline-block;background:var(--cta);color:#fff !important;font-weight:700;font-size:1.05rem;padding:16px 38px;border-radius:999px;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;transition:transform .25s ease,background .25s ease}
+.btn:hover{background:var(--cta-hover)}
+.btn:active{transform:scale(.98)}
+.btn-centro{text-align:center;margin-top:32px}
+.voltar-topo{display:inline-block;margin-bottom:18px;color:var(--roxo);font-weight:600;font-size:.95rem;text-decoration:none}
+.voltar-topo:hover{color:var(--cta)}
+footer{padding:40px 0 48px;text-align:center;color:var(--cinza);font-size:.92rem}
+.rodape-marca{font-size:1rem;color:var(--tinta)}
+.rodape-marca b{display:block;font-size:1.2rem;color:var(--roxo)}
+.rodape-marca span{display:block;font-size:.88rem;color:var(--cinza);margin-top:2px}
+.rodape-premio{font-size:.85rem;margin-top:6px}
+footer nav{display:flex;gap:22px;justify-content:center;margin:14px 0 20px;flex-wrap:wrap}
+footer a{color:var(--roxo);font-weight:600;text-decoration:none}
+footer nav a:hover{color:var(--cta);text-decoration:underline}
+@media (max-width:900px){
+  .marca{white-space:nowrap;font-size:1.1rem;margin-right:auto}
+  main{padding:36px 0 52px}
+  .legal{padding:30px 20px}
+}
 </style>
 </head>
 <body>
-<main>
-<h1>Política de Privacidade</h1>
-<p>Última atualização: setembro de 2026. O <b>Mari Coach Fit</b> (Natália Pereira) respeita sua privacidade e trata dados pessoais conforme a LGPD (Lei nº 13.709/2018).</p>
-<h2>1. Dados que coletamos</h2>
-<ul>
-<li><b>Pagamento:</b> processado pela Kiwify. Não recebemos nem armazenamos dados do seu cartão; eles seguem a política da plataforma de pagamento.</li>
-<li><b>Contato:</b> se você chama no WhatsApp ou Instagram, recebemos nome, telefone e mensagens para responder e prestar suporte.</li>
-<li><b>Navegação:</b> esta página não usa cookies próprios nem analytics. Serviços externos (YouTube, Google Fonts) podem usar cookies próprios deles.</li>
-</ul>
-<h2>2. Como usamos</h2>
-<p>Usamos seus dados para liberar seu acesso, prestar suporte, enviar avisos sobre o programa e cumprir obrigações legais. Não vendemos seus dados.</p>
-<h2>3. Seus direitos</h2>
-<p>Você pode pedir confirmação, acesso, correção, anonimização ou eliminação dos seus dados pelo WhatsApp (55 11 99898-7824) ou Instagram (@pilatesemcasa.contareserva). Respondemos em até 15 dias.</p>
-<h2>4. Segurança e menores</h2>
-<p>Adotamos medidas razoáveis de segurança. O programa é destinado a maiores de 18 anos; menores precisam de responsável e liberação médica.</p>
-<h2>5. Mudanças</h2>
-<p>Podemos atualizar este texto; a versão vigente estará sempre nesta página.</p>
-<a class="voltar" href="index.html">Voltar para a página inicial</a>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="marca" href="./">Pilates <span>em Casa</span></a>
+    <button class="tema-toggle" id="tema-toggle" aria-label="Tema atual: sistema. Ativar para alternar." title="Alternar tema claro/escuro">
+      <svg class="icone-lua" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      <svg class="icone-sol" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="conteudo">
+  <div class="wrap">
+    <div class="legal">
+      <a class="voltar-topo" href="./" data-voltar>← Voltar</a>
+      <h1>Política de Privacidade</h1>
+      <p class="atualizado">Última atualização: setembro de 2026.</p>
+      <p>O <b>Mari Coach Fit</b> (Natália Pereira) respeita sua privacidade e trata dados pessoais conforme a LGPD (Lei nº 13.709/2018).</p>
+      <h2>1. Dados que coletamos</h2>
+      <ul>
+        <li><b>Pagamento:</b> processado pela Kiwify. Não recebemos nem armazenamos dados do seu cartão; eles seguem a política da plataforma de pagamento.</li>
+        <li><b>Contato:</b> se você chama no WhatsApp ou Instagram, recebemos nome, telefone e mensagens para responder e prestar suporte.</li>
+        <li><b>Navegação:</b> esta página não usa cookies próprios nem analytics. Serviços externos (YouTube, Google Fonts) podem usar cookies próprios deles.</li>
+      </ul>
+      <h2>2. Como usamos</h2>
+      <p>Usamos seus dados para liberar seu acesso, prestar suporte, enviar avisos sobre o programa e cumprir obrigações legais. Não vendemos seus dados.</p>
+      <h2>3. Seus direitos</h2>
+      <p>Você pode pedir confirmação, acesso, correção, anonimização ou eliminação dos seus dados pelo WhatsApp (55 11 99898-7824) ou Instagram (@pilatesemcasa.contareserva). Respondemos em até 15 dias.</p>
+      <h2>4. Segurança e menores</h2>
+      <p>Adotamos medidas razoáveis de segurança. O programa é destinado a maiores de 18 anos; menores precisam de responsável e liberação médica.</p>
+      <h2>5. Mudanças</h2>
+      <p>Podemos atualizar este texto; a versão vigente estará sempre nesta página.</p>
+      <div class="btn-centro"><a class="btn" href="./" data-voltar>Voltar</a></div>
+    </div>
+  </div>
 </main>
+
+<footer>
+  <div class="wrap">
+    <p class="rodape-marca"><b>Pilates em Casa</b><span>com Natália Pereira e Mari Domenes</span></p>
+    <p class="rodape-premio">1º lugar na categoria bem-estar físico na Kiwify em 2024</p>
+    <nav aria-label="Links do rodapé">
+      <a href="./">Página inicial</a>
+      <a href="https://www.instagram.com/pilatesemcasa.contareserva">Instagram</a>
+      <a href="https://wa.me/5511998987824?text=Ol%C3%A1!%20Vim%20pelo%20site%20Pilates%20em%20Casa%20e%20quero%20tirar%20uma%20d%C3%BAvida.">WhatsApp</a>
+    </nav>
+    <p>© 2023–2026 Pilates em Casa - Todos os Direitos Reservados</p>
+  </div>
+</footer>
+
+<script>
+// Tema claro/escuro/sistema (mesmo comportamento da landing)
+(function(){
+  var btn = document.getElementById('tema-toggle');
+  if(!btn) return;
+  btn.addEventListener('click', function(){
+    var atual = document.documentElement.getAttribute('data-tema');
+    var escuroEfetivo = atual ? atual === 'escuro' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var proximo = escuroEfetivo ? 'claro' : 'escuro';
+    try{ localStorage.setItem('tema', proximo); }catch(e){}
+    document.documentElement.setAttribute('data-tema', proximo);
+    btn.setAttribute('aria-label', 'Tema atual: ' + proximo + '. Ativar para alternar entre claro e escuro.');
+  });
+})();
+// Voltar: usa o comando de voltar do navegador; sem histórico, vai para a página inicial
+document.querySelectorAll('[data-voltar]').forEach(function(el){
+  el.addEventListener('click', function(ev){
+    if(window.history.length > 1){ ev.preventDefault(); window.history.back(); }
+  });
+});
+</script>
 </body>
 </html>
