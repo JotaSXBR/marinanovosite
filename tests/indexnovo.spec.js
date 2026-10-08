@@ -55,7 +55,8 @@ test('oferta: parcelamento em 2 pontos sem redundancia', async ({ page }) => {
 test('faq: sanfona enxuta com auto-fecho', async ({ page }) => {
   await page.goto(PAGE);
   await page.locator('.faq-lista').scrollIntoViewIfNeeded();
-  expect(await page.locator('.faq-grupo').count()).toBe(3);
+  expect(await page.locator('.faq-lista .faq-grupo').count()).toBe(0);
+  expect(await page.locator('.faq-lista details').count()).toBe(11);
   const ds = page.locator('.faq-lista details');
   await ds.nth(0).locator('summary').click();
   await expect(ds.nth(0)).toHaveAttribute('open', '');
