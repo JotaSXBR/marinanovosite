@@ -41,6 +41,15 @@ test('bio: beneficios em cards e fecho sem repeticao', async ({ page }) => {
   await expect(page.locator('.fecho-cta')).toContainText('poucos dias');
 });
 
+test('cta final: copy de garantia e respiro do whatsapp', async ({ page }) => {
+  await page.goto(PAGE);
+  await expect(page.locator('.cta-final h2')).toContainText('funcionar para você');
+  await expect(page.locator('.cta-final')).toContainText('7 dias para testar tudo');
+  await expect(page.locator('.cta-final .cta-garantia')).toHaveCount(0);
+  const mt = await page.locator('.cta-final .duvida').evaluate((el) => parseFloat(getComputedStyle(el).marginTop));
+  expect(mt).toBeGreaterThanOrEqual(20);
+});
+
 test('mobile: antes/depois em 1 quadrado rotativo', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'somente mobile');
   await page.goto(PAGE);
