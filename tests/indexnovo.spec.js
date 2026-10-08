@@ -41,6 +41,17 @@ test('bio: beneficios em cards e fecho sem repeticao', async ({ page }) => {
   await expect(page.locator('.fecho-cta')).toContainText('poucos dias');
 });
 
+test('oferta: parcelamento em 2 pontos sem redundancia', async ({ page }) => {
+  await page.goto(PAGE);
+  await expect(page.locator('.oferta-card .parcela')).toContainText('6x de R$10,69');
+  const parcs = await page.locator('[data-parc]').evaluateAll((els) => els.map((el) => el.textContent));
+  expect(parcs.length).toBe(2);
+  expect(new Set(parcs).size).toBe(1);
+  await expect(page.locator('details').first()).toContainText('6x de R$10,69');
+  expect(await page.locator('.cta-fixo-preco, .cta-final').evaluateAll((els) =>
+    els.filter((el) => (el.textContent || '').includes('10,69')).length)).toBe(0);
+});
+
 test('cta final: copy de garantia e respiro do whatsapp', async ({ page }) => {
   await page.goto(PAGE);
   await expect(page.locator('.cta-final h2')).toContainText('funcionar para você');

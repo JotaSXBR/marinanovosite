@@ -214,7 +214,8 @@ h2{text-wrap:balance}
 .oferta-total s{opacity:.6}
 .oferta-card{background:var(--sup);color:var(--tinta);border-radius:18px;padding:34px 28px;text-align:center}
 .oferta-card .de{color:var(--cinza);text-decoration:line-through;font-size:1.05rem;margin:0}
-.oferta-card .por{font-family:"Anton",sans-serif;font-size:2.8rem;color:var(--roxo);margin:0 0 20px;line-height:1}
+.oferta-card .por{font-family:"Anton",sans-serif;font-size:2.8rem;color:var(--roxo);margin:0 0 6px;line-height:1}
+.oferta-card .parcela{color:var(--cinza);font-size:.95rem;margin:0 0 20px}
 .oferta-card .btn{width:100%;padding:16px 10px}
 .oferta-card .selo-oferta{width:140px;margin:18px auto 0}
 .oferta-card .micro{font-size:.87rem;color:var(--cinza);margin:12px 0 0;text-align:justify;text-wrap:balance;hyphens:none}
@@ -566,6 +567,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         <div class="oferta-card" aria-live="polite">
           <p class="de">De&nbsp;R$&nbsp;97</p>
           <p class="por">por&nbsp;R$&nbsp;57</p>
+          <p class="parcela">ou <span data-parc>6x de R$10,69</span> no cartão</p>
           <a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a>
           <img class="selo-oferta" src="../conteudo/imagens/Satisfacao-Garantida.svg" alt="Selo de satisfação garantida" loading="lazy" width="120" height="120">
           <p class="micro">Pagamento único, sem <b>mensalidade</b> e sem <b>taxas extras</b>. 1 ano de acesso à plataforma. Pagamento seguro pela <span translate="no">Kiwify</span>, com garantia incondicional de 7&nbsp;dias.</p>
@@ -607,7 +609,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
       </div>
       <div class="faq-lista">
         <p class="faq-grupo">Pagamento e garantia</p>
-        <details><summary>Quais são as formas de pagamento? É seguro?</summary><p>Você paga com PIX, boleto ou cartão pela Kiwify, com dados protegidos pela plataforma.</p></details>
+        <details><summary>Quais são as formas de pagamento? É seguro?</summary><p>Você paga com PIX, boleto ou cartão em até <span data-parc>6x de R$10,69</span> pela Kiwify, com dados protegidos pela plataforma.</p></details>
         <details><summary>Como funciona a garantia de 7 dias?</summary><p>Se por qualquer motivo você não ficar satisfeita em até 7 dias, basta pedir o reembolso integral, sem perguntas.</p></details>
         <p class="faq-grupo">Treinos, acesso e rotina</p>
         <details><summary>Os treinos são só para fazer em casa?</summary><p>Você pode treinar onde quiser: no quarto, na sala ou viajando, sem equipamentos, usando só o peso do corpo.</p></details>
@@ -710,7 +712,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
 })();
 // Ofertas dinamicas: ?oferta=padrao (atual). Novas ofertas entram no objeto OFERTAS.
 var OFERTAS = {
-  padrao: {checkout:'https://pay.kiwify.com.br/U4n0qN7', cheio:97, preco:57, total:613}
+  padrao: {checkout:'https://pay.kiwify.com.br/U4n0qN7', cheio:97, preco:57, total:613, parcN:6, parcV:'10,69'}
 };
 (function(){
   var chave = new URLSearchParams(window.location.search).get('oferta');
@@ -722,6 +724,7 @@ var OFERTAS = {
   if(de) de.textContent = 'De\u00A0R$\u00A0' + of.cheio;
   if(por) por.textContent = 'por\u00A0R$\u00A0' + of.preco;
   if(total) total.innerHTML = 'Total: <s>R$\u00A0' + of.total + '</s> em programa e bônus';
+  document.querySelectorAll('[data-parc]').forEach(function(s){ s.textContent = of.parcN + 'x de R$' + of.parcV; });
 })();
 // Revelacao suave das secoes (respeita reduced-motion via CSS)
 (function(){
