@@ -227,12 +227,15 @@ h2{text-wrap:balance}
 .bio{background:var(--fundo);border-radius:18px;padding:clamp(28px,4vw,52px);display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:center}
 .bio.sem-foto{display:block;text-align:center}
 .bio img{border-radius:20px;width:100%}
-.trans-lista{list-style:none;display:grid;grid-template-columns:1fr;gap:14px;margin:22px auto;max-width:640px;text-align:center}
-.trans-lista li{position:relative;font-size:.95rem;font-weight:600;line-height:1.6}
-.trans-lista li::before{content:"";display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--cta);margin-right:10px;transform:translateY(1px)}
-.bio .fecho{margin-top:0;font-weight:600;font-size:1.16rem;color:var(--tinta);text-wrap:pretty}
+.trans-lista{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:28px auto 0;max-width:880px;text-align:left}
+.trans-lista li{display:flex;gap:14px;align-items:flex-start;background:var(--sup);border:1px solid var(--borda);border-radius:14px;padding:18px;font-size:.98rem;font-weight:600;line-height:1.55}
+.trans-lista li:nth-child(even){background:var(--faixa)}
+.trans-check{flex:none;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--rosa),var(--roxo-2));display:flex;align-items:center;justify-content:center;margin-top:2px}
+.trans-check svg{width:16px;height:16px;color:#fff}
+.bio .fecho{margin:0;font-weight:600;font-size:1.16rem;color:var(--tinta);text-wrap:pretty}
 .bio .fecho strong{color:var(--rosa-texto)}
-.bio .fecho-cta{font-family:"Anton",sans-serif;font-size:clamp(1.3rem,2.6vw,1.7rem);line-height:1.25;color:var(--rosa-texto);margin-top:20px}
+.trans-painel{background:var(--faixa);border:1px solid var(--borda);border-radius:14px;padding:24px 22px;margin:22px auto 0;max-width:720px}
+.bio .fecho-cta{font-family:"Anton",sans-serif;font-size:clamp(1.3rem,2.6vw,1.7rem);line-height:1.25;color:var(--rosa-texto);margin-top:22px}
 /* FAQ */
 .faq-lista{max-width:760px;margin:26px auto 0}
 details{border:1px solid var(--borda);border-radius:14px;margin-bottom:10px;background:var(--sup);overflow:hidden}
@@ -577,19 +580,20 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
     <div class="wrap">
       <div class="bio sem-foto">
         <div>
-          <h2>Aqui, o Pilates em casa não é só sobre movimento, é sobre transformação. Você vai:</h2>
+          <h2>Aqui, o Pilates em casa não é só sobre movimento, é sobre transformação.</h2>
+          <p class="sub">Veja o que muda no seu corpo:</p>
           <ul class="trans-lista">
-            <li>Fortalecer o abdômen e o core com progressão segura</li>
-            <li>Trabalhar o assoalho pélvico, melhorar a postura, equilíbrio e a força funcional</li>
-            <li>Aumentar a mobilidade, a flexibilidade e reduzir dores</li>
-            <li>Recuperar e ganhar massa muscular de forma natural</li>
-            <li>Ganhar energia e segurança, especialmente durante a menopausa</li>
-            <li>Secar, definir e tonificar todo o corpo, com leveza e consistência</li>
+            <li><span class="trans-check" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Fortalecer o abdômen e o core com progressão segura</span></li>
+            <li><span class="trans-check" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Trabalhar o assoalho pélvico, melhorar a postura, equilíbrio e a força funcional</span></li>
+            <li><span class="trans-check" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Aumentar a mobilidade, a flexibilidade e reduzir dores</span></li>
+            <li><span class="trans-check" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Recuperar e ganhar massa muscular de forma natural</span></li>
+            <li><span class="trans-check" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ganhar energia e segurança, especialmente durante a menopausa</span></li>
+            <li><span class="trans-check" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>Secar, definir e tonificar todo o corpo, com leveza e consistência</span></li>
           </ul>
-          <p class="sub fecho">Não importa se você está <strong>começando do zero</strong> ou voltando agora a cuidar de si.</p>
-          <p class="sub fecho">Você vai se sentir <strong>abraçada, capaz e acompanhada</strong>, a cada aula, no seu tempo.</p>
-          <p class="sub fecho">É <strong>corpo leve, mente ativa</strong> e um estilo de vida possível.</p>
-          <p class="fecho-cta">Mesmo começando do zero, você já sente o resultado em poucos dias.</p>
+          <div class="trans-painel">
+            <p class="sub fecho">Começando do zero ou retomando agora, você se sente <strong>abraçada, capaz e acompanhada</strong> — a cada aula, no seu tempo.</p>
+          </div>
+          <p class="fecho-cta">Corpo leve, mente ativa — e resultado em poucos dias.</p>
         </div>
       </div>
     </div>

@@ -31,6 +31,16 @@ test('desktop: grade e carrosseis originais', async ({ page, isMobile }) => {
   );
 });
 
+test('bio: beneficios em cards e fecho sem repeticao', async ({ page }) => {
+  await page.goto(PAGE);
+  expect(await page.locator('.trans-lista li').count()).toBe(6);
+  expect(await page.locator('.trans-lista .trans-check').count()).toBe(6);
+  await expect(page.locator('.trans-painel')).toContainText('abraçada');
+  const bio = (await page.locator('.bio').textContent()) || '';
+  expect((bio.match(/começando do zero/gi) || []).length).toBeLessThanOrEqual(1);
+  await expect(page.locator('.fecho-cta')).toContainText('poucos dias');
+});
+
 test('mobile: antes/depois em 1 quadrado rotativo', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'somente mobile');
   await page.goto(PAGE);

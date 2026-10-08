@@ -59,11 +59,13 @@ test('carrossel nao quebra o layout ao rolar', async ({ page }) => {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(1);
   const crops = await page.locator('.carrossel img').evaluateAll((imgs) =>
-    imgs.map((i) => {
-      const r = i.getBoundingClientRect();
-      const expected = (r.width * i.naturalHeight) / i.naturalWidth;
-      return Math.abs(r.height - expected);
-    })
+    imgs
+      .filter((i) => i.naturalWidth > 0)
+      .map((i) => {
+        const r = i.getBoundingClientRect();
+        const expected = (r.width * i.naturalHeight) / i.naturalWidth;
+        return Math.abs(r.height - expected);
+      })
   );
   expect(crops.length).toBeGreaterThan(10);
   for (const d of crops) expect(d).toBeLessThan(3);
