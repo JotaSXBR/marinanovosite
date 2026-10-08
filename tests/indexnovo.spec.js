@@ -45,7 +45,12 @@ test('cta final: copy de garantia e respiro do whatsapp', async ({ page }) => {
   await page.goto(PAGE);
   await expect(page.locator('.cta-final h2')).toContainText('funcionar para você');
   await expect(page.locator('.cta-final')).toContainText('7 dias para testar tudo');
+  await expect(page.locator('.cta-final')).toContainText('reembolso total, sem perguntas');
   await expect(page.locator('.cta-final .cta-garantia')).toHaveCount(0);
+  const len = ((await page.locator('.cta-final p').nth(1).textContent()) || '').length;
+  expect(len).toBeLessThanOrEqual(175);
+  const h2cor = await page.locator('.cta-final h2').evaluate((el) => getComputedStyle(el).color);
+  expect(h2cor).toBe('rgb(255, 255, 255)');
   const mt = await page.locator('.cta-final .duvida').evaluate((el) => parseFloat(getComputedStyle(el).marginTop));
   expect(mt).toBeGreaterThanOrEqual(20);
 });
