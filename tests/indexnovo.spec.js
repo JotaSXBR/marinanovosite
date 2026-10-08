@@ -52,6 +52,22 @@ test('oferta: parcelamento em 2 pontos sem redundancia', async ({ page }) => {
     els.filter((el) => (el.textContent || '').includes('10,69')).length)).toBe(0);
 });
 
+test('faq: sanfona enxuta com auto-fecho', async ({ page }) => {
+  await page.goto(PAGE);
+  await page.locator('.faq-lista').scrollIntoViewIfNeeded();
+  expect(await page.locator('.faq-grupo').count()).toBe(3);
+  const ds = page.locator('.faq-lista details');
+  await ds.nth(0).locator('summary').click();
+  await expect(ds.nth(0)).toHaveAttribute('open', '');
+  await ds.nth(1).locator('summary').click();
+  await expect(ds.nth(1)).toHaveAttribute('open', '');
+  await expect(ds.nth(0)).not.toHaveAttribute('open', '');
+  await page.waitForTimeout(6000);
+  await expect(ds.nth(1)).not.toHaveAttribute('open', '');
+  const mb = await ds.nth(0).evaluate((el) => parseFloat(getComputedStyle(el).marginBottom));
+  expect(mb).toBeLessThanOrEqual(8);
+});
+
 test('cta final: copy de garantia e respiro do whatsapp', async ({ page }) => {
   await page.goto(PAGE);
   await expect(page.locator('.cta-final h2')).toContainText('funcionar para você');
