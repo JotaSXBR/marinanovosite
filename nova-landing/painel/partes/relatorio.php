@@ -47,17 +47,14 @@
       <?php endforeach; ?>
       </tbody>
       <tfoot>
-        <?php
-          $tHoje = 0; $tSem = 0; $tTot = 0; $tUid = [];
-          foreach ($resumo as $r) { $tHoje += $r['hoje']; $tSem += $r['semana']; $tTot += $r['total']; foreach ($r['uid'] as $u => $_) $tUid[$u] = 1; }
-        ?>
+        <?php $tt = totais($resumo); ?>
         <tr class="totais">
           <td>Todos os canais</td>
           <td></td>
-          <td class="num" data-label="Hoje"><?= (int) $tHoje ?></td>
-          <td class="num" data-label="7 dias"><?= (int) $tSem ?></td>
-          <td class="num" data-label="Total"><?= (int) $tTot ?></td>
-          <td class="num" data-label="Pessoas hoje"><?= count($tUid) ?></td>
+          <td class="num" data-label="Hoje"><?= (int) $tt['hoje'] ?></td>
+          <td class="num" data-label="7 dias"><?= (int) $tt['semana'] ?></td>
+          <td class="num" data-label="Total"><?= (int) $tt['total'] ?></td>
+          <td class="num" data-label="Pessoas hoje"><?= (int) $tt['uid'] ?></td>
           <td></td>
         </tr>
       </tfoot>

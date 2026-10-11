@@ -134,4 +134,3 @@
       </div>
     </details>
   </div>
-<?php endif; ?>
