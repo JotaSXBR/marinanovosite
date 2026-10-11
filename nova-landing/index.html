@@ -12,7 +12,11 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Pilates em Casa | Elimine as dores em 20 min por dia">
 <meta property="og:description" content="Treinos de 20 min por dia, sem equipamentos. 1 ano de acesso, app exclusivo e garantia de 7 dias.">
-<meta property="og:image" content="https://violet-fly-798347.hostingersite.com/imagens/og-capa.jpg">
+<meta property="og:image" content="https://maricoachfit.com/imagens/og-capa.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Desafio Pilates em Casa — 20 min por dia, sem sair de casa">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233F0142'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='36' font-weight='bold' fill='%23FF51C9' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -200,7 +204,6 @@ h2{text-wrap:balance}
 .cel.cha-cel img{max-height:170px;object-fit:contain;margin:0 auto}
 .cel.mini{grid-column:span 2}
 .bento>.cel.mini:nth-child(even){background:var(--faixa)}
-.bento-mais{display:none}
 .cel.duo{grid-column:span 3}
 .cel.comunidade-cel{grid-column:span 3;background:linear-gradient(120deg,#820088,#3F0142);color:#fff;border:0}
 .cel.comunidade-cel p{color:#F2D3EA}
@@ -355,10 +358,6 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
   .recebe-grid{grid-template-columns:1fr}
   .cel,.cel.cha-cel,.cel.mini,.cel.duo,.cel.comunidade-cel,.cel.planner-cel,.cel.app-cel{grid-column:span 6}
   .cel.cha-cel,.cel.planner-cel,.cel.app-cel{grid-template-columns:1fr}
-  .bento .cel:nth-child(n+4){display:none}
-  .bento.aberto .cel:nth-child(n+4){display:block}
-  .bento.aberto .cel.planner-cel:nth-child(n+4),.bento.aberto .cel.app-cel:nth-child(n+4){display:grid}
-  .bento-mais{display:block;text-align:center;margin-top:18px}
   .cel.planner-cel img{transform:translateX(12px)}
   .oferta{grid-template-columns:1fr}
   .oferta li b{white-space:normal;text-align:right;flex:none}
@@ -571,7 +570,6 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
           <div class="phone"><img src="../conteudo/imagens/app-plataforma.jpg" alt="Aplicativo com as aulas do Pilates em Casa" loading="lazy" width="760" height="1651"></div>
         </div>
       </div>
-      <div class="bento-mais"><button type="button" class="pausa" id="bento-toggle" aria-expanded="false" aria-controls="bento-bonus">Ver todos os 9 bônus</button></div>
       <div class="btn-centro"><a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a></div>
     </div>
   </section>
@@ -1135,18 +1133,6 @@ var OFERTAS = {
   };
   rotativo({lista:'#carrossel-depo', nav:'depo-nav', dots:'depo-dots', contador:'depo-contador', rotulo:'Mostrar depoimento', atraso:500});
   rotativo({lista:'.carrossel.grupo', nav:'grupo-nav', dots:'grupo-dots', contador:'grupo-contador', rotulo:'Mostrar conversa', atraso:2500});
-})();
-// Bônus no celular: mostra 3, expande o resto (só indexdesign)
-(function(){
-  var btn = document.getElementById('bento-toggle');
-  var bento = document.getElementById('bento-bonus');
-  if(!btn || !bento) return;
-  var total = bento.querySelectorAll('.cel').length;
-  btn.addEventListener('click', function(){
-    var aberto = bento.classList.toggle('aberto');
-    btn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
-    btn.textContent = aberto ? 'Mostrar menos' : 'Ver todos os ' + total + ' bônus';
-  });
 })();
 // Fecho com efeito de digitação rotativo (só indexdesign; estático sem
 // movimento ou sem JS, com texto alternativo para leitor de tela)

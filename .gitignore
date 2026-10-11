@@ -4,6 +4,10 @@ node_modules/
 # build de deploy (gerado pela Action)
 deploy/
 
+# pacote de entrega ao dev (artefato local, igual ao deploy/ — não versionar)
+entrega-site/
+entrega-site.zip
+
 # testes
 tests/test-results/
 tests/playwright-report/

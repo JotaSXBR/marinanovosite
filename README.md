@@ -30,13 +30,74 @@ Abre `http://localhost:8901/nova-landing/` no navegador. Edite `nova-landing/ind
 npm test        # roda tests/ (sobe o preview sozinho na porta 8901)
 ```
 
-## Deploy (GitHub → Hostinger)
+## Deploy (GitHub → cPanel do maricoachfit.com)
 
-1. Suba o repo no GitHub e configure os Secrets (Settings → Secrets → Actions):
-   - `FTP_SERVER` (ex.: `ftp.seudominio.com` ou IP da Hostinger)
-   - `FTP_USERNAME` (usuário FTP da Hostinger)
-   - `FTP_PASSWORD` (senha FTP)
-2. Todo `push` na branch `main` monta `deploy/` (HTML + imagens com links reescritos) e envia para a raiz do FTP via FTPS (neste temporário, o document root é a raiz; não usar `public_html/`).
-3. Dados de FTP: painel Hostinger → Hospedagem → Gerenciar → FTP. Crie uma conta FTP apontando para `public_html` se preferir.
+A Action (`.github/workflows/deploy-cpanel.yml`) monta `deploy/` (HTML + imagens
+com links reescritos) e envia via **FTPS** a cada `push` na `main`.
 
-Primeiro deploy: confira se o WordPress antigo saiu do `public_html` antes, para não misturar arquivos.
+### 1. Criar o usuário FTP (no cPanel da proprietária)
+
+1. cPanel → **Contas de FTP** → **+ Adicionar conta FTP**.
+2. **Protocolo:** FTP (o action usa FTPS na conexão, mas a conta nasce como FTP).
+3. **Nome de usuário:** `deploy` → o login completo será `deploy@maricoachfit.com`.
+4. **Senha:** uma forte, gerada pelo próprio cPanel.
+5. **Diretório:** apague o padrão e digite exatamente `public_html`.
+   > É este campo que define onde os arquivos caem. Se ficar apontando para
+   > `public_html/upload` (o padrão quando o campo não é alterado), tudo será
+   > enviado para a subpasta errada.
+6. **Limite:** sem limite (ou o que couber) — as imagens somam ~12 MB.
+
+O login é sempre `usuario@seudominio.com` — é esse formato (não só `deploy`)
+que vai no secret do GitHub.
+
+### 2. Configurar o GitHub
+
+**Secrets** (Settings → Secrets and variables → Actions → *New repository secret*):
+
+| Nome | Valor |
+|---|---|
+| `FTP_SERVER` | `ftp.maricoachfit.com` |
+| `FTP_USERNAME` | `deploy@maricoachfit.com` |
+| `FTP_PASSWORD` | a senha gerada no passo 1 |
+
+**Variable** (mesma tela, aba *Variables* → *New repository variable*):
+
+| Nome | Valor | Efeito |
+|---|---|---|
+| `CPANEL_SERVER_DIR` | `nova/` | Sobe em `maricoachfit.com/nova/` — WordPress intacto |
+| `CPANEL_SERVER_DIR` | *(vazio)* | Sobe na raiz `public_html/` — usar no go-live |
+
+> Os secrets são escolhidos porque o `deploy/` é idêntico em qualquer hosting:
+> quem muda é só o destino. Para voltar a testar em outro servidor, troque só os
+> três valores dos secrets.
+
+### 3. Antes de mandar para a raiz
+
+Um `push` na `main` com `CPANEL_SERVER_DIR` vazio **sobrescreve o `index.php`
+do WordPress**. Confirme com a proprietária que o WordPress antigo pode sair
+(ele está em `/home/maricoachfit/public_html`). Rigorosamente: faça backup no
+cPanel (Backups) e mova os arquivos antigos para fora de `public_html` antes.
+
+### 4. Painel da proprietária
+
+O `painel/config.php` sobe com **hash placeholder**, e a Action **falha o
+deploy** até o hash real ser colado (proteção contra senha vazia). Gere em
+qualquer servidor com PHP:
+
+```bash
+php -r "echo password_hash('SENHA', PASSWORD_DEFAULT), PHP_EOL;"
+```
+
+Cole em `nova-landing/painel/config.php`, commit e push. Aí sobe em
+`/painel/` protegido por senha.
+
+### Diagnóstico rápido
+
+- **Action verde mas nada muda:** quase sempre é o `Diretório` da conta FTP
+  apontando para a subpasta errada (passo 1.5) ou `server-dir` vazio quando
+  você achava que era `nova/`.
+- **Erro de conexão FTPS:** o `protocol` da conta em cPanel está como "FTP" e
+  algumas contas antigas rejeitam FTPS explícito; nesse caso troque
+  `protocol: ftps` para `ftp` no workflow.
+- **`private/ofertas.php` acessível:** o `.htaccess` não está sendo lido →
+  falta `AllowOverride All` no Apache do domínio.

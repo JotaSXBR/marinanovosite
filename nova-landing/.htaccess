@@ -27,7 +27,7 @@ DirectoryIndex index.php index.html
 
 # Defesa em profundidade: se a pasta private/ for alcançada, negar PHP nela
 # (o private/.htaccess já nega tudo; isto cobre o caso de AllowOverride off).
-<FilesMatch "(^|/)(ofertas)\.php$">
+<FilesMatch "(^|/)(ofertas|rastreio|config)\.php$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>

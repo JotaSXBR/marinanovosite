@@ -5,6 +5,7 @@
 // real é sempre cobrado no checkout Kiwify (1 checkout por preço).
 define('OFERTAS_BOOT', true);
 $ofertas = require __DIR__ . '/private/ofertas.php';
+require __DIR__ . '/private/rastreio.php';
 $pedir = function ($k) {
   if (!isset($_GET[$k])) return '';
   return preg_replace('/[^A-Za-z0-9_-]/', '', substr((string) $_GET[$k], 0, 32));
@@ -13,10 +14,23 @@ $codigo = $pedir('o');
 if ($codigo === '') { $codigo = $pedir('oferta'); } // compat: links ?oferta= antigos
 $chave = ($codigo !== '' && isset($ofertas[$codigo])) ? $codigo : 'padrao';
 $of = $ofertas[$chave];
+// Canal de origem (?src=ig-bio etc.) repassado ao checkout da Kiwify: é o
+// mesmo código que o painel filtra em Vendas → Filtros → Parâmetros da URL.
+// $checkout substitui $of['checkout'] em todos os botões da página.
+$rastro = rastreioParametros();
+$checkout = e(rastreioComParametros($of['checkout'], $rastro));
+rastreioSalvar($chave, $rastro);
 $isSecreta = ($chave !== 'padrao');
 if ($isSecreta && !headers_sent()) { header('X-Robots-Tag: noindex, nofollow', true); }
 $offPerc = (int) round((1 - $of['preco'] / $of['cheio']) * 100);
 function e($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); }
+// Base absoluta p/ OG: monta a partir do host atual (sanitizado) + pasta do
+// script. Funciona em qualquer domínio e em subpasta de teste (/nova/) ou na
+// raiz, sem precisar editar o código no go-live.
+$host = isset($_SERVER['HTTP_HOST']) ? preg_replace('/[^A-Za-z0-9.-]/', '', (string) $_SERVER['HTTP_HOST']) : '';
+if ($host === '') { $host = 'maricoachfit.com'; }
+$basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
+$baseUrl = 'https://' . $host . ($basePath === '' ? '' : $basePath);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -32,7 +46,12 @@ function e($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); }
 <meta property="og:type" content="website">
 <meta property="og:title" content="Pilates em Casa | Elimine as dores em 20 min por dia">
 <meta property="og:description" content="Treinos de 20 min por dia, sem equipamentos. 1 ano de acesso, app exclusivo e garantia de 7 dias.">
-<meta property="og:image" content="https://violet-fly-798347.hostingersite.com/imagens/og-capa.jpg">
+<meta property="og:url" content="<?= e($baseUrl . '/') ?>">
+<meta property="og:image" content="<?= e($baseUrl . '/imagens/og-capa.jpg') ?>">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Desafio Pilates em Casa — 20 min por dia, sem sair de casa">
 <meta name="twitter:card" content="summary_large_image">
 <?php if ($isSecreta): ?>
 <meta name="robots" content="noindex, nofollow">
@@ -224,7 +243,6 @@ h2{text-wrap:balance}
 .cel.cha-cel img{max-height:170px;object-fit:contain;margin:0 auto}
 .cel.mini{grid-column:span 2}
 .bento>.cel.mini:nth-child(even){background:var(--faixa)}
-.bento-mais{display:none}
 .cel.duo{grid-column:span 3}
 .cel.comunidade-cel{grid-column:span 3;background:linear-gradient(120deg,#820088,#3F0142);color:#fff;border:0}
 .cel.comunidade-cel p{color:#F2D3EA}
@@ -379,10 +397,6 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
   .recebe-grid{grid-template-columns:1fr}
   .cel,.cel.cha-cel,.cel.mini,.cel.duo,.cel.comunidade-cel,.cel.planner-cel,.cel.app-cel{grid-column:span 6}
   .cel.cha-cel,.cel.planner-cel,.cel.app-cel{grid-template-columns:1fr}
-  .bento .cel:nth-child(n+4){display:none}
-  .bento.aberto .cel:nth-child(n+4){display:block}
-  .bento.aberto .cel.planner-cel:nth-child(n+4),.bento.aberto .cel.app-cel:nth-child(n+4){display:grid}
-  .bento-mais{display:block;text-align:center;margin-top:18px}
   .cel.planner-cel img{transform:translateX(12px)}
   .oferta{grid-template-columns:1fr}
   .oferta li b{white-space:normal;text-align:right;flex:none}
@@ -411,7 +425,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
       <a href="#resultados">Resultados</a>
       <a href="#bonus">Bônus</a>
       <a href="#faq">Dúvidas</a>
-      <a class="btn nav-cta" href="<?= e($of['checkout']) ?>">Começar agora</a>
+      <a class="btn nav-cta" href="<?= $checkout ?>">Começar agora</a>
     </nav>
       <button class="tema-toggle" id="tema-toggle" aria-label="Tema atual: sistema. Ativar para alternar." title="Alternar tema claro/escuro">
         <svg class="icone-lua" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
@@ -429,7 +443,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         <h1>Pilates para mulher com <span class="grad">rotina real</span>:</h1>
         <p class="hero-h2">aliviar as dores, secar e definir, em casa, com aulas curtas, progressivas e guiadas por fisioterapeuta.</p>
         <p class="sub">Depois de 13 anos como fisioterapeuta e instrutora de pilates, criei um método que nenhuma aula convencional entrega. O Pilates em Casa reúne alívio de dores, definição e força, com progressão, segurança e acompanhamento real, feito para encaixar na sua rotina.</p>
-        <a class="btn" href="<?= e($of['checkout']) ?>">Começar agora</a>
+        <a class="btn" href="<?= $checkout ?>">Começar agora</a>
       </div>
       <div class="hero-foto">
         <img src="../conteudo/imagens/Nath-com-fundo.png" alt="Natália Pereira, instrutora de Pilates" fetchpriority="high" width="880" height="880">
@@ -497,7 +511,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         </div>
         <div class="ba-dots" id="ba-dots" role="group" aria-label="Escolher foto do antes e depois"></div>
       </div>
-      <div class="btn-centro"><a class="btn" href="<?= e($of['checkout']) ?>">Começar agora</a></div>
+      <div class="btn-centro"><a class="btn" href="<?= $checkout ?>">Começar agora</a></div>
     </div>
   </section>
 
@@ -519,7 +533,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
       <div class="guia-fecho">
         <p class="linha">É assim que você transforma o Pilates em hábito: 20 minutos, aula, constância, evolução.</p>
         <p class="quad">Você não precisa de uma hora livre. Não precisa de academia. Não precisa de equipamentos. E não precisa começar sabendo Pilates. Só precisa dar o play e começar.</p>
-        <div class="btn-centro"><a class="btn" href="<?= e($of['checkout']) ?>">Começar agora</a></div>
+        <div class="btn-centro"><a class="btn" href="<?= $checkout ?>">Começar agora</a></div>
       </div>
     </div>
   </section>
@@ -566,7 +580,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         </div>
         <div class="ba-dots" id="grupo-dots" role="group" aria-label="Escolher conversa do grupo VIP"></div>
       </div>
-      <div class="btn-centro"><a class="btn" href="<?= e($of['checkout']) ?>">Começar agora</a></div>
+      <div class="btn-centro"><a class="btn" href="<?= $checkout ?>">Começar agora</a></div>
     </div>
   </section>
 
@@ -595,8 +609,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
           <div class="phone"><img src="../conteudo/imagens/app-plataforma.jpg" alt="Aplicativo com as aulas do Pilates em Casa" loading="lazy" width="760" height="1651"></div>
         </div>
       </div>
-      <div class="bento-mais"><button type="button" class="pausa" id="bento-toggle" aria-expanded="false" aria-controls="bento-bonus">Ver todos os 9 bônus</button></div>
-      <div class="btn-centro"><a class="btn" href="<?= e($of['checkout']) ?>">Começar agora</a></div>
+      <div class="btn-centro"><a class="btn" href="<?= $checkout ?>">Começar agora</a></div>
     </div>
   </section>
 
@@ -626,7 +639,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
           <p class="por">por&nbsp;R$&nbsp;<?= (int) $of['preco'] ?></p>
           <p class="off-linha"><span class="off-pill">−<?= $offPerc ?>% hoje</span></p>
           <p class="parcela">ou <?= (int) $of['parcN'] ?>x de R$<?= e($of['parcV']) ?> no cartão</p>
-          <a class="btn" href="<?= e($of['checkout']) ?>">Começar agora</a>
+          <a class="btn" href="<?= $checkout ?>">Começar agora</a>
           <ul class="trust" aria-label="Garantias da compra">
             <li>Compra segura</li>
             <li>7 dias de garantia</li>
@@ -694,7 +707,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         <h2>Você só continua se funcionar para você</h2>
         <p><strong>7 dias para testar tudo, sem risco.</strong></p>
         <p>Teste tudo por 7 dias: use o app, treine e sinta a diferença. Se não for para você, reembolso total, sem perguntas. Continuar pensando ou testar sem risco? Você decide.</p>
-        <a class="btn" href="<?= e($of['checkout']) ?>">Começar agora</a>
+        <a class="btn" href="<?= $checkout ?>">Começar agora</a>
         <p class="duvida">Com dúvidas? <a href="https://wa.me/5511998987824?text=Ol%C3%A1!%20Vim%20pelo%20site%20Pilates%20em%20Casa%20e%20quero%20tirar%20uma%20d%C3%BAvida%20antes%20de%20come%C3%A7ar.">Fale no <span translate="no">WhatsApp</span></a></p>
       </div>
     </div>
@@ -708,7 +721,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
     <nav aria-label="Links do rodapé">
       <a href="https://www.instagram.com/pilatesemcasa.contareserva">Instagram</a>
       <a href="https://wa.me/5511998987824?text=Ol%C3%A1!%20Vim%20pelo%20site%20Pilates%20em%20Casa%20e%20quero%20tirar%20uma%20d%C3%BAvida%20antes%20de%20come%C3%A7ar.">WhatsApp</a>
-      <a href="<?= e($of['checkout']) ?>">Começar agora</a>
+      <a href="<?= $checkout ?>">Começar agora</a>
       <a href="privacidade.html">Privacidade</a>
       <a href="termos.html">Termos</a>
     </nav>
@@ -718,7 +731,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
 
 <div class="cta-fixo" id="cta-fixo-barra" inert>
   <p class="cta-fixo-preco">De <s>R$&nbsp;<?= (int) $of['cheio'] ?></s> por <b>R$&nbsp;<?= (int) $of['preco'] ?></b></p>
-  <a class="btn" id="cta-fixo" href="<?= e($of['checkout']) ?>" aria-label="Começar agora — ir para o checkout">Começar agora</a>
+  <a class="btn" id="cta-fixo" href="<?= $checkout ?>" aria-label="Começar agora — ir para o checkout">Começar agora</a>
 </div>
 
 <script>
@@ -1143,18 +1156,6 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
   };
   rotativo({lista:'#carrossel-depo', nav:'depo-nav', dots:'depo-dots', contador:'depo-contador', rotulo:'Mostrar depoimento', atraso:500});
   rotativo({lista:'.carrossel.grupo', nav:'grupo-nav', dots:'grupo-dots', contador:'grupo-contador', rotulo:'Mostrar conversa', atraso:2500});
-})();
-// Bônus no celular: mostra 3, expande o resto (só indexdesign)
-(function(){
-  var btn = document.getElementById('bento-toggle');
-  var bento = document.getElementById('bento-bonus');
-  if(!btn || !bento) return;
-  var total = bento.querySelectorAll('.cel').length;
-  btn.addEventListener('click', function(){
-    var aberto = bento.classList.toggle('aberto');
-    btn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
-    btn.textContent = aberto ? 'Mostrar menos' : 'Ver todos os ' + total + ' bônus';
-  });
 })();
 // Fecho com efeito de digitação rotativo (só indexdesign; estático sem
 // movimento ou sem JS, com texto alternativo para leitor de tela)

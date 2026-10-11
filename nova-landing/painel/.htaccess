@@ -1,0 +1,6 @@
+# Painel da proprietária: login por senha no index.php.
+# Fora do índice dos buscadores e sem permitir listagem de arquivos.
+<IfModule mod_authz_core.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+  Options -Indexes
+</IfModule>
