@@ -60,34 +60,48 @@ que vai no secret do GitHub.
 | `FTP_USERNAME` | `deploy@maricoachfit.com` |
 | `FTP_PASSWORD` | a senha gerada no passo 1 |
 
-**Variable** (mesma tela, aba *Variables* → *New repository variable*):
-
-| Nome | Valor | Efeito |
-|---|---|---|
-| — (não criar) | — | **Estado atual:** sem variable = `server-dir` vazio = deploy na **raiz** (`maricoachfit.com/`) |
-| `CPANEL_SERVER_DIR` | `nova/` | Desvia o deploy para `maricoachfit.com/nova/` (testar sem mexer na raiz) |
-
-> ⚠️ **Variables ≠ Secrets.** A `CPANEL_SERVER_DIR` precisa estar na aba
-> *Variables*. Criada em *Secrets*, o workflow lê `vars.CPANEL_SERVER_DIR`,
-> recebe vazio e **sobe na raiz sem avisar** — foi exatamente o que aconteceu na
-> primeira configuração. A raiz é o destino atual e intencional, mas o padrão
-> tem que estar certo: **sem variable = raiz**.
+São só esses três. **Nada mais é lido do GitHub** — o destino do deploy fica
+escrito no próprio workflow (`server-dir`), para não existir a confusão de
+*Variables* vs *Secrets* (uma `CPANEL_SERVER_DIR` criada na aba *Secrets* é
+ignorada em silêncio e o deploy vai para a raiz sem avisar).
 
 > Os secrets são escolhidos porque o `deploy/` é idêntico em qualquer hosting:
 > quem muda é só o destino. Para testar em outro servidor, troque só os três
 > valores dos secrets.
 
-### 3. Estado atual: no ar na raiz
+### 3. Trocar o destino do deploy
 
-O site está publicado em `https://maricoachfit.com/` e o painel em `/painel/`.
+Edite `.github/workflows/deploy-cpanel.yml`, no passo **Enviar via FTP**:
+
+| `server-dir` | Resultado |
+|---|---|
+| `nova/` | publica em `maricoachfit.com/nova/` (raiz intocada) |
+| `""` (vazio) | publica na raiz `maricoachfit.com/` |
+
+É um caminho **relativo** à pasta onde a conta FTP entra (que já é
+`public_html`) — por isso `nova/`, e **nunca** `public_html/nova/`. Sem barra
+inicial, que é o comportamento inconsistente entre servidores FTP.
+
+A pasta de destino precisa **já existir** no servidor. Para criar:
+cPanel → Gerenciador de Arquivos → `public_html` → nova pasta.
+
+### 4. Estado atual: raiz no ar + teste em `/nova/`
+
+O site está publicado em `https://maricoachfit.com/` e o painel em
+`https://maricoachfit.com/painel/` — esse deploy na raiz aconteceu quando a
+`CPANEL_SERVER_DIR` foi criada na aba *Secrets* (ignorada) e o `server-dir`
+veio vazio.
+
 O WordPress antigo não está mais em `public_html` (os caminhos `/wp-login.php`,
 `/wp-admin/`, `/wp-content/` respondem 404). Confirme com a proprietária se a
-troca é definitiva antes de continuar publicando na raiz.
+troca é definitiva.
 
-A pasta `/nova/` no servidor está vazia e pode ser apagada pelo Gerenciador de
-Arquivos do cPanel.
+O `server-dir` agora está em `nova/`, então **cada push passa a atualizar
+`maricoachfit.com/nova/`** e a raiz fica servindo a cópia já publicada. Para
+voltar a atualizar a raiz, troque `server-dir: nova/` por `server-dir: ""` e
+dê push.
 
-### 4. Painel da proprietária
+### 5. Painel da proprietária
 
 O `painel/config.php` sobe com **hash placeholder**, e a Action **falha o
 deploy** até o hash real ser colado (proteção contra senha vazia). Gere em

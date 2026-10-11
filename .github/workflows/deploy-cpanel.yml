@@ -48,10 +48,15 @@ jobs:
           fi
           echo "links ok | php sem checkout hardcoded ok | painel com hash real"
 
-      # server-dir vem da VARIABLE CPANEL_SERVER_DIR (Settings → Variables,
-      # NÃO Secrets — em Secrets ela é ignorada silenciosamente e o deploy vai
-      # para a raiz). Sem a variable = raiz do site. Defina como "nova/" para
-      # testar numa subpasta sem mexer na raiz.
+      # DESTINO DO DEPLOY — edite AQUI, não no GitHub.
+      #
+      # server-dir SEM barra inicial: é um caminho RELATIVO à pasta onde a
+      # conta FTP entra. "nova/" = maricoachfit.com/nova/; "" = raiz.
+      # (Com barra inicial o comportamento da FTP é inconsistente entre
+      # servidores; sem ela a action sempre cai no public_html certo.)
+      #
+      # A conta FTP entra direto em public_html, então daqui em diante o
+      # caminho é sempre relativo a public_html — nunca mais "public_html/nova/".
       - name: Enviar via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -61,5 +66,5 @@ jobs:
           port: 21
           protocol: ftps
           local-dir: ./deploy/
-          server-dir: ${{ vars.CPANEL_SERVER_DIR }}
+          server-dir: nova/
           state-name: cpanel-state.txt
