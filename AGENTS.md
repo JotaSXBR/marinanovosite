@@ -27,5 +27,25 @@
 - When a stack is chosen, update this file with: exact install/dev/build/test/lint commands, entrypoints, and monorepo boundaries.
 - Prefer editing existing files over creating new ones; keep new files only when needed.
 
+## Documentação (Context7 primeiro, pesquisa web como complemento)
+- **Antes de responder sobre API, função, header HTTP, módulo de servidor ou sintaxe
+  de plataforma, consultar o Context7 (MCP `context7`).** Ele devolve a doc oficial
+  e atualizada da versão certa; é mais confiável que snippet de blog.
+- Fluxo: `resolve-library-id` (libraryName + o que estou procurando) → escolher o
+  melhor ID → `query-docs` com **uma pergunta por chamada** (um tema por vez;
+  misturar temas na mesma query dilui o ranking e volta resposta rasa).
+- IDs confirmados neste projeto:
+  - PHP: `/websites/php_net_manual_en` (manual oficial; use `language: "php"`)
+  - Apache HTTP Server 2.4: `/websites/httpd_apache_2_4` (use `language: "apache"`)
+- `webfetch` ainda serve para ler a página exata da doc quando a resposta do
+  Context7 vier truncada, e `websearch` para contexto (blogs, casos, notícias
+  de versão) — mas **nunca** para decidir sintaxe ou parâmetro de função.
+- Motivo prático: doc de blog desatualiza em silêncio. Exemplo real — a doc
+  oficial do `mod_ratelimit` avisa que ele limita **bandawidth**, não nº de
+  requisições, e que cada resposta limitada **ocupa um worker durante a
+  transferência toda**, podendo exaurir o servidor. usar mod_ratelimit como
+  "rate limit de requisições" seria errado por dois motivos.
+
 ## Skills
 - `design-taste-frontend` is installed for landing-page / portfolio / redesign work. Follow its brief-inference + design-read workflow when doing frontend design; ignore it for non-design tasks.
+- `web-design-guidelines`: para auditar UI, buscar as regras atuais no source que a skill indica (`command.md` no repo vercel-labs) e revisar no formato `arquivo:linha - problema`.

@@ -27,12 +27,65 @@ DirectoryIndex index.php index.html
 
 # Defesa em profundidade: se a pasta private/ for alcançada, negar PHP nela
 # (o private/.htaccess já nega tudo; isto cobre o caso de AllowOverride off).
-<FilesMatch "(^|/)(ofertas|rastreio|carrinhos|config)\.php$">
+<FilesMatch "(^|/)(ofertas|rastreio|carrinhos|config|apoio)\.php$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
   <IfModule !mod_authz_core.c>
     Order deny,allow
     Deny from all
+  </IfModule>
+</FilesMatch>
+
+# ---------------------------------------------------------------- segurança
+# Headers de hardening (recomendação OWASP). Todos dentro de um bloco
+# IfModule mod_headers porque exigem AllowOverride FileInfo; se a host não
+# permitir, o site continua funcionando normal — só fica sem esses headers.
+<IfModule mod_headers.c>
+  # Impede o navegador "adivinhar" o tipo do arquivo (ex.: servir .jpg como
+  # HTML e executar XSS).
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Proíbe o painel de ser embutido em iframe de outro site (clickjacking:
+  # alguém coloca uma camada invisível sobre o botão de Apagar).
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # Vazamento de URL: ao sair para o WhatsApp/Kiwify, manda só a origem, sem
+  # os parâmetros ?src= / ?o= do canal.
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # APIs que o site não usa: desliga explicitamente.
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+  # Força HTTPS por 6 meses. SEM includeSubDomains/preload de propósito: se o
+  # SSL do subdomínio algum dia falhar, o browser ficaria preso em HTTPS sem
+  # saída. Para remover: apague esta linha e faça um request vazio.
+  Header always set Strict-Transport-Security "max-age=15552000"
+
+  # NÃO definir X-Robots-Tag aqui: a oferta secreta manda `noindex` pelo PHP
+  # e o painel define no painel/.htaccess. Um "set" no raiz sobrescreveria os
+  # dois e a página secreta voltaria a ser indexada.
+</IfModule>
+
+# Nada de CSP aqui ainda: a landing usa CSS e JS inline (por escolha, sem
+# build) e o painel usa onclick inline. Uma CSP estrita exigiria nonce, que só
+# dá para gerar em build — não temos. Fica registrado o que falta.
+
+# Nada de listar o conteúdo das pastas por URL.
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>
+
+# Arquivos que nunca devem ser servidos (dump de banco, log, backup, config).
+<FilesMatch "\.(?i:log|sql|bak|old|orig|swp|save|ini|sh|inc|md5|sha1|jsonl)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</FilesMatch>
+
+# Arquivos ocultos (.~lock, .git, .env) nunca sao servidos.
+<FilesMatch "^\.">
+  <IfModule mod_authz_core.c>
+    Require all denied
   </IfModule>
 </FilesMatch>

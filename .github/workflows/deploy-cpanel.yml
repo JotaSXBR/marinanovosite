@@ -15,8 +15,8 @@ jobs:
 
       - name: Montar pasta de deploy
         run: |
-          command -v php >/dev/null && for f in nova-landing/index.php nova-landing/private/ofertas.php nova-landing/private/rastreio.php nova-landing/private/carrinhos.php nova-landing/painel/index.php nova-landing/painel/config.php; do php -l "$f" || exit 1; done || echo "php ausente no runner, lint pulado"
-          rm -rf deploy && mkdir -p deploy/imagens deploy/prova deploy/private/dados deploy/painel
+          command -v php >/dev/null && find nova-landing -name '*.php' -not -path '*/dados/*' -print0 | xargs -0 -n1 php -l || echo "php ausente no runner, lint pulado"
+          rm -rf deploy && mkdir -p deploy/imagens deploy/prova deploy/private/dados deploy/painel/partes
           cp nova-landing/index.html nova-landing/index.php nova-landing/privacidade.html nova-landing/termos.html deploy/
           # indexnovo/indexdesign NÃO publicam: são variantes locais de experimento
           # (testes Playwright usam o preview local). Não subir = a Action apaga
@@ -25,8 +25,9 @@ jobs:
           cp nova-landing/private/ofertas.php nova-landing/private/rastreio.php nova-landing/private/carrinhos.php deploy/private/
           cp nova-landing/private/.htaccess deploy/private/
           # painel da proprietária (o config.php já sobe com o hash da senha)
-          cp nova-landing/painel/index.php nova-landing/painel/config.php deploy/painel/
+          cp nova-landing/painel/index.php nova-landing/painel/config.php nova-landing/painel/apoio.php deploy/painel/
           cp nova-landing/painel/.htaccess deploy/painel/
+          cp nova-landing/painel/partes/*.php nova-landing/painel/partes/.htaccess deploy/painel/partes/
           # dados/ (log de visitas + links) só precisa existir com o .htaccess
           # que bloqueia o acesso — os arquivos são criados pelo painel em uso.
           cp nova-landing/private/dados/.htaccess deploy/private/dados/
