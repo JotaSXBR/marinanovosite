@@ -96,4 +96,4 @@ jobs:
           protocol: ftps
           local-dir: ./deploy/
           server-dir: ${{ vars.CPANEL_SERVER_DIR }}
-          state-name: cpanel-state.txt
+          state-name: cpanel-state-2026-10.txt
