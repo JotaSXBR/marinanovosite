@@ -3,6 +3,10 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: '.',
+  // A suite do servidor (servidor.spec.js) precisa de PHP real e roda pela
+  // playwright.servidor.config.js contra o container. Aqui ela só geraria
+  // falso positivo, porque o python http.server não executa PHP.
+  testIgnore: /servidor\.spec\.js/,
   fullyParallel: true,
   reporter: 'list',
   use: { baseURL: 'http://127.0.0.1:8901' },

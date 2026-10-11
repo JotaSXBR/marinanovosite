@@ -57,9 +57,30 @@ verdade — os bloqueios de `private/` e `painel/` podem ser conferidos local
 
 ## Testes
 
+Duas suítes, porque testam coisas diferentes:
+
 ```bash
-npm test        # roda tests/ (sobe o preview sozinho na porta 8901)
+npm test         # 38 testes · contra o index.html estático (layout/copy/CSS)
+
+PAINEL_SENHA='...' npm run test:php
+                  # 30 testes · contra o PHP real no container (:8080)
 ```
+
+**`npm test`** sobe o preview estático e confere o que dá para conferir sem
+executar PHP: layout, copy, carrosséis, tema, bônus.
+
+**`npm run test:php`** sobe o container e cobre o que só existe com PHP:
+oferta por `?o=`, repasse do canal para o checkout, painel (login, carrinhos,
+ciclo de criar/apagar link, logout), cookie de sessão, exigência de CSRF,
+antibrute e os 403 de `private/` e `painel/`.
+
+A senha do painel vem da variável de ambiente `PAINEL_SENHA` — nunca fica no
+repo (no `config.php` só existe o hash bcrypt). Sem ela, os 8 testes de painel
+são pulados com aviso.
+
+> Detalhe do desenho: `workers: 1` na suíte do servidor. Os testes mexem em
+> estado compartilhado (log de visitas, contador de tentativas) e o bloqueio do
+> antibrute é por IP — em paralelo, um teste derrubaria o login dos outros.
 
 ## Deploy (GitHub → cPanel do maricoachfit.com)
 
