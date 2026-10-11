@@ -3,6 +3,9 @@ name: Deploy para cPanel (maricoachfit.com)
 on:
   push:
     branches: [main]
+  # Disparo manual: Actions → "Deploy para cPanel" → Run workflow.
+  # Útil para republicar sem precisar inventar um commit.
+  workflow_dispatch:
 
 jobs:
   deploy:
