@@ -4,7 +4,8 @@
 // padrão). As demais ofertas nunca aparecem no Ver código-fonte. O preço
 // real é sempre cobrado no checkout Kiwify (1 checkout por preço).
 define('OFERTAS_BOOT', true);
-$ofertas = require __DIR__ . '/private/ofertas.php';
+require __DIR__ . '/private/carrinhos.php';
+$ofertas = carrinhosTodos();
 require __DIR__ . '/private/rastreio.php';
 $pedir = function ($k) {
   if (!isset($_GET[$k])) return '';

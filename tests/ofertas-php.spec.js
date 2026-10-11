@@ -14,7 +14,10 @@ test('index.php nao vaza checkout nem lista de ofertas no fonte', async ({ page 
   // sem o objeto JS que expunha tudo no Ver código-fonte
   expect(fonte).not.toContain('var OFERTAS');
   // resolve no servidor via ?o= (com compat para ?oferta= antigo)
-  expect(fonte).toContain("require __DIR__ . '/private/ofertas.php'");
+  // A lista de carrinhos vem de private/ (base no git + edicoes do painel),
+  // nunca embutida no index.php.
+  expect(fonte).toContain("require __DIR__ . '/private/carrinhos.php'");
+  expect(fonte).toContain('$ofertas = carrinhosTodos()');
   expect(fonte).toContain("$pedir('o')");
   // secreta nunca indexa (meta + header)
   expect(fonte).toContain('name="robots" content="noindex, nofollow"');
@@ -27,8 +30,14 @@ test('private/ bloqueado em duas camadas (htaccess + guarda no codigo)', async (
   const cadastro = await (await page.request.get('/nova-landing/private/ofertas.php')).text();
   expect(cadastro).toContain('OFERTAS_BOOT');
   expect(cadastro).toContain('http_response_code(403)');
+  // carrinhos.php (gestao pelo painel) tem a mesma guarda
+  const carrinhos = await (await page.request.get('/nova-landing/private/carrinhos.php')).text();
+  expect(carrinhos).toContain('OFERTAS_BOOT');
+  expect(carrinhos).toContain('http_response_code(403)');
   // .htaccess raiz: index.php é o principal e ?o= nunca usa cache
   const raiz = await (await page.request.get('/nova-landing/.htaccess')).text();
   expect(raiz).toContain('DirectoryIndex index.php index.html');
   expect(raiz).toContain('o=');
+  // carrinhos.php tambem precisa estar coberto pela FilesMatch do .htaccess raiz
+  expect(raiz).toContain('carrinhos');
 });

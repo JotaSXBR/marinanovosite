@@ -119,6 +119,23 @@ php -r "echo password_hash('SENHA', PASSWORD_DEFAULT), PHP_EOL;"
 Cole em `nova-landing/painel/config.php`, commit e push. Aí sobe em
 `/painel/` protegido por senha.
 
+O painel também controla os **carrinhos** (checkouts da Kiwify) e os **links por
+canal**. Dois arquivos sustentam isso, de propósito:
+
+| Arquivo | Papel |
+|---|---|
+| `private/ofertas.php` | cardápio **base**, versionado no git, republicado a cada deploy |
+| `private/dados/ofertas.json` | o que a dona cria/edita na tela — **não está no git**, então o deploy não apaga |
+
+Na leitura o JSON **sobrescreve** o base. Se o painel gravasse direto no
+`ofertas.php`, o próximo `push` sobrescreveria o cadastro dela. O carrinho
+`padrao` não pode ser apagado (é o que o site mostra sem parâmetro), e
+"Restaurar" devolve um carrinho ao valor original do código.
+
+> O preço **cobrado** é sempre o do checkout Kiwify (1 checkout por preço). Os
+> valores do painel controlam só o texto da landing — se divergirem da Kiwify,
+> a pessoa vê um preço e paga outro. Confira sempre depois de criar o checkout.
+
 ### Diagnóstico rápido
 
 - **Action verde mas nada muda:** quase sempre é o `Diretório` da conta FTP

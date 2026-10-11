@@ -15,14 +15,14 @@ jobs:
 
       - name: Montar pasta de deploy
         run: |
-          command -v php >/dev/null && php -l nova-landing/index.php && php -l nova-landing/private/ofertas.php || echo "php ausente no runner, lint pulado"
+          command -v php >/dev/null && for f in nova-landing/index.php nova-landing/private/ofertas.php nova-landing/private/rastreio.php nova-landing/private/carrinhos.php nova-landing/painel/index.php nova-landing/painel/config.php; do php -l "$f" || exit 1; done || echo "php ausente no runner, lint pulado"
           rm -rf deploy && mkdir -p deploy/imagens deploy/prova deploy/private/dados deploy/painel
           cp nova-landing/index.html nova-landing/index.php nova-landing/privacidade.html nova-landing/termos.html deploy/
           # indexnovo/indexdesign NÃO publicam: são variantes locais de experimento
           # (testes Playwright usam o preview local). Não subir = a Action apaga
           # as cópias antigas do servidor no próximo deploy incremental.
           cp nova-landing/.htaccess deploy/ 2>/dev/null || true
-          cp nova-landing/private/ofertas.php nova-landing/private/rastreio.php deploy/private/
+          cp nova-landing/private/ofertas.php nova-landing/private/rastreio.php nova-landing/private/carrinhos.php deploy/private/
           cp nova-landing/private/.htaccess deploy/private/
           # painel da proprietária (o config.php já sobe com o hash da senha)
           cp nova-landing/painel/index.php nova-landing/painel/config.php deploy/painel/
@@ -49,7 +49,9 @@ jobs:
           if grep -q "COLE_AQUI_O_HASH" deploy/painel/config.php; then
             echo "ERRO: painel ainda com hash placeholder"; exit 1
           fi
-          echo "links ok | php sem checkout hardcoded ok | painel com hash real"
+          # carrinhos.php tem que existir: sem ele o painel cai em erro fatal
+          [ -f deploy/private/carrinhos.php ] || { echo "ERRO: carrinhos.php ausente no deploy"; exit 1; }
+          echo "links ok | php sem checkout hardcoded ok | painel com hash real | carrinhos ok"
 
       # DESTINO DO DEPLOY: vem da variable CPANEL_SERVER_DIR, que precisa estar na
       # aba *Variables* do GitHub — em *Secrets* ela é ignorada em silêncio e
