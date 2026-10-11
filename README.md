@@ -90,21 +90,20 @@ Edite o **valor** da variable `CPANEL_SERVER_DIR` (não o workflow):
 A pasta de destino precisa **já existir** no servidor. Para criar:
 cPanel → Gerenciador de Arquivos → `public_html` → nova pasta.
 
-### 4. Estado atual: raiz no ar + teste em `/nova/`
+### 4. Estado atual: publicado na raiz
 
-O site está publicado em `https://maricoachfit.com/` e o painel em
-`https://maricoachfit.com/painel/` — esse deploy na raiz aconteceu quando a
-`CPANEL_SERVER_DIR` foi criada na aba *Secrets* (ignorada) e o `server-dir`
-veio vazio.
+O site está em `https://maricoachfit.com/` e o painel em
+`https://maricoachfit.com/painel/`. A variable `CPANEL_SERVER_DIR` foi
+removida do GitHub de propósito, então `server-dir` fica vazio e cada push
+atualiza a **raiz**.
 
-O WordPress antigo não está mais em `public_html` (os caminhos `/wp-login.php`,
-`/wp-admin/`, `/wp-content/` respondem 404). Confirme com a proprietária se a
-troca é definitiva.
+O WordPress antigo não está mais em `public_html` (`/wp-login.php`,
+`/wp-admin/`, `/wp-content/` respondem 404).
 
-O `server-dir` agora está em `nova/`, então **cada push passa a atualizar
-`maricoachfit.com/nova/`** e a raiz fica servindo a cópia já publicada. Para
-voltar a atualizar a raiz, troque `server-dir: nova/` por `server-dir: ""` e
-dê push.
+> ⚠️ Existe uma pasta `/nova/` no servidor com uma **publicação antiga**
+> (quando o destino era a subpasta). Ela **não** recebe mais deploy. Para
+> conferir o estado atual do site, sempre olhe a raiz — foi o que causou uma
+> auditoria longa achando que o deploy não funcionava.
 
 ### 5. Painel da proprietária
 

@@ -200,11 +200,11 @@ tfoot .totais td{font-weight:700;background:var(--faixa);border-bottom:0;border-
     padding:6px 6px calc(6px + env(safe-area-inset-bottom));
   }
   .menu-secoes a{
-    flex:1;text-align:center;text-decoration:none;color:var(--cinza);
-    font-size:.78rem;font-weight:700;padding:9px 2px;min-height:44px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    flex:1;text-align:center;text-decoration:none;color:var(--cta);
+    font-size:.86rem;font-weight:700;padding:9px 2px;min-height:46px;
+    display:flex;align-items:center;justify-content:center;
   }
-  .menu-secoes a span{font-size:1.05rem;line-height:1}
+  .menu-secoes a:active{background:var(--faixa)}
 }
 @media(min-width:761px){.menu-secoes{display:none}}
 
