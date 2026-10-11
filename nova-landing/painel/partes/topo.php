@@ -1,0 +1,19 @@
+<?php
+// PARTES DO PAINEL — não são acessíveis por URL (partes/.htaccess nega tudo);
+// o index.php carrega por require. São só templates: recebem dados por variável.
+// Para criar uma nova parte: copie um bloco daqui e chame com require em index.php.
+  <div class="bar">
+    <div>
+      <h1>Painel de Links</h1>
+      <p class="sub">Visitas por canal. As <b>vendas</b> se confirmam no painel da Kiwify usando o mesmo código de canal.</p>
+    </div>
+    <div style="display:flex;gap:10px">
+      <a class="btn sec" href="?csv=1">Baixar CSV</a>
+      <a class="btn sec" href="?sair=1">Sair</a>
+    </div>
+  </div>
+
+  <div aria-live="polite">
+    <?php if ($flash): ?><div class="flash"><?= e($flash) ?></div><?php endif; ?>
+    <?php if ($erro): ?><div class="erro"><?= e($erro) ?></div><?php endif; ?>
+  </div>
