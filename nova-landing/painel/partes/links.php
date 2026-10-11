@@ -86,7 +86,7 @@
         <tr>
           <td data-label="Canal"><span class="pill"><?= e($canal) ?></span></td>
           <td data-label="Nome"><?= e($d['rotulo'] !== '' ? $d['rotulo'] : '—') ?></td>
-          <td class="nowrap" data-label="Carrinho"><?= e($rotOferta) ?><?= $precoOferta !== '' ? ' <b>(' . e($precoOferta) . ')</b>' : '' ?></td>
+          <td class="nowrap" data-label="Carrinho"><?= e($rotOferta) ?><?= ($precoOferta !== '' && strpos($rotOferta, 'R$') === false) ? ' <b>(' . e($precoOferta) . ')</b>' : '' ?></td>
           <td data-label="Link"><span class="linkbox" style="display:inline-block"><?= e($url) ?></span></td>
           <td class="sem-rotulo" data-label="">
             <span class="acoes-linha">

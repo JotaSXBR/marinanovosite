@@ -80,6 +80,7 @@ tfoot .totais td{font-weight:700;background:var(--faixa);border-bottom:0;border-
 .pill{display:inline-block;background:var(--faixa);border:1px solid var(--borda);border-radius:999px;padding:2px 11px;font-size:.78rem;font-weight:600}
 .login{max-width:400px;margin:8vh auto}
 .bar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.acoes-topo{display:flex;gap:10px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
@@ -149,44 +150,58 @@ tfoot .totais td{font-weight:700;background:var(--faixa);border-bottom:0;border-
   .card{padding:16px 14px}
 
   /* (2) alvos de toque e zoom do iOS */
-  button,.btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center}
+  button,.btn{min-height:44px;padding:10px 18px;display:inline-flex;align-items:center;justify-content:center}
   input,select{font-size:16px;padding:12px}
-  label{font-size:.9rem}
-  .confirm>summary{min-height:46px;display:inline-flex;align-items:center}
-  .confirm[open]>summary{min-height:46px}
-  .chips{display:grid;grid-template-columns:1fr}
-  .chips button{width:100%;justify-content:flex-start;text-align:left}
-  .acoes-linha{width:100%}
+  label{font-size:.88rem;margin:14px 0 5px}
+  .confirm>summary{min-height:44px;display:inline-flex;align-items:center;padding:10px 18px}
+  .confirm[open]>summary{min-height:44px}
+  /* canais em 2 colunas: em coluna unica os 6 botoes ocupavam a tela inteira */
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+  .chips button{
+    width:100%;justify-content:flex-start;text-align:left;
+    font-size:.82rem;font-weight:600;line-height:1.25;padding:10px 12px;min-height:52px;
+  }
+  .acoes-linha{width:100%;flex-wrap:wrap}
   .acoes-linha > *{flex:1 1 auto}
+  /* topo: titulo, subtítulo curto e acoes lado a lado */
+  .bar{gap:10px}
+  .sub{font-size:.88rem;margin:0 0 4px}
+  .acoes-topo{width:100%}
+  .acoes-topo .btn{flex:1 1 auto;font-size:.86rem}
   .confirm{width:100%}
   .confirm-corpo{max-width:none}
 
   /* (1) tabela vira card. O wrapper MANTÉM overflow:auto como rede de
      segurança: se algo escapar, rola dentro do card em vez de alargar a
-     página inteira. */
+     página inteira.
+
+     Rótulo ACIMA do valor, não ao lado: em coluna dupla o rótulo comia 34%
+     e o valor ficava espremido — a URL do checkout quebrava em ~6 caracteres
+     por linha e o nome do carrinho ia para 4 linhas. Empilhado, o valor usa
+     a largura toda. */
   .scroll{overflow-x:auto;max-width:100%}
   table,tbody,tr,td,tfoot,thead{display:block;max-width:100%}
   thead{display:none}
   tr{
     border:1px solid var(--borda);border-radius:14px;background:var(--branco);
-    margin-bottom:12px;padding:6px 2px;min-width:0;
+    margin-bottom:10px;padding:4px 0;min-width:0;
   }
   td{
-    display:flex;justify-content:space-between;align-items:baseline;gap:14px;
-    border:0;padding:9px 14px;min-width:0;overflow-wrap:anywhere;
+    border:0;padding:7px 14px;min-width:0;overflow-wrap:anywhere;
   }
   td::before{
-    content:attr(data-label);font-weight:600;color:var(--cinza);
-    font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;
-    flex:0 0 34%;text-align:left;
+    content:attr(data-label);display:block;
+    font-weight:700;color:var(--cinza);font-size:.68rem;
+    text-transform:uppercase;letter-spacing:.07em;margin-bottom:1px;
   }
-  td.num{text-align:right}
+  td.num{text-align:left}
   td:empty{display:none}
-  td.sem-rotulo{justify-content:flex-start}
+  td.sem-rotulo{padding-top:10px}
   td.sem-rotulo::before{content:none}
-  /* a URL do checkout precisa poder quebrar em qualquer ponto */
+  /* a URL do checkout agora tem a largura inteira da linha */
   .linkbox{max-width:100%;word-break:break-all;white-space:normal}
-  td > .linkbox{max-width:66%}
+  /* nome + checkout sao dois blocos, nao coisa nenhuma na mesma linha */
+  td > .linkbox{display:block;margin-top:5px}
   tfoot .totais{border:2px solid var(--borda);background:var(--faixa);border-radius:14px}
   tfoot .totais td{background:transparent;border:0}
   tfoot .totais td:first-child::before{content:"Total geral"}

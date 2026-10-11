@@ -6,9 +6,9 @@
   <div class="bar">
     <div>
       <h1>Painel de Links</h1>
-      <p class="sub">Visitas por canal. As <b>vendas</b> se confirmam no painel da Kiwify usando o mesmo código de canal.</p>
+      <p class="sub">Visitas por canal. As <b>vendas</b> aparecem na Kiwify, pelo mesmo código de canal.</p>
     </div>
-    <div style="display:flex;gap:10px">
+    <div class="acoes-topo">
       <a class="btn sec" href="?csv=1">Baixar CSV</a>
       <a class="btn sec" href="?sair=1">Sair</a>
     </div>
