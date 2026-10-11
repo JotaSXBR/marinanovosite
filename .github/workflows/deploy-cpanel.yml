@@ -48,9 +48,10 @@ jobs:
           fi
           echo "links ok | php sem checkout hardcoded ok | painel com hash real"
 
-      # Sobe em NOVA/ enquanto o WordPress antigo continua na raiz. Quando a
-      # proprietária aprovar, troque para CPANEL_SERVER_DIR: "" (raiz) e
-      # arquive/remova o WordPress antes — senão os dois index.php disputam.
+      # server-dir vem da VARIABLE CPANEL_SERVER_DIR (Settings → Variables,
+      # NÃO Secrets — em Secrets ela é ignorada silenciosamente e o deploy vai
+      # para a raiz). Sem a variable = raiz do site. Defina como "nova/" para
+      # testar numa subpasta sem mexer na raiz.
       - name: Enviar via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:

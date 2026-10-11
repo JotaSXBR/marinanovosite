@@ -64,19 +64,28 @@ que vai no secret do GitHub.
 
 | Nome | Valor | Efeito |
 |---|---|---|
-| `CPANEL_SERVER_DIR` | `nova/` | Sobe em `maricoachfit.com/nova/` — WordPress intacto |
-| `CPANEL_SERVER_DIR` | *(vazio)* | Sobe na raiz `public_html/` — usar no go-live |
+| — (não criar) | — | **Estado atual:** sem variable = `server-dir` vazio = deploy na **raiz** (`maricoachfit.com/`) |
+| `CPANEL_SERVER_DIR` | `nova/` | Desvia o deploy para `maricoachfit.com/nova/` (testar sem mexer na raiz) |
+
+> ⚠️ **Variables ≠ Secrets.** A `CPANEL_SERVER_DIR` precisa estar na aba
+> *Variables*. Criada em *Secrets*, o workflow lê `vars.CPANEL_SERVER_DIR`,
+> recebe vazio e **sobe na raiz sem avisar** — foi exatamente o que aconteceu na
+> primeira configuração. A raiz é o destino atual e intencional, mas o padrão
+> tem que estar certo: **sem variable = raiz**.
 
 > Os secrets são escolhidos porque o `deploy/` é idêntico em qualquer hosting:
-> quem muda é só o destino. Para voltar a testar em outro servidor, troque só os
-> três valores dos secrets.
+> quem muda é só o destino. Para testar em outro servidor, troque só os três
+> valores dos secrets.
 
-### 3. Antes de mandar para a raiz
+### 3. Estado atual: no ar na raiz
 
-Um `push` na `main` com `CPANEL_SERVER_DIR` vazio **sobrescreve o `index.php`
-do WordPress**. Confirme com a proprietária que o WordPress antigo pode sair
-(ele está em `/home/maricoachfit/public_html`). Rigorosamente: faça backup no
-cPanel (Backups) e mova os arquivos antigos para fora de `public_html` antes.
+O site está publicado em `https://maricoachfit.com/` e o painel em `/painel/`.
+O WordPress antigo não está mais em `public_html` (os caminhos `/wp-login.php`,
+`/wp-admin/`, `/wp-content/` respondem 404). Confirme com a proprietária se a
+troca é definitiva antes de continuar publicando na raiz.
+
+A pasta `/nova/` no servidor está vazia e pode ser apagada pelo Gerenciador de
+Arquivos do cPanel.
 
 ### 4. Painel da proprietária
 
