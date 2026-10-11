@@ -1,0 +1,20 @@
+# Servidor PHP local para a landing e o painel.
+#
+#   docker compose up -d      (sobe em http://localhost:8080)
+#   docker compose logs -f    (erros de PHP)
+#   docker compose down       (derruba)
+#
+# A pasta nova-landing é montada como document root, igual ao servidor real.
+# O que roda aqui é o index.php DE VERDADE: oferta por ?o=, rastreio de canal
+# e painel — coisas que o preview estático (python http.server) não executa.
+services:
+  site:
+    build: ./docker
+    container_name: pilates-site
+    ports:
+      - "8080:80"
+    volumes:
+      # o site é a raiz pública; private/ e painel/ ficam dentro dele e são
+      # bloqueados pelo .htaccess, como em produção
+      - ./nova-landing:/var/www/html:rw
+    restart: unless-stopped

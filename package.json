@@ -2,9 +2,12 @@
   "name": "marina-site",
   "private": true,
   "version": "1.0.0",
-  "description": "Rebuild estatico do Pilates em Casa (antes Mari Coach Fit)",
+  "description": "Pilates em Casa — landing em PHP + painel da proprietaria",
   "scripts": {
     "dev": "python3 -m http.server 8901 --bind 0.0.0.0",
+    "dev:php": "docker compose up -d",
+    "dev:php:log": "docker compose logs -f",
+    "dev:php:down": "docker compose down",
     "test": "npm --prefix tests test"
   }
 }

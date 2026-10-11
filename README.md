@@ -18,11 +18,42 @@ Docs: `INVENTARIO.md` (o que veio do WordPress), `ANALISE-COPY.md` (auditoria de
 
 ## Ambiente dev
 
+Há **dois** servidores locais, porque eles servem para coisas diferentes:
+
+### 1. Estático (`npm run dev`) — o padrão
+
 ```bash
 npm run dev
 ```
 
-Abre `http://localhost:8901/nova-landing/` no navegador. Edite `nova-landing/index.html`, salve e atualize a página (F5). É esse o fluxo: você olha, pede a mudança, eu aplico, você confere no dev.
+Abre `http://localhost:8901/nova-landing/`. É só `python3 -m http.server`: serve
+arquivo puro, **não executa PHP**. Serve para conferir layout, copy e CSS do
+`index.html`.
+
+### 2. PHP real (`npm run dev:php`) — o que importa para o painel
+
+```bash
+npm run dev:php          # sobe em http://localhost:8080
+npm run dev:php:log      # erros de PHP em tempo real
+npm run dev:php:down     # derruba
+```
+
+Sobe **Apache + PHP 8.2 em Docker**, espelhando o stack do cPanel. É o único
+jeito de testar de verdade o que importa:
+
+| O que só funciona aqui | Por quê |
+|---|---|
+| Oferta por `?o=` | precisa de PHP |
+| Rastreio de canal (`?src=`) e repasse ao checkout | precisa de PHP |
+| Painel em `/painel/` (login, carrinhos, links) | precisa de PHP |
+| Antibrute e cookies de sessão | precisa de PHP |
+
+A pasta `nova-landing/` é montada como document root e o `.htaccess` vale de
+verdade — os bloqueios de `private/` e `painel/` podem ser conferidos local
+(`curl -I localhost:8080/private/ofertas.php` tem que dar 403).
+
+> Docker (e não `apt install php`) porque o WSL aqui exige senha de sudo; assim
+> a máquina host fica intocada e o PHP local é exatamente a versão do servidor.
 
 ## Testes
 

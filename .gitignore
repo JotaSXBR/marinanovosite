@@ -25,5 +25,10 @@ Thumbs.db
 # temporarios de planilha (Excel cria ~$arquivo.xlsx ao abrir)
 ~$*.xlsx
 
+# dados de RUNTIME do painel — criados em uso, nunca versionar.
+# Só o .htaccess (que bloqueia o acesso) é versionado; o conteudo é da dona.
+nova-landing/private/dados/*
+!nova-landing/private/dados/.htaccess
+
 # relatorios locais
 research/*.html
