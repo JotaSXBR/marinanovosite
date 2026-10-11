@@ -15,7 +15,21 @@ jobs:
 
       - name: Montar pasta de deploy
         run: |
-          command -v php >/dev/null && find nova-landing -name '*.php' -not -path '*/dados/*' -print0 | xargs -0 -n1 php -l || echo "php ausente no runner, lint pulado"
+          # Lint de TODOS os .php. Precisa distinguir "php ausente" de "php
+          # invalido": `... | xargs php -l || echo "php ausente"` mascarava a
+          # FALHA do php -l e o deploy seguia publicando arquivo quebrado
+          # (aconteceu com painel/partes/). Agora: sem php -> aviso e segue;
+          # com php e erro -> PARA o deploy.
+          if command -v php >/dev/null; then
+            find nova-landing -name '*.php' -not -path '*/dados/*' -print0 | xargs -0 -n1 php -l
+            if [ ${PIPESTATUS[1]} -ne 0 ]; then
+              echo "ERRO: sintaxe PHP invalida acima — deploy abortado"
+              exit 1
+            fi
+            echo "php: sintaxe OK em todos os arquivos"
+          else
+            echo "AVISO: php ausente no runner, lint pulado"
+          fi
           rm -rf deploy && mkdir -p deploy/imagens deploy/prova deploy/private/dados deploy/painel/partes
           cp nova-landing/index.html nova-landing/index.php nova-landing/privacidade.html nova-landing/termos.html deploy/
           # indexnovo/indexdesign NÃO publicam: são variantes locais de experimento

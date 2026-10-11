@@ -2,6 +2,7 @@
 // PARTES DO PAINEL — não são acessíveis por URL (partes/.htaccess nega tudo);
 // o index.php carrega por require. São só templates: recebem dados por variável.
 // Para criar uma nova parte: copie um bloco daqui e chame com require em index.php.
+?>
   <h2 id="sec-links">Links por canal</h2>
   <div class="card">
     <b>Criar links prontos</b>

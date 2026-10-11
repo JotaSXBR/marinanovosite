@@ -2,6 +2,7 @@
 // PARTES DO PAINEL — não são acessíveis por URL (partes/.htaccess nega tudo);
 // o index.php carrega por require. São só templates: recebem dados por variável.
 // Para criar uma nova parte: copie um bloco daqui e chame com require em index.php.
+?>
   <div class="bar">
     <div>
       <h1>Painel de Links</h1>
