@@ -60,27 +60,32 @@ que vai no secret do GitHub.
 | `FTP_USERNAME` | `deploy@maricoachfit.com` |
 | `FTP_PASSWORD` | a senha gerada no passo 1 |
 
-São só esses três. **Nada mais é lido do GitHub** — o destino do deploy fica
-escrito no próprio workflow (`server-dir`), para não existir a confusão de
-*Variables* vs *Secrets* (uma `CPANEL_SERVER_DIR` criada na aba *Secrets* é
-ignorada em silêncio e o deploy vai para a raiz sem avisar).
+**Variable** (mesma tela, aba **Variables** → *New repository variable*):
 
-> Os secrets são escolhidos porque o `deploy/` é idêntico em qualquer hosting:
-> quem muda é só o destino. Para testar em outro servidor, troque só os três
-> valores dos secrets.
+| Nome | Valor |
+|---|---|
+| `CPANEL_SERVER_DIR` | `nova/` |
+
+> ⚠️ **Variables ≠ Secrets.** O workflow lê `vars.CPANEL_SERVER_DIR`, então a
+> chave precisa estar na aba **Variables**. Se for criada em **Secrets**, é
+> ignorada em silêncio e o deploy vai para a **raiz** sem falhar — foi o que
+> aconteceu nas duas primeiras vezes. Para evitar isso, a Action tem um passo
+> **"Mostrar destino do deploy"** que imprime a resolução no log do run:
+> `📁 Deploy na subpasta: 'nova/'` = deu certo; `⚠️ ... RAIZ` = a variable não
+> está sendo lida.
 
 ### 3. Trocar o destino do deploy
 
-Edite `.github/workflows/deploy-cpanel.yml`, no passo **Enviar via FTP**:
+Edite o **valor** da variable `CPANEL_SERVER_DIR` (não o workflow):
 
-| `server-dir` | Resultado |
+| Valor | Resultado |
 |---|---|
 | `nova/` | publica em `maricoachfit.com/nova/` (raiz intocada) |
-| `""` (vazio) | publica na raiz `maricoachfit.com/` |
+| *(apagar a variable)* | publica na raiz `maricoachfit.com/` |
 
 É um caminho **relativo** à pasta onde a conta FTP entra (que já é
-`public_html`) — por isso `nova/`, e **nunca** `public_html/nova/`. Sem barra
-inicial, que é o comportamento inconsistente entre servidores FTP.
+`public_html`) — por isso `nova/`, e **nunca** `public_html/nova/` nem
+`/nova/`. Barra inicial tem comportamento inconsistente entre servidores FTP.
 
 A pasta de destino precisa **já existir** no servidor. Para criar:
 cPanel → Gerenciador de Arquivos → `public_html` → nova pasta.
