@@ -274,8 +274,12 @@ h2{text-wrap:balance}
 .trust{list-style:none;display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;margin:16px 0 0;font-size:.85rem;color:var(--tinta)}
 .trust li::before{content:"✓ ";font-weight:700;color:var(--cta);color:light-dark(var(--cta),var(--rosa))}
 .oferta-card .btn{width:100%;padding:16px 10px}
-.oferta-card .selo-oferta{width:140px;margin:18px auto 0}
-.oferta-card .micro{font-size:.87rem;color:var(--cinza);margin:12px 0 0;text-align:justify;text-wrap:balance;hyphens:none}
+.oferta-card .selo-oferta{width:96px;margin:14px auto 0}
+/* Texto pequeno de leitura: alinhado à ESQUERDA. Justificado sem hifenização
+   abria buracos de até 20px entre palavras (medido) e dificulta a leitura —
+   pior para quem tem baixa visão ou dislexia. Sem text-wrap:balance também:
+   em bloco curto ele gera linhas irregulares brigando com o resto centrado. */
+.oferta-card .micro{font-size:.95rem;color:var(--cinza);margin:12px 0 0;text-align:left;line-height:1.6;hyphens:none}
 .oferta-card .micro b{color:var(--cta)}
 .duvida{font-size:.88rem;margin-top:12px}
 .oferta-card .duvida{color:var(--cinza)}
@@ -401,9 +405,9 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
   .cel.planner-cel img{transform:translateX(12px)}
   .oferta{grid-template-columns:1fr}
   .oferta li b{white-space:normal;text-align:right;flex:none}
-  .oferta-card .selo-oferta{width:110px}
+  .oferta-card .selo-oferta{width:68px}
   .oferta-card{padding:30px 20px}
-  .oferta-card .micro{font-size:.82rem;text-align:left}
+  .oferta-card .micro{font-size:.9rem;text-align:left}
   .ba-grade{grid-template-columns:1fr;max-width:420px;margin-left:auto;margin-right:auto}
   .ba-grade .ba{grid-column:auto}
   .ba-grade .ba:nth-child(4),.ba-grade .ba:nth-child(5){grid-column:auto}
