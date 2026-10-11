@@ -17,3 +17,11 @@
     <?php if ($flash): ?><div class="flash"><?= e($flash) ?></div><?php endif; ?>
     <?php if ($erro): ?><div class="erro"><?= e($erro) ?></div><?php endif; ?>
   </div>
+
+  <?php // Atalhos das seções: só aparecem no celular (CSS), onde a rolagem
+        // de ~4 telas tornava "achar os carrinhos" custoso. ?>
+  <nav class="menu-secoes" aria-label="Seções do painel">
+    <a href="#sec-cliques"><span aria-hidden="true">▤</span>Cliques</a>
+    <a href="#sec-carrinhos"><span aria-hidden="true">▣</span>Carrinhos</a>
+    <a href="#sec-links"><span aria-hidden="true">↗</span>Links</a>
+  </nav>

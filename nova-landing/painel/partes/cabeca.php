@@ -125,40 +125,92 @@ tfoot .totais td{font-weight:700;background:var(--faixa);border-bottom:0;border-
   .wrap{padding:20px 14px 50px}
 }
 
-/* ---- Colapso da tabela em cards no celular ----------------------------
-   A dona usa o celular no dia a dia e a tabela de carrinhos tem 8 colunas:
-   rolagem horizontal em 360px e ilegivel. Cada <td> recebe data-label e vira
-   uma linha rotulada. Regra explicita por secao, nao "o framework cuida". */
-@media(max-width:720px){
-  .scroll{overflow-x:visible}
-  table,tbody,tr,td,tfoot{display:block;width:100%}
+/* ---- Celular -----------------------------------------------------------
+   A dona usa o celular o dia inteiro (negócio roda no WhatsApp/TikTok), então
+   o painel precisa caber em 360-430px. Três regras que se sustentam:
+
+   1) NADA pode forçar a largura do documento. Se um elemento estica a página,
+      o browser amplia o viewport de layout, o breakpoint @media deixa de
+      casar e o layout "mobile" nunca entra — um loop. Foi exatamente o que
+      acontecia: a tabela empurrava para 814px e a regra de cards (720px)
+      nunca aplicava. Por isso max-width/min-width:0 em tudo e a tabela
+      dentro de um contêiner com overflow próprio.
+   2) Alvo de toque mínimo 44px (WCAG 2.5.5) e fonte de input ≥16px, senão o
+      iOS dá zoom ao focar e a página "pula".
+   3) Regra por seção, declarada aqui — não "o framework cuida". */
+@media(max-width:760px){
+  html,body{max-width:100%;overflow-x:hidden}
+
+  /* espaço no fim da página para a barra de seções fixa + notch do iPhone */
+  .wrap{padding:16px 14px calc(104px + env(safe-area-inset-bottom))}
+
+  h1{font-size:1.3rem}
+  h2{margin:28px 0 10px;scroll-margin-top:12px}
+  .card{padding:16px 14px}
+
+  /* (2) alvos de toque e zoom do iOS */
+  button,.btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center}
+  input,select{font-size:16px;padding:12px}
+  label{font-size:.9rem}
+  .confirm>summary{min-height:46px;display:inline-flex;align-items:center}
+  .confirm[open]>summary{min-height:46px}
+  .chips{display:grid;grid-template-columns:1fr}
+  .chips button{width:100%;justify-content:flex-start;text-align:left}
+  .acoes-linha{width:100%}
+  .acoes-linha > *{flex:1 1 auto}
+  .confirm{width:100%}
+  .confirm-corpo{max-width:none}
+
+  /* (1) tabela vira card. O wrapper MANTÉM overflow:auto como rede de
+     segurança: se algo escapar, rola dentro do card em vez de alargar a
+     página inteira. */
+  .scroll{overflow-x:auto;max-width:100%}
+  table,tbody,tr,td,tfoot,thead{display:block;max-width:100%}
   thead{display:none}
   tr{
     border:1px solid var(--borda);border-radius:14px;background:var(--branco);
-    margin-bottom:12px;padding:6px 2px;
+    margin-bottom:12px;padding:6px 2px;min-width:0;
   }
   td{
-    display:flex;justify-content:space-between;align-items:baseline;gap:16px;
-    border:0;padding:9px 14px;
+    display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+    border:0;padding:9px 14px;min-width:0;overflow-wrap:anywhere;
   }
   td::before{
     content:attr(data-label);font-weight:600;color:var(--cinza);
-    font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;flex:none;
+    font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;
+    flex:0 0 34%;text-align:left;
   }
   td.num{text-align:right}
-  /* celula que NAO tem rotulo (ex.: a de acoes) ocupa a linha toda */
   td:empty{display:none}
   td.sem-rotulo{justify-content:flex-start}
   td.sem-rotulo::before{content:none}
-  tfoot .totais{border:2px solid var(--borda);background:var(--faixa)}
-  tfoot .totais td{background:transparent}
+  /* a URL do checkout precisa poder quebrar em qualquer ponto */
+  .linkbox{max-width:100%;word-break:break-all;white-space:normal}
+  td > .linkbox{max-width:66%}
+  tfoot .totais{border:2px solid var(--borda);background:var(--faixa);border-radius:14px}
+  tfoot .totais td{background:transparent;border:0}
   tfoot .totais td:first-child::before{content:"Total geral"}
   tfoot .totais td:first-child{font-weight:700}
-  .acoes-linha{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+  /* barra fixa de seções: 4 telas de 700px de rolagem sem recourse */
+  .menu-secoes{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+    border-top:1px solid var(--borda);
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+  }
+  .menu-secoes a{
+    flex:1;text-align:center;text-decoration:none;color:var(--cinza);
+    font-size:.78rem;font-weight:700;padding:9px 2px;min-height:44px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  }
+  .menu-secoes a span{font-size:1.05rem;line-height:1}
 }
+@media(min-width:761px){.menu-secoes{display:none}}
 
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none !important;animation:none !important}
+  html{scroll-behavior:auto}
 }
 </style>
 </head>
