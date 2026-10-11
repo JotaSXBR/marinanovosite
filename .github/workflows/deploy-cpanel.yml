@@ -30,12 +30,23 @@ jobs:
           cp conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.jpg conteudo/imagens/*.svg deploy/imagens/
           cp conteudo/prova/*.jpg deploy/prova/
           sed -i 's#\.\./conteudo/imagens/#imagens/#g; s#\.\./conteudo/prova/#prova/#g' deploy/*.html deploy/*.php deploy/painel/*.php
-          grep -r "conteudo/" deploy/ && exit 1 || echo "links ok"
-          # garantia: index.php publicado não contém checkout hardcoded (só via ofertas.php)
-          ! grep -o 'pay\.kiwify\.com\.br/[A-Za-z0-9]*' deploy/index.php && echo "php sem checkout hardcoded ok"
-          # painel nunca pode subir com senha em texto puro (só hash)
-          grep -q "senha_hash" deploy/painel/config.php || { echo "ERRO: painel sem hash de senha"; exit 1; }
-          grep -q "COLE_AQUI_O_HASH" deploy/painel/config.php && { echo "ERRO: painel ainda com hash placeholder"; exit 1; }
+
+          # Guardas em `if` (e não `grep && {...}`): o shell do Actions roda com
+          # `set -e`, e um `&&` que NÃO casa devolve status 1 — o que matava a
+          # etapa mesmo com a guarda tendo passado.
+          if grep -r -q "conteudo/" deploy/; then
+            echo "ERRO: sobrou caminho de desenvolvimento (conteudo/)"; exit 1
+          fi
+          if grep -o -q 'pay\.kiwify\.com\.br/[A-Za-z0-9]*' deploy/index.php; then
+            echo "ERRO: index.php publicado tem checkout hardcoded"; exit 1
+          fi
+          if ! grep -q "senha_hash" deploy/painel/config.php; then
+            echo "ERRO: painel sem hash de senha"; exit 1
+          fi
+          if grep -q "COLE_AQUI_O_HASH" deploy/painel/config.php; then
+            echo "ERRO: painel ainda com hash placeholder"; exit 1
+          fi
+          echo "links ok | php sem checkout hardcoded ok | painel com hash real"
 
       # Sobe em NOVA/ enquanto o WordPress antigo continua na raiz. Quando a
       # proprietária aprovar, troque para CPANEL_SERVER_DIR: "" (raiz) e
