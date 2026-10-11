@@ -1,5 +1,6 @@
 # deps
 node_modules/
+__pycache__/
 
 # build de deploy (gerado pela Action)
 deploy/
@@ -7,6 +8,10 @@ deploy/
 # pacote de entrega ao dev (artefato local, igual ao deploy/ — não versionar)
 entrega-site/
 entrega-site.zip
+
+# backup do WordPress antigo (109 MB, contem wp-config.php com credenciais).
+# NUNCA versionar; guardar fora do repo.
+cgi-bin.zip
 
 # testes
 tests/test-results/
@@ -16,6 +21,9 @@ tests/playwright-report/
 *.log
 .DS_Store
 Thumbs.db
+
+# temporarios de planilha (Excel cria ~$arquivo.xlsx ao abrir)
+~$*.xlsx
 
 # relatorios locais
 research/*.html

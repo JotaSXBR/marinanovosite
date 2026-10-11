@@ -18,9 +18,27 @@
 - `nova-landing/private/carrinhos.php` — camada de gestão dos carrinhos. **Dois arquivos, de propósito:** `private/ofertas.php` é o cardápio base versionado no git (re-publicado a cada deploy); `private/dados/ofertas.json` é o que a dona cria/edita pelo painel e **NÃO está no git**, então o deploy não apaga. Na leitura o JSON **sobrepõe** o base. `carrinhoApagar` de um carrinho do base guarda a chave em `_ocultos` (não some do código); `carrinhoRestaurar` desfaz a edição. `index.php` chama `carrinhosTodos()` — nunca o base direto. `carrinhoValidar` normaliza/valida (chave `[a-z0-9_-]`, checkout https, preco<=de, parcelas 1-24, parcela `10,69`). O carrinho `padrao` não pode ser apagado.
 - `nova-landing/private/rastreio.php` — loga 1 linha por visita (canal, oferta, hora, origem externa, identificador anônimo) e **repassa `src`/UTM pro checkout Kiwify**. Venda se confirma em Kiwify → Vendas → Filtros → Parâmetros da URL → `src`. LGPD: IP nunca em texto claro (HMAC com sal do dia). Dados em `private/dados/` (gitignored no servidor, criado em uso).
 - Bônus no mobile: todos os 9 visíveis sempre (o gate "Ver todos os 9 bônus" foi removido — dona pediu full).
-- Skills: `design-taste-frontend` + `frontend-design` + `ui-ux-pro-max` (criação UI), `web-design-guidelines` (auditoria UI), `accessibility` (WCAG), `copywriting`, `playwright-cli`, `find-skills` (via `npx skills`, pin em `skills-lock.json`).
+- `index.html` é **artefato gerado**, não fonte: espelha o `index.php` (fallback sem PHP e alvo dos testes). Editar sempre no `index.php` e espelhar; a guarda de sincronia roda no CI.
+- Variantes de experimento (`indexnovo`, `indexdesign`) foram removidas — experiments vão num branch, nunca no `main`.
 - Tema claro/escuro: segue o sistema por padrão, toggle sol/lua no nav alterna e persiste (`localStorage tema` + `html[data-tema]` + tokens `light-dark()`).
 - Sem build/test/lint além de `tests/`.
+
+## Skills do projeto
+Usar a skill certa **antes** de começar a tarefa, conforme o tipo de trabalho:
+
+| Tipo de trabalho | Skill |
+|---|---|
+| Criar/redesenhar tela, hero, seção | `design-taste-frontend` (obrigatório: primeiro declarar o "Design Read" e os 3 dials) |
+| Direção de arte, tipografia, layout | `frontend-design` |
+| Componente/controle/estado específico | `ui-ux-pro-max` |
+| Auditar UI já pronto | `web-design-guidelines` (buscar as regras atuais no `command.md` do vercel-labs) |
+| Acessibilidade / WCAG | `accessibility` |
+| Texto de venda, seção, oferta | `copywriting` (ler `ANALISE-COPY.md` antes) |
+| Automação de browser / screenshot | `playwright-cli` |
+
+- Instaladas via `npx skills`, pin em `skills-lock.json`.
+- **`find-skills` é a ÚNICA chamada manual**: só usar quando não houver skill
+  para o que foi pedido — nunca carregar todas as skills de uma vez.
 
 ## Working here
 - Do not assume a stack. Ask or inspect before adding tooling.
