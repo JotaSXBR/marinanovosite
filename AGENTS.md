@@ -23,6 +23,20 @@
 - Tema claro/escuro: segue o sistema por padrão, toggle sol/lua no nav alterna e persiste (`localStorage tema` + `html[data-tema]` + tokens `light-dark()`).
 - Sem build/test/lint além de `tests/`.
 
+## Segurança (auditoria)
+- Skill `web-app-penetration-testing` (Strix) instalada, mas o binário `strix`
+  não está no ambiente e **exige chave de LLM** (custo do dono). Até ter isso,
+  a auditoria é feita à mão, aplicando a mesma checklist dela: auth bypass,
+  broken access control/IDOR, injeção, XSS, SSRF e business logic.
+- Regra de conduta: sondas **não destrutivas e de baixo volume**, sempre no
+  próprio site da cliente e com autorização explícita. Preferir o container
+  local (`:8080`) para o que mexe em dados; produção só para leitura/config.
+- Pendências conhecidas (achadas na auditoria de 2026-10-11, dependem do cPanel):
+  **TLS 1.0/1.1 ainda aceitos** (precisa TLS 1.2+; cPanel → SSL/TLS → Security
+  Levels) e **HTTP não redireciona para HTTPS** (cPanel → SSL/TLS → Force HTTPS
+  Redirect: ON) — sem isso a senha do painel pode trafegar em claro na 1ª visita.
+  HSTS já está ativo (6 meses) e mitiga a partir da 2ª visita.
+
 ## Skills do projeto
 Usar a skill certa **antes** de começar a tarefa, conforme o tipo de trabalho:
 
