@@ -9,6 +9,11 @@
       <p class="sub">Visitas por canal. As <b>vendas</b> aparecem na Kiwify, pelo mesmo código de canal.</p>
     </div>
     <div class="acoes-topo">
+      <button type="button" class="btn sec tema-btn" id="temaBtn" title="Alternar entre tema claro e escuro">
+        <svg class="tema-i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"></svg>
+        <span id="temaRotulo">Escuro</span>
+      </button>
       <a class="btn sec" href="?csv=1">Baixar CSV</a>
       <a class="btn sec" href="?sair=1">Sair</a>
     </div>

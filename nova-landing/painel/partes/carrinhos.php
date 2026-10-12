@@ -9,21 +9,31 @@
       <thead>
         <tr>
           <th>Código</th><th>Nome</th><th class="num">De</th><th class="num">Por</th>
-          <th class="num">Total</th><th>Parcelas</th><th>Origem do dado</th><th>Ações</th>
+          <th class="num">Total</th><th>Parcelas</th><th>Origem</th><th>Ações</th>
         </tr>
       </thead>
       <tbody>
       <?php foreach ($ofertas as $k => $of): ?>
         <?php $editado = carrinhoFoiEditadoNoPainel($k); ?>
         <tr>
-          <td data-label="Código"><b><?= e($k) ?></b><?= $k === carrinhosChavePadrao() ? ' <span class="pill">padrão</span>' : '' ?></td>
-          <td data-label="Nome"><span><?= e($of['rotulo'] ?? '') ?></span><br><span class="muted linkbox" style="display:inline-block;margin-top:4px;padding:4px 8px"><?= e($of['checkout'] ?? '') ?></span></td>
+          <td data-label="Código"><b><?= e($k) ?></b><?= $k === carrinhosChavePadrao() ? ' <span class="pill pill-bloco" title="Carrinho padrão: é o que o site mostra para quem chega sem link de canal. Por isso não pode ser apagado.">padrão</span>' : '' ?></td>
+          <td data-label="Nome">
+            <span class="nome-linha" title="<?= e($of['rotulo'] ?? '') ?>"><?= e($of['rotulo'] ?? '') ?></span>
+            <?php if (($of['checkout'] ?? '') !== ''): ?>
+              <span class="checkout">
+                <span class="muted linkbox" title="<?= e($of['checkout']) ?>"><?= e($of['checkout']) ?></span>
+                <button class="copiar-url" type="button"
+                        onclick="copiar(this, '<?= e(addslashes($of['checkout'])) ?>')"
+                        aria-label="Copiar o endereço do checkout de <?= e($k) ?>">copiar</button>
+              </span>
+            <?php endif; ?>
+          </td>
           <td class="num" data-label="De"><?= isset($of['cheio']) ? 'R$ ' . (int) $of['cheio'] : '—' ?></td>
           <td class="num" data-label="Por"><b><?= isset($of['preco']) ? 'R$ ' . (int) $of['preco'] : '—' ?></b></td>
           <td class="num" data-label="Total"><?= isset($of['total']) ? 'R$ ' . (int) $of['total'] : '—' ?></td>
           <td class="nowrap" data-label="Parcelas"><?= isset($of['parcN']) ? (int) $of['parcN'] . 'x de R$' . e($of['parcV'] ?? '') : '—' ?></td>
           <td data-label="Origem"><?= $editado ? '<span class="pill">editado no painel</span>' : '<span class="muted">do código</span>' ?></td>
-          <td class="sem-rotulo" data-label="">
+          <td data-label="Ações">
             <span class="acoes-linha">
               <a class="btn sec" href="?editar_carrinho=<?= e(rawurlencode($k)) ?>#carrinho">Editar</a>
               <?php if ($editado): ?>
@@ -42,6 +52,11 @@
                   </div>
                 </details>
               <?php endif; ?>
+              <?php /* A linha do carrinho padrão não recebe botão "Apagar" e não recebe
+        texto nenhum no lugar. A nota "não pode apagar" encostava no botão
+        Editar e a célula se lia como um rótulo só — "Editar / não pode
+        apagar". A informação vive no title da etiqueta "padrão" e na nota
+        abaixo da tabela, que é onde alguém realmente lê. */ ?>
               <?php if ($k !== carrinhosChavePadrao()): ?>
                 <details class="confirm">
                   <summary>Apagar</summary>
@@ -57,8 +72,6 @@
                     </form>
                   </div>
                 </details>
-              <?php else: ?>
-                <span class="muted" style="font-size:.8rem">não pode apagar</span>
               <?php endif; ?>
             </span>
           </td>
@@ -70,7 +83,7 @@
       O que a Kiwify <b>cobra</b> é sempre o do checkout (1 checkout por preço).
       Estes valores controlam só o texto que aparece na landing — se divergirem
       da Kiwify, a pessoa vê um preço e paga outro.
-      O carrinho marcado <b>padrão</b> é o que o site mostra para quem chega sem link de canal.
+      O carrinho marcado <b>padrão</b> é o que o site mostra para quem chega sem link de canal, e é o único que <b>não pode ser apagado</b> — troque os valores dele em "Editar".
     </p>
   </div>
 
