@@ -38,10 +38,10 @@
               <span class="muted">sem link criado</span>
             <?php endif; ?>
           </td>
-          <td class="num" data-label="Hoje"><?= (int) $r['hoje'] ?></td>
-          <td class="num" data-label="7 dias"><?= (int) $r['semana'] ?></td>
-          <td class="num" data-label="Total"><?= (int) $r['total'] ?></td>
-          <td class="num" data-label="Pessoas hoje"><?= count($r['uid']) ?></td>
+          <td class="num tira" data-label="Hoje"><?= (int) $r['hoje'] ?></td>
+          <td class="num tira" data-label="7 dias"><?= (int) $r['semana'] ?></td>
+          <td class="num tira" data-label="Total"><?= (int) $r['total'] ?></td>
+          <td class="num tira" data-label="Pessoas hoje"><?= count($r['uid']) ?></td>
           <td class="muted nowrap" data-label="Última visita"><?= e(brDataHora((string) $r['ultima'])) ?></td>
         </tr>
       <?php endforeach; ?>
@@ -51,10 +51,10 @@
         <tr class="totais">
           <td>Todos os canais</td>
           <td></td>
-          <td class="num" data-label="Hoje"><?= (int) $tt['hoje'] ?></td>
-          <td class="num" data-label="7 dias"><?= (int) $tt['semana'] ?></td>
-          <td class="num" data-label="Total"><?= (int) $tt['total'] ?></td>
-          <td class="num" data-label="Pessoas hoje"><?= (int) $tt['uid'] ?></td>
+          <td class="num tira" data-label="Hoje"><?= (int) $tt['hoje'] ?></td>
+          <td class="num tira" data-label="7 dias"><?= (int) $tt['semana'] ?></td>
+          <td class="num tira" data-label="Total"><?= (int) $tt['total'] ?></td>
+          <td class="num tira" data-label="Pessoas hoje"><?= (int) $tt['uid'] ?></td>
           <td></td>
         </tr>
       </tfoot>

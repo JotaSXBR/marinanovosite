@@ -140,6 +140,11 @@ test.describe('com senha do painel', () => {
     await login(page);
     const canal = 'teste-automatizado';
 
+    // O formulario de link personalizado virou <details> guardado por padrao
+    // (reduzia a altura do painel no celular). Abrir antes de preencher.
+    await page.click('details#links > summary');
+    await expect(page.locator('details#links')).toHaveAttribute('open', '');
+
     await page.fill('#canal', canal);
     await page.fill('#rotulo', 'Teste automatizado');
     await page.click('button:has-text("Salvar link")');

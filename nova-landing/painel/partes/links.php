@@ -24,8 +24,9 @@
     </form>
   </div>
 
-  <div class="card" id="links">
-    <b><?= $editLink ? 'Editando o link: ' . e($editLink) : 'Link personalizado' ?></b>
+  <details class="recolhavel" id="links" <?= $editLink ? 'open' : '' ?>>
+    <summary><?= $editLink ? 'Editando o link: ' . e($editLink) : 'Link personalizado' ?></summary>
+    <div class="recolhavel-corpo">
     <p class="muted" style="margin:6px 0 0">
       <?= $editLink
         ? 'Salve para atualizar. O código do canal não muda (é o que já está nas redes).'
@@ -59,7 +60,8 @@
         <?php if ($editLink): ?><a class="btn sec" href="./">Cancelar</a><?php endif; ?>
       </div>
     </form>
-  </div>
+    </div>
+  </details>
 
   <h2>Links prontos para copiar</h2>
   <?php if (!$links): ?>

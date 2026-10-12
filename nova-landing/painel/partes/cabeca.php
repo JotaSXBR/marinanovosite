@@ -95,6 +95,29 @@ h1{font-size:1.5rem;margin:0 0 4px;text-wrap:balance}
 h2{font-size:1.1rem;margin:34px 0 12px;text-wrap:balance}
 .sub{color:var(--cinza);font-size:.92rem;margin:0 0 22px;max-width:68ch}
 .card{background:var(--branco);border:1px solid var(--borda);border-radius:14px;padding:22px;margin-bottom:18px}
+/* Formularios raros, guardados por padrao. O de carrinho media 1012px e o de
+   link 471px — quase metade da altura do painel, para um formulario que a dona
+   abre de vez em quando. Viraram <details>: fechados por padrao, abrindo
+   sozinhos quando ja se esta editando algo (vem com `open`). */
+.recolhavel{
+  background:var(--branco);border:1px solid var(--borda);border-radius:14px;
+  padding:22px;margin-bottom:18px;
+}
+.recolhavel > summary{
+  cursor:pointer;font-weight:700;font-size:.98rem;color:var(--tinta);
+  list-style:none;display:flex;align-items:center;gap:10px;min-height:44px;
+}
+.recolhavel > summary::-webkit-details-marker{display:none}
+.recolhavel > summary:hover{color:var(--cta)}
+/* O "+" vira "−" ao abrir: e o unico sinal de que ha conteudo escondido. */
+.recolhavel > summary::before{
+  content:"+";flex:0 0 auto;width:23px;height:23px;border-radius:999px;
+  background:var(--cta);color:var(--cta-txt);display:inline-flex;
+  align-items:center;justify-content:center;font-weight:700;font-size:16px;line-height:1;
+}
+.recolhavel[open] > summary::before{content:"\2212"}
+.recolhavel[open] > summary{margin-bottom:4px}
+.recolhavel-corpo{padding-top:2px}
 label{display:block;font-size:.85rem;font-weight:600;margin:12px 0 4px}
 .ajuda{color:var(--cinza);font-size:.82rem;margin:5px 0 0}
 input,select{
@@ -258,6 +281,7 @@ td .linkbox{
   h1{font-size:1.3rem}
   h2{margin:28px 0 10px;scroll-margin-top:12px}
   .card{padding:16px 14px}
+  .recolhavel{padding:16px 14px}
 
   /* (2) alvos de toque e zoom do iOS */
   button,.btn{min-height:44px;padding:10px 18px;display:inline-flex;align-items:center;justify-content:center}
@@ -295,10 +319,25 @@ td .linkbox{
   tr{
     border:1px solid var(--borda);border-radius:14px;background:var(--branco);
     margin-bottom:10px;padding:4px 0;min-width:0;
+    /* A linha vira uma grade: as celulas marcadas .tira ficam lado a lado
+       numa tira de 4 colunas, o resto ocupa a largura toda. Antes cada campo
+       empilhava rotulo+valor um abaixo do outro — a linha de carrinho media
+       592px e a de cliques 399px, e metade disso era o mesmo rotulo repetido
+       quatro vezes empilhado. */
+    display:grid;grid-template-columns:repeat(4,1fr);column-gap:8px;
   }
+  tr > td:not(.tira){grid-column:1/-1}
+  /* A tira tem 4 colunas por padrao (valores de 1-2 digitos, cabem folgado),
+     mas a de carrinho fica com 2: "6x de R$10,69" nao cabia em um quarto da
+     largura e saia CORTADO. */
+  .t-carrinhos tr{grid-template-columns:repeat(2,1fr)}
   td{
     border:0;padding:7px 14px;min-width:0;overflow-wrap:anywhere;
   }
+  /* valor nunca quebra ("R$ 613" em duas linhas fica feio); o rotulo pode, se
+     nao couber na coluna mais estreita. */
+  .tira{padding:7px 10px;white-space:nowrap}
+  .tira::before{white-space:normal}
   td::before{
     content:attr(data-label);display:block;
     font-weight:700;color:var(--cinza);font-size:.68rem;
@@ -312,6 +351,14 @@ td .linkbox{
      desktop NAO vale: com a largura toda a URL costuma caber, e cortar o fim
      esconderia justamente o codigo que a dona precisa copiar. */
   .linkbox{max-width:100%;word-break:break-all;white-space:normal;overflow:visible;text-overflow:clip}
+  /* mesma especificidade de `td .linkbox` (0,1,1) e mais abaixo no arquivo,
+     entao ESTE vence. Sem isso a elipse do desktop contaminava o celular e o
+     link saia cortado em "https://maricoachfit.com/?src=ig-..." — que e
+     justamente o texto que a dona precisa ler e copiar. */
+  td .linkbox{
+    display:block;max-width:100%;flex:none;
+    overflow:visible;text-overflow:clip;white-space:normal;word-break:break-all;
+  }
   /* nome + checkout sao dois blocos, nao coisa nenhuma na mesma linha */
   td > .linkbox{display:block;margin-top:5px}
   /* no carrinho o botao de copiar entra na propria linha (a URL usa a largura

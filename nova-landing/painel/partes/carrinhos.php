@@ -5,7 +5,7 @@
 ?>
   <h2 id="sec-carrinhos">Carrinhos (Kiwify)</h2>
   <div class="card scroll">
-    <table>
+    <table class="t-carrinhos">
       <thead>
         <tr>
           <th>Código</th><th>Nome</th><th class="num">De</th><th class="num">Por</th>
@@ -28,10 +28,10 @@
               </span>
             <?php endif; ?>
           </td>
-          <td class="num" data-label="De"><?= isset($of['cheio']) ? 'R$ ' . (int) $of['cheio'] : '—' ?></td>
-          <td class="num" data-label="Por"><b><?= isset($of['preco']) ? 'R$ ' . (int) $of['preco'] : '—' ?></b></td>
-          <td class="num" data-label="Total"><?= isset($of['total']) ? 'R$ ' . (int) $of['total'] : '—' ?></td>
-          <td class="nowrap" data-label="Parcelas"><?= isset($of['parcN']) ? (int) $of['parcN'] . 'x de R$' . e($of['parcV'] ?? '') : '—' ?></td>
+          <td class="num tira" data-label="De"><?= isset($of['cheio']) ? 'R$ ' . (int) $of['cheio'] : '—' ?></td>
+          <td class="num tira" data-label="Por"><b><?= isset($of['preco']) ? 'R$ ' . (int) $of['preco'] : '—' ?></b></td>
+          <td class="num tira" data-label="Total"><?= isset($of['total']) ? 'R$ ' . (int) $of['total'] : '—' ?></td>
+          <td class="nowrap tira" data-label="Parcelas"><?= isset($of['parcN']) ? (int) $of['parcN'] . 'x de R$' . e($of['parcV'] ?? '') : '—' ?></td>
           <td data-label="Origem"><?= $editado ? '<span class="pill">editado no painel</span>' : '<span class="muted">do código</span>' ?></td>
           <td data-label="Ações">
             <span class="acoes-linha">
@@ -87,11 +87,12 @@
     </p>
   </div>
 
-  <div class="card" id="carrinho">
-    <b><?= $editCarrinho ? 'Editar carrinho: ' . e($editCarrinho) : 'Cadastrar novo carrinho' ?></b>
-    <p class="muted" style="margin:6px 0 0">
-      Crie o checkout na Kiwify primeiro (um por preço), depois cadastre aqui.
-    </p>
+  <details class="recolhavel" id="carrinho" <?= $editCarrinho ? 'open' : '' ?>>
+    <summary><?= $editCarrinho ? 'Editando carrinho: ' . e($editCarrinho) : 'Cadastrar novo carrinho' ?></summary>
+    <div class="recolhavel-corpo">
+      <p class="muted" style="margin:6px 0 0">
+        Crie o checkout na Kiwify primeiro (um por preço), depois cadastre aqui.
+      </p>
     <form method="post">
       <input type="hidden" name="csrf" value="<?= e(csrfToken()) ?>">
       <input type="hidden" name="acao" value="salvar_carrinho">
@@ -142,4 +143,5 @@
         <?php endif; ?>
       </div>
     </form>
-  </div>
+    </div>
+  </details>
