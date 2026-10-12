@@ -31,11 +31,24 @@
 - Regra de conduta: sondas **não destrutivas e de baixo volume**, sempre no
   próprio site da cliente e com autorização explícita. Preferir o container
   local (`:8080`) para o que mexe em dados; produção só para leitura/config.
-- Pendências conhecidas (achadas na auditoria de 2026-10-11, dependem do cPanel):
-  **TLS 1.0/1.1 ainda aceitos** (precisa TLS 1.2+; cPanel → SSL/TLS → Security
-  Levels) e **HTTP não redireciona para HTTPS** (cPanel → SSL/TLS → Force HTTPS
-  Redirect: ON) — sem isso a senha do painel pode trafegar em claro na 1ª visita.
-  HSTS já está ativo (6 meses) e mitiga a partir da 2ª visita.
+- **TLS: ok, sem pendência.** Cheguei a reportar TLS 1.0/1.1 como aceitos —
+  era FALSO POSITIVO meu: o grep casava com `Cipher is (NONE)`, que sai tanto
+  em handshake aceito quanto recusado. Refeito com socket Python (que ignora o
+  `openssl.cnf` da máquina local): o **servidor recusa** 1.0 e 1.1, aceita 1.2 e
+  1.3. Confirma a doc do cPanel 134+: *"only supports TLSv1.2 or later"*.
+  **Não procurar "Security Levels" no cPanel** — no 134+ o Wizard virou só
+  loja de certificados e não tem mais passo de ajustes.
+- **HTTP → HTTPS: RESOLVIDO no código** (2026-10-11). Estava devolvendo 200 em
+  vez de 301, e como o form de login do painel não tem `action`, uma 1ª visita
+  por http mandava a senha em claro. Corrigido em `nova-landing/.htaccess`
+  (que o deploy copia para `public_html/`), não no cPanel:
+  - Redireciona só quando **nenhum** sinal diz https (`%{HTTPS}` e
+    `X-Forwarded-Proto`), porque no cPanel o nginx fica na frente do Apache e o
+    Apache pode ver a conexão interna em http mesmo vinda de https.
+  - Destino com **host fixo** (`maricoachfit.com`), nunca `%{HTTP_HOST}` — senão
+    vira open redirect via `Host: evil.com`. `www` é normalizado ao canônico.
+  - Só age em `maricoachfit.com`/`www`, então `localhost:8080` não é afetado e
+    as suítes locais continuam funcionando.
 
 ## Skills do projeto
 Usar a skill certa **antes** de começar a tarefa, conforme o tipo de trabalho:

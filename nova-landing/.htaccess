@@ -67,6 +67,33 @@ DirectoryIndex index.php index.html
   # dois e a página secreta voltaria a ser indexada.
 </IfModule>
 
+# ------------------------------------------------------------------ HTTPS
+# O site aceitava http:// e devolvia 200 em vez de jogar para https://. Como o
+# form de login do painel não tem action (submete para a URL atual), uma 1ª
+# visita por http mandava a senha da proprietária em claro.
+#
+# No cPanel o nginx fica na frente do Apache, então o Apache pode ver a conexão
+# interna em http mesmo quando o visitante chegou por https — daí o
+# X-Forwarded-Proto. Redireciona só quando NENHUM dos dois sinais diz https,
+# o que evita loop.
+#
+# Destino com host FIXO de propósito: usar %{HTTP_HOST} transformaria isto em
+# open redirect (basta mandar "Host: evil.com" e o servidor obedeceria). Como
+# www responde igual, normalizo para o canônico sem www.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !^https$
+  RewriteCond %{HTTP_HOST} ^www\.maricoachfit\.com$ [NC]
+  RewriteRule ^ https://maricoachfit.com%{REQUEST_URI} [R=301,L]
+
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !^https$
+  RewriteCond %{HTTP_HOST} ^maricoachfit\.com$ [NC]
+  RewriteRule ^ https://maricoachfit.com%{REQUEST_URI} [R=301,L]
+</IfModule>
+
 # Nada de CSP aqui ainda: a landing usa CSS e JS inline (por escolha, sem
 # build) e o painel usa onclick inline. Uma CSP estrita exigiria nonce, que só
 # dá para gerar em build — não temos. Fica registrado o que falta.
