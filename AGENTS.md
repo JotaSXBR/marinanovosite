@@ -4,6 +4,7 @@
 - Rebuild do maricoachfit.com (WordPress/Elementor) em andamento.
 - `site-original/` — espelho wget da home + `/links/` com CSS/JS/fontes (~15 MB). Não editar; é arquivo.
 - `conteudo/imagens/` — 23 imagens originais reaproveitáveis (sem thumbnails). `conteudo/prova/` — 23 imagens (8 depoimentos + 5 grupo + 5 pares antes/depois 9:16 com cinturas alinhadas e rostos removidos). `conteudo/layout/` — HTML de referência.
+- `conteudo/imagens/nath-hero-v2.webp` — foto do hero (recorte com alfa + brilho rosa, 106 KB). **v1 (inundação) foi descartado: deixava halo branco no cabelo.** Agora usa matting (BiRefNet portrait, MIT, via rembg). Regra para trocar esta imagem: **mudar o nome do arquivo**, não sobrescrever — o `ExpiresByType` do `.htaccess` não vale nesse host (produção não devolve `Cache-Control`/`Expires`), mas trocar o nome elimina qualquer cache de browser de uma vez.
 - `INVENTARIO.md` — mapa do que foi baixado, vídeo (embed YouTube `youtu.be/WDEG6QFKQlo`, sem MP4 próprio) e problemas do original.
 - `ANALISE-COPY.md` — auditoria de copy seção por seção (skill `copywriting`), proposta de reordenação e backlog. Ler antes de mexer em textos.
 - `QUESTIONARIO.md` — perguntas para a dona (oferta, público, prova, produto, marca, jurídico). Aguardando respostas; aplicar na landing quando chegarem.

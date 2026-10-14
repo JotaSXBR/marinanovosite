@@ -458,7 +458,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         <a class="btn" href="<?= $checkout ?>">Começar agora</a>
       </div>
       <div class="hero-foto">
-        <img src="../conteudo/imagens/nath-hero-b3.webp" alt="Natália Pereira, instrutora de Pilates" fetchpriority="high" width="1244" height="1244" decoding="async">
+        <img src="../conteudo/imagens/nath-hero-v2.webp" alt="Natália Pereira, instrutora de Pilates" fetchpriority="high" width="1244" height="1244" decoding="async">
       </div>
     </div>
   </section>
