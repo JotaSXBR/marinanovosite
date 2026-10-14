@@ -17,3 +17,26 @@
   Header set X-Robots-Tag "noindex, nofollow"
   Options -Indexes
 </IfModule>
+
+# Cache do painel: o PHP JA manda no-store por causa da sessao (o
+# session.cache_limiter padrao). Sem este bloco, o .htaccess da raiz
+# acrescentava um segundo Cache-Control (private, no-cache) e a resposta saia
+# com dois cabecalhos conflitantes. Aqui o do painel substitui o herdado.
+#
+# no-store (e nao so no-cache) porque o painel tem dado de negocio: carrinhos,
+# precos e links. Um proxy que ignora 'private' nao pode guardar nada disso.
+#
+# POR QUE ESTE BLOCO USA <FilesMatch> E NAO UM Header SOLTO (medido):
+# o mod_headers aplica os contextos nesta ordem — servidor, <Directory>,
+# .htaccess, <Directory> do filho, .htaccess do filho e SO ENTao
+# <Files>/<FilesMatch>. O <FilesMatch "\.(html|php)$"> do .htaccess da RAIZ e o
+# ultimo da fila e vencia um `Header set` solto aqui dentro: o painel continuava
+# devolvendo `private, no-cache` do pai. Dentro de <FilesMatch>, o do filho roda
+# depois do do pai e ganha. NAO remover o <FilesMatch> daqui.
+<IfModule mod_headers.c>
+  <FilesMatch "\.php$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "Thu, 19 Nov 1981 08:52:00 GMT"
+  </FilesMatch>
+</IfModule>
