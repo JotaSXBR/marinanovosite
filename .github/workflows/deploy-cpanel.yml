@@ -49,7 +49,10 @@ jobs:
           # esta extensao o arquivo simplesmente NAO chegava ao servidor — a
           # landing referenciava e o servidor devolvia 404.
           cp conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.jpg conteudo/imagens/*.webp conteudo/imagens/*.svg deploy/imagens/
-          cp conteudo/prova/*.jpg deploy/prova/
+          # prova/ virou 100% .webp na limpeza de imagens (23/10/2026).
+          # Com o glob em *.jpg o cp nao casa com NADA e o bloco inteiro
+          # some do servidor — foi quase o que impediu o deploy de passar.
+          cp conteudo/prova/*.webp deploy/prova/
           sed -i 's#\.\./conteudo/imagens/#imagens/#g; s#\.\./conteudo/prova/#prova/#g' deploy/*.html deploy/*.php deploy/painel/*.php
 
           # Guardas em `if` (e não `grep && {...}`): o shell do Actions roda com
