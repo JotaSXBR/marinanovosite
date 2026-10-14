@@ -480,36 +480,36 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
       <div class="pausa-linha"><button class="pausa" data-pausa="comparadores" aria-pressed="false">Pausar movimento</button></div>
       <div class="ba-grade">
         <div class="ba" id="antes-depois">
-          <div class="ba-camada ba-antes"><img src="../conteudo/prova/antes.webp" alt="Antes do programa Pilates em Casa — aluna 1" loading="lazy" width="720" height="1280"><b>Antes</b></div>
-          <div class="ba-camada ba-depois"><img src="../conteudo/prova/depois.webp" alt="Depois do programa Pilates em Casa — aluna 1" loading="lazy" width="720" height="1280"><b>Depois</b></div>
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/antes.webp" alt="Antes do programa Pilates em Casa — aluna 1" loading="lazy" srcset="../conteudo/prova/antes-360.webp 360w, ../conteudo/prova/antes.webp 720w" sizes="(max-width:760px) 92vw, 350px" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/depois.webp" alt="Depois do programa Pilates em Casa — aluna 1" loading="lazy" srcset="../conteudo/prova/depois-360.webp 360w, ../conteudo/prova/depois.webp 720w" sizes="(max-width:760px) 92vw, 350px" width="720" height="1280"><b>Depois</b></div>
           <div class="ba-linha"></div>
           <div class="ba-puxador" aria-hidden="true">&#8596;</div>
           <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois — aluna 1">
         </div>
         <div class="ba">
-          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a2-antes.webp" alt="Antes do programa Pilates em Casa — aluna 2" loading="lazy" width="720" height="1280"><b>Antes</b></div>
-          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a2-depois.webp" alt="Depois do programa Pilates em Casa — aluna 2" loading="lazy" width="720" height="1280"><b>Depois</b></div>
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a2-antes.webp" alt="Antes do programa Pilates em Casa — aluna 2" loading="lazy" srcset="../conteudo/prova/a2-antes-360.webp 360w, ../conteudo/prova/a2-antes.webp 720w" sizes="(max-width:760px) 92vw, 350px" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a2-depois.webp" alt="Depois do programa Pilates em Casa — aluna 2" loading="lazy" srcset="../conteudo/prova/a2-depois-360.webp 360w, ../conteudo/prova/a2-depois.webp 720w" sizes="(max-width:760px) 92vw, 350px" width="720" height="1280"><b>Depois</b></div>
           <div class="ba-linha"></div>
           <div class="ba-puxador" aria-hidden="true">&#8596;</div>
           <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois — aluna 2">
         </div>
         <div class="ba">
-          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a3-antes.webp" alt="Antes do programa Pilates em Casa — aluna 3" loading="lazy" width="720" height="1280"><b>Antes</b></div>
-          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a3-depois.webp" alt="Depois do programa Pilates em Casa — aluna 3" loading="lazy" width="720" height="1280"><b>Depois</b></div>
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a3-antes.webp" alt="Antes do programa Pilates em Casa — aluna 3" loading="lazy" srcset="../conteudo/prova/a3-antes-360.webp 360w, ../conteudo/prova/a3-antes.webp 720w" sizes="(max-width:760px) 92vw, 350px" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a3-depois.webp" alt="Depois do programa Pilates em Casa — aluna 3" loading="lazy" srcset="../conteudo/prova/a3-depois-360.webp 360w, ../conteudo/prova/a3-depois.webp 720w" sizes="(max-width:760px) 92vw, 350px" width="720" height="1280"><b>Depois</b></div>
           <div class="ba-linha"></div>
           <div class="ba-puxador" aria-hidden="true">&#8596;</div>
           <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois — aluna 3">
         </div>
         <div class="ba">
-          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a4-antes.webp" alt="Antes do programa Pilates em Casa — aluna 4" loading="lazy" width="720" height="1280"><b>Antes</b></div>
-          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a4-depois.webp" alt="Depois do programa Pilates em Casa — aluna 4" loading="lazy" width="720" height="1280"><b>Depois</b></div>
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a4-antes.webp" alt="Antes do programa Pilates em Casa — aluna 4" loading="lazy" srcset="../conteudo/prova/a4-antes-360.webp 360w, ../conteudo/prova/a4-antes.webp 720w" sizes="(max-width:760px) 92vw, 350px" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a4-depois.webp" alt="Depois do programa Pilates em Casa — aluna 4" loading="lazy" srcset="../conteudo/prova/a4-depois-360.webp 360w, ../conteudo/prova/a4-depois.webp 720w" sizes="(max-width:760px) 92vw, 350px" width="720" height="1280"><b>Depois</b></div>
           <div class="ba-linha"></div>
           <div class="ba-puxador" aria-hidden="true">&#8596;</div>
           <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois — aluna 4">
         </div>
         <div class="ba">
-          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a5-antes.webp" alt="Antes do programa Pilates em Casa — aluna 5" loading="lazy" width="720" height="1280"><b>Antes</b></div>
-          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a5-depois.webp" alt="Depois do programa Pilates em Casa — aluna 5" loading="lazy" width="720" height="1280"><b>Depois</b></div>
+          <div class="ba-camada ba-antes"><img src="../conteudo/prova/a5-antes.webp" alt="Antes do programa Pilates em Casa — aluna 5" loading="lazy" srcset="../conteudo/prova/a5-antes-360.webp 360w, ../conteudo/prova/a5-antes.webp 720w" sizes="(max-width:760px) 92vw, 350px" width="720" height="1280"><b>Antes</b></div>
+          <div class="ba-camada ba-depois"><img src="../conteudo/prova/a5-depois.webp" alt="Depois do programa Pilates em Casa — aluna 5" loading="lazy" srcset="../conteudo/prova/a5-depois-360.webp 360w, ../conteudo/prova/a5-depois.webp 720w" sizes="(max-width:760px) 92vw, 350px" width="720" height="1280"><b>Depois</b></div>
           <div class="ba-linha"></div>
           <div class="ba-puxador" aria-hidden="true">&#8596;</div>
           <input type="range" min="0" max="100" value="50" aria-label="Arrastar para comparar antes e depois — aluna 5">

@@ -3,6 +3,27 @@
 DirectoryIndex index.php index.html
 
 # ---------------------------------------------------------------- CACHE
+# COMPRESSÃO (medido em 14/10/2026): o servidor NÃO devolvia Content-Encoding
+# nem com gzip pedido no cabeçalho. O HTML da landing são 78 KB com quase todo
+# o CSS inline; com gzip vira 20 KB. Ou seja, 58 KB por visita iam pela rede à
+# toa, ANTES de qualquer imagem, e o HTML é render-blocking — isso atrasava a
+# primeira pintura.
+#
+# Não compressing imagens: WebP e JPEG já são formatos comprimidos e voltar a
+# comprimir só gasta CPU da CPU do servidor para ganhar ~2%. Só texto.
+#
+# O <IfModule> é importante: se a host não tiver mod_deflate, o bloco inteiro
+# é ignorado em vez de dar erro 500.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+  AddOutputFilterByType DEFLATE application/xml application/rss+xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+  # NÃO tentei DeflateCompressionLevel aqui: a diretiva só é aceita no nível
+  # de servidor (precisa de AllowOverride Options) e derruba o site com 500 em
+  # .htaccess. O default do mod_deflate já é 6, que é o ponto ideal para HTML.
+</IfModule>
+
 # MEDIDO em produção (14/10/2026): as diretivas ExpiresByType daqui NAO tinham
 # efeito nenhum — nenhuma imagem voltava com Cache-Control nem Expires, e o
 # browser caia em cache heurístico (10% da idade do arquivo), que é
