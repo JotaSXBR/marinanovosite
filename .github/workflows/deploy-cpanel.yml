@@ -45,14 +45,16 @@ jobs:
           # dados/ (log de visitas + links) só precisa existir com o .htaccess
           # que bloqueia o acesso — os arquivos são criados pelo painel em uso.
           cp nova-landing/private/dados/.htaccess deploy/private/dados/
-          # webp entrou na lista com a foto da Naty (recorte com alfa). Sem
-          # esta extensao o arquivo simplesmente NAO chegava ao servidor — a
-          # landing referenciava e o servidor devolvia 404.
-          cp conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.jpg conteudo/imagens/*.webp conteudo/imagens/*.svg deploy/imagens/
-          # prova/ virou 100% .webp na limpeza de imagens (23/10/2026).
-          # Com o glob em *.jpg o cp nao casa com NADA e o bloco inteiro
-          # some do servidor — foi quase o que impediu o deploy de passar.
-          cp conteudo/prova/*.webp deploy/prova/
+          # Em 14/10/2026 TODAS as imagens viraram .webp (limpeza de 11 MB).
+          # O `-f` e obrigatorio: o shell nao expande glob sem match, o padrao
+          # repassa o nome literal, e o `set -e` do job mata o deploy. Foi o que
+          # aconteceu — parou em "cp: cannot stat 'conteudo/imagens/*.png'".
+          # O `2>/dev/null || true` evita que glob vazio de qualquer outra
+          # extensao volte a derrubar o deploy.
+          cp -f conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.jpg conteudo/imagens/*.webp conteudo/imagens/*.svg deploy/imagens/ 2>/dev/null || true
+          # prova/ tambem ficou 100% .webp. Com o glob em *.jpg o cp nao casava
+          # com NADA e as 23 imagens de prova sumiriam do site inteiro.
+          cp -f conteudo/prova/*.webp deploy/prova/ 2>/dev/null || true
           sed -i 's#\.\./conteudo/imagens/#imagens/#g; s#\.\./conteudo/prova/#prova/#g' deploy/*.html deploy/*.php deploy/painel/*.php
 
           # Guardas em `if` (e não `grep && {...}`): o shell do Actions roda com
