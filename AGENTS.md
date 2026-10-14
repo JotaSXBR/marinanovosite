@@ -55,6 +55,32 @@
   header, com `identity` ou com `br`, o PHP recusa comprimir). E
   `DeflateCompressionLevel` em `.htaccess` derruba o site com **500** (só é
   aceita em nível de servidor, precisa de `AllowOverride Options`).
+- **Como consertar no servidor (doc oficial do cPanel, lida em 14/10/2026):
+  no cPanel NÃO dá.** A doc diz textualmente que o *Optimize Website* (cPanel »
+  Software » Optimize Website) **não funciona com NGINX** e que mudanças ali
+  não afetam a compressão. O único caminho suportado é **WHM como root**:
+  EasyApache 4 » *Additional Packages* » **`ea-nginx-gzip`** (e
+  `ea-nginx-brotli`, que é melhor que gzip). Se a hospedagem for compartilhada
+  sem root, **ninguém consegue fazer** — e aí a compressão no PHP já é a
+  resposta completa para a página dinâmica. O que a conta do cPanel não alcança
+  é só a compressão dos **estáticos** (`privacidade.html`, `termos.html`), que
+  seguem sem gzip; a landing, que é o que pesa, já está comprimida. Instalar o
+  pacote depois **não** duplica nada: o nginx não re-comprime resposta que já
+  chega com `Content-Encoding`.
+- **HTTP/2 está desligado** (medido: ALPN anuncia e escolhe `http/1.1`, TLS
+  1.3). A doc diz que HTTP/2 **exige** o pacote `ea-nginx-http2` no EasyApache
+  4. Mesma raiz dos pacotes faltando — vale pedir junto no mesmo chamado.
+- **Como ficou PROVADO que o `mod_deflate` não está carregado** (antes era
+  inferência minha): `mod_deflate` **sempre** acrescenta
+  `Vary: Accept-Encoding` quando o filtro DEFLATE roda, mesmo recusando
+  comprimir — conferido no container com o módulo ligado, inclusive em `.html`
+  estático, que não passa pelo PHP. Em produção, `/termos.html` (estático, fora
+  do meu código) **não tinha nenhum `Vary`**. Filtro nunca rodou = módulo
+  ausente.
+- **BREACH:** a doc do cPanel alerta que comprimir em TLS pode vazar dado
+  refletido. Conferido: o `?o=CODIGO` **não** aparece no HTML (0 ocorrências) —
+  `canonical` é `./` e o `og:url` é a raiz do host — e o painel não passa pelo
+  `index.php`, então não é comprimido. Risco nulo.
 - `srcset` nas 10 imagens de antes/depois: variantes de 360w em
   `conteudo/prova/*-360.webp` (136 KB) com
   `srcset="X-360.webp 360w, X.webp 720w"` e
