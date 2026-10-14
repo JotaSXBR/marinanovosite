@@ -9,7 +9,6 @@ Rebuild estático da landing. Sem build, sem banco: HTML + CSS + JS inline.
 | `nova-landing/` | O site novo (`index.html`, `privacidade.html`, `termos.html`). É aqui que se edita |
 | `conteudo/imagens/` | Imagens reaproveitadas do WordPress original |
 | `conteudo/layout/` | HTML original de referência (não publica) |
-| `site-original/` | Espelho do WordPress antigo, só arquivo (não publica) |
 | `tests/` | Testes Playwright (`npm test`) |
 | `deploy/` | Gerada pela Action, não versionada (é o que sobe para a Hostinger) |
 | `.agents/skills/` | Skills instaladas via `npx skills` (pin em `skills-lock.json`) |

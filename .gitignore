@@ -9,6 +9,12 @@ deploy/
 entrega-site/
 entrega-site.zip
 
+# espelho wget do WordPress antigo (15 MB, 119 arquivos). Saiu do repo em
+# 14/10/2026 porque so serve de referencia e a pasta de trabalho nao precisa
+# carregar isso. CONTINUA NO HISTORICO do git: recuperar com
+#   git checkout 727727c -- site-original/
+# A Action de deploy nunca leu esta pasta, entao retirar nao afeta o site.
+
 # backup do WordPress antigo (109 MB, contem wp-config.php com credenciais).
 # NUNCA versionar; guardar fora do repo.
 cgi-bin.zip

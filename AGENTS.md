@@ -2,8 +2,11 @@
 
 ## State
 - Rebuild do maricoachfit.com (WordPress/Elementor) em andamento.
-- `site-original/` — espelho wget da home + `/links/` com CSS/JS/fontes (~15 MB). Não editar; é arquivo.
-- `conteudo/imagens/` — 23 imagens originais reaproveitáveis (sem thumbnails). `conteudo/prova/` — 23 imagens (8 depoimentos + 5 grupo + 5 pares antes/depois 9:16 com cinturas alinhadas e rostos removidos). `conteudo/layout/` — HTML de referência.
+- ~~`site-original/`~~ — **saiu da pasta em 14/10/2026** (limpeza de disco). O
+  espelho wget do WordPress antigo (119 arquivos, 15 MB) **continua no histórico
+  do git**: recuperar com `git checkout 727727c -- site-original/`. Não voltar a
+  versionar.
+- `conteudo/imagens/` — imagens reaproveitadas do WordPress original, **todas em `.webp` desde 14/10/2026** (limpeza de 11 MB). `conteudo/prova/` — 23 imagens (8 depoimentos + 5 grupo + 5 pares antes/depois 9:16 com cinturas alinhadas e rostos removidos). `conteudo/layout/` — HTML de referência. **Duas exceções que continuam fora do WebP:** `og-capa.jpg` (é o og:image que WhatsApp/Facebook leem — nenhum renderiza WebP em preview de link) e `Satisfacao-Garantida.svg` (vetor).
 - `conteudo/imagens/nath-hero-v2.webp` — foto do hero (recorte com alfa + brilho rosa, 106 KB). **v1 (inundação) foi descartado: deixava halo branco no cabelo.** Agora usa matting (BiRefNet portrait, MIT, via rembg). Regra para trocar esta imagem: **mudar o nome do arquivo**, não sobrescrever — o `ExpiresByType` do `.htaccess` não vale nesse host (produção não devolve `Cache-Control`/`Expires`), mas trocar o nome elimina qualquer cache de browser de uma vez.
 - `INVENTARIO.md` — mapa do que foi baixado, vídeo (embed YouTube `youtu.be/WDEG6QFKQlo`, sem MP4 próprio) e problemas do original.
 - `ANALISE-COPY.md` — auditoria de copy seção por seção (skill `copywriting`), proposta de reordenação e backlog. Ler antes de mexer em textos.
@@ -14,7 +17,7 @@
 - Ambiente PHP local = Docker (`docker/Dockerfile`, `docker-compose.yml`): `php:8.2-apache` + `AllowOverride All` (sem isso o `.htaccess` é ignorado e os bloqueios não existem local). `npm run dev:php`. Docker e não apt porque o WSL exige senha de sudo.
 - Dev: `npm run dev` (serve a raiz na 8901). Deploy: push na `main` → Action `deploy-cpanel.yml` monta `deploy/` (gitignored) e envia p/ cPanel do maricoachfit.com via FTPS. Segredos (`FTP_SERVER/FTP_USERNAME/FTP_PASSWORD`). **Destino ATUAL: raiz `public_html/` — a variable `CPANEL_SERVER_DIR` foi removida de propósito**, então `server-dir` fica vazio e publica em `https://maricoachfit.com/` (painel em `/painel/`). Para testar numa subpasta sem mexer na raiz, criar a variable em **Variables** (nunca em Secrets, que é ignorado em silêncio) com valor `nova/`. Ver `README.md`.
 - A pasta `/nova/` no servidor é uma **cópia congelada** de uma publicação antiga (quando `CPANEL_SERVER_DIR=nova/`). Não é mais alvo de deploy — não usar para conferir o estado atual, sempre olhar a raiz. Foi por isso que uma auditoria "não encontrava" as mudanças no servidor.
-- `site-original/` — espelho wget da home antiga (só o HTML renderizado, sem `wp-login.php`/`wp-config.php`). **O backup completo do WordPress está em `cgi-bin.zip`** (109 MB, na raiz, gitignored, NÃO versionar): tem `wp-admin`, `wp-includes`, `wp-content` e o `wp-config.php` com as credenciais do banco. O WP não está mais em `public_html` (404 em `/wp-admin/`).
+- **Backup do WordPress antigo: `cgi-bin.zip`** (109 MB, na raiz, gitignored, NUNCA versionar — tem `wp-admin`, `wp-includes`, `wp-content` e o `wp-config.php` com a senha do banco). **Decisão de 14/10/2026: MANTER no lugar.** É 94% do peso da pasta, mas é o único backup do WordPress e apaguá-lo torna o site antigo irrecuperável. Não está em `public_html` (404 em `/wp-admin/`).
 - `nova-landing/painel/` — CMS próprio da proprietária (PHP, sem framework): login por senha, relatório de cliques por canal (alinhado, com total), **gestão de carrinhos** (cadastrar/editar/apagar/restarurar), **links prontos por canal** (botões de um clique para WhatsApp/IG/TikTok/Kwai/Meta + link personalizado), export CSV, botão copiar. Senha = HASH bcrypt em `painel/config.php` (nunca texto puro); a Action **falha o deploy** enquanto o placeholder `COLE_AQUI_O_HASH` estiver lá. Guardas: CSRF token, sessão httpOnly, `noindex`, `private/` negada por `.htaccess`.
 - `nova-landing/painel/partes/cabeca.php` — **todo** o CSS do painel (design
   system + responsivo) num arquivo só. **Tema noturno com `light-dark()`**: quem
