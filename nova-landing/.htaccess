@@ -2,18 +2,35 @@
 # Principal dinâmico: index.php resolve a oferta no servidor (?o=CODIGO).
 DirectoryIndex index.php index.html
 
-# Headers de cache (aproveita o ponto do Lighthouse)
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresByType image/jpeg "access plus 6 months"
-  ExpiresByType image/png "access plus 6 months"
-  ExpiresByType image/svg+xml "access plus 6 months"
-  ExpiresByType image/webp "access plus 6 months"
-  ExpiresByType font/woff2 "access plus 1 year"
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType text/html "access plus 10 minutes"
-</IfModule>
+# ---------------------------------------------------------------- CACHE
+# MEDIDO em produção (14/10/2026): as diretivas ExpiresByType daqui NAO tinham
+# efeito nenhum — nenhuma imagem voltava com Cache-Control nem Expires, e o
+# browser caia em cache heurístico (10% da idade do arquivo), que é
+# imprevisível: uma imagem de hoje não é cacheada, uma de um ano fica 36 dias.
+# A causa é mod_expires não estar ativo nesse Apache. O que FUNCIONA é
+# mod_headers — o `Header set` do bloco ?o= abaixo volta correto em produção.
+# Por isso todo o cache aqui é escrito com mod_headers.
+#
+# REGRA OPERACIONAL (importante): trocar uma imagem = MUDAR O NOME DO ARQUIVO.
+# Com `immutable` por 1 ano, sobrescrever mantendo o nome deixa a versão velha
+# presa no cache de quem já visitou. Foi o que fizemos com o hero:
+# nath-hero-b3 -> nath-hero-v2.
 <IfModule mod_headers.c>
+  # Estáticos: 1 ano, imutável. São 28 imagens / 3,9 MB só na home; sem isso
+  # tudo baixa de novo a cada visita. `immutable` dispensa revalidação.
+  <FilesMatch "\.(webp|png|jpe?g|svg|woff2|woff|avif|css|js)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # HTML/PHP: guarda, mas sempre revalida. O preço aparece na landing e uma
+  # cópia velha em cache mostraria um valor que a pessoa não vai pagar — por
+  # isso `no-cache` (nunca max-age grande). `private` bloqueia cache
+  # compartilhado (proxy/CDN), que não deve guardar página com oferta.
+  # Ainda permite voltar pelo botão do navegador, ao contrário de no-store.
+  <FilesMatch "\.(html|php)$">
+    Header set Cache-Control "private, no-cache"
+  </FilesMatch>
+
   Header unset ETag
 </IfModule>
 
