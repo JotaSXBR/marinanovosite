@@ -1,4 +1,60 @@
 <?php
+// COMPRESSÃO (medido no ar em 14/10/2026, com sonda no próprio PHP).
+// A cadeia é nginx -> Apache -> PHP 7.4.33, e há DOIS bloqueios no servidor:
+//   1. o nginx não repassa o header `Accept-Encoding` para o PHP. A sonda
+//      mostrou $_SERVER e getallheaders() com só Host, Accept, User-Agent e
+//      os X-Forwarded-*. Sem esse header o zlib do PHP recusa comprimir
+//      (medido: sem header, com `identity` ou com `br`, ele não comprime; só
+//      com `gzip` comprime). E forjar $_SERVER não resolve, porque o zlib lê o
+//      header no nível do SAPI, não do array.
+//   2. o mod_deflate não está carregado no Apache desse host — instalar módulo
+//      só é possível pelo WHM, não pelo site. (O <IfModule mod_deflate.c> do
+//      .htaccess continua lá, inofensivo, para o dia que a host ligar o módulo.)
+// Resultado medido: pedi gzip e br em HTML, SVG e WebP e nenhum
+// Content-Encoding voltava. O HTML são ~80 KB quase todos CSS inline, e ele é
+// render-blocking: cada visita pagava 80 KB à toa antes de qualquer imagem.
+//
+// Solução: comprimir aqui, no PHP, com gzencode(). O zlib é do próprio PHP e
+// existe em qualquer hospedagem, sem depender de módulo do servidor.
+//
+// É seguro comprimir sem conseguir ler o Accept-Encoding: o RFC 9110 §12.5.3
+// diz textualmente que, sem esse header na requisição, "qualquer codificação de
+// conteúdo é considerada aceitável". E todo cliente real envia gzip de
+// qualquer jeito — é o que o `zlib.output_compression = On` do php.ini faria,
+// igualzinho o que roda em milhares de cPanel.
+//
+// A headers só são declarados DENTRO da função, no fim, e só se a compressão
+// realmente aconteceu. Se qualquer coisa abnormal acontecer (gzencode falha,
+// o buffer já foi drenado por outro código, a página é curta), a resposta sai
+// crua e sem nenhum header de compressão — nunca gzip pela metade.
+function comprimir_resposta_gzip() {
+  if (ob_get_level() < 1) {
+    return; // buffer já drenado: os headers já foram enviados, não mexe em nada
+  }
+  $html = '';
+  while (ob_get_level() > 0) {
+    $html = ob_get_clean() . $html;
+  }
+  // Abaixo de 1 KB não compensa: o gzip de um texto curto fica MAIOR que ele.
+  $gz = strlen($html) > 1024 ? gzencode($html, 6) : false;
+  if ($gz === false || strlen($gz) >= strlen($html)) {
+    echo $html;
+    return;
+  }
+  header('Content-Encoding: gzip');
+  header('Vary: Accept-Encoding', false);
+  header('Content-Length: ' . strlen($gz));
+  echo $gz;
+}
+if (!headers_sent()
+    && PHP_SAPI !== 'cli'
+    && function_exists('gzencode')
+    && !ini_get('zlib.output_compression')
+    && !ini_get('output_handler')
+    && strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET')) !== 'HEAD') {
+  ob_start();
+  register_shutdown_function('comprimir_resposta_gzip');
+}
 // Pilates em Casa — oferta resolvida no SERVIDOR.
 // O HTML entregue ao visitante contém SÓ a oferta ativa (?o=CODIGO ou a
 // padrão). As demais ofertas nunca aparecem no Ver código-fonte. O preço

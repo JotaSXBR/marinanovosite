@@ -14,6 +14,13 @@ DirectoryIndex index.php index.html
 #
 # O <IfModule> é importante: se a host não tiver mod_deflate, o bloco inteiro
 # é ignorado em vez de dar erro 500.
+#
+# ATENÇÃO: neste host o bloco é INERTE, e não é culpa do módulo. Medido em
+# 14/10/2026 com sonda dentro do PHP: o nginx da frente NÃO repassa o header
+# `Accept-Encoding`, então nem mod_deflate carregado teria como decidir se pode
+# comprimir (ele também não enxerga o que o cliente aceita). A compressão que
+# funciona hoje é feita em `index.php` com `gzencode()`. Este bloco fica como
+# rede de segurança para o dia que a host corrigir o proxy.
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
   AddOutputFilterByType DEFLATE application/javascript application/x-javascript

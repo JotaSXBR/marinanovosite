@@ -156,7 +156,42 @@ O WordPress antigo não está mais em `public_html` (`/wp-login.php`,
 > conferir o estado atual do site, sempre olhe a raiz — foi o que causou uma
 > auditoria longa achando que o deploy não funcionava.
 
-### 5. Painel da proprietária
+### 5. Alternativa sem GitHub Actions (créditos acabaram)
+
+Em 14/10/2026 os créditos de Actions da conta acabaram e o deploy automático
+parou. O caminho manual é `ferramentas/deploy-ftp.py`: mesma montagem de
+pacote, mesma conta, mesmas travas — só muda quem executa.
+
+```bash
+# 1. Montar o pacote (o mesmo bloco que a Action executa)
+#    as linhas exatas estão em .github/workflows/deploy-cpanel.yml, passo
+#    "Montar pasta de deploy"
+
+# 2. Credenciais no AMBIENTE — nunca na linha de comando,
+#    senão a senha fica no histórico do shell
+export FTP_SERVER=ftp.maricoachfit.com
+export FTP_USERNAME=deploy@maricoachfit.com
+read -rs -p "senha FTP: " FTP_PASSWORD; export FTP_PASSWORD; echo
+
+# 3. Subir
+./ferramentas/deploy-ftp.py
+```
+
+O que ele garante:
+
+| | |
+|---|---|
+| **TLS obrigatório** | `AUTH TLS` + `PROT P` — a senha nunca trafega em texto claro |
+| **Nada de segredo no repo** | credenciais só do ambiente |
+| **Nunca apaga** | o que existe no servidor e não existe aqui fica |
+| **Nunca vai para `/nova/`** | o login da conta já cai na raiz do site |
+| **Idempotente** | arquivo já no ar com o mesmo tamanho é pulado |
+
+> A porta **990** (FTPS implícito) está bloqueada a partir desta rede; o
+> servidor atende **AUTH TLS na 21**. É por isso que o script usa a 21 e não a
+> 990 — e é também por isso que o `curl ftps://` sem porta explícita trava.
+
+### 6. Painel da proprietária
 
 O `painel/config.php` sobe com **hash placeholder**, e a Action **falha o
 deploy** até o hash real ser colado (proteção contra senha vazia). Gere em

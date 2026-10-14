@@ -29,6 +29,49 @@
   mancha branca no escuro) — se precisar, criar token.
 - `nova-landing/private/carrinhos.php` — camada de gestão dos carrinhos. **Dois arquivos, de propósito:** `private/ofertas.php` é o cardápio base versionado no git (re-publicado a cada deploy); `private/dados/ofertas.json` é o que a dona cria/edita pelo painel e **NÃO está no git**, então o deploy não apaga. Na leitura o JSON **sobrepõe** o base. `carrinhoApagar` de um carrinho do base guarda a chave em `_ocultos` (não some do código); `carrinhoRestaurar` desfaz a edição. `index.php` chama `carrinhosTodos()` — nunca o base direto. `carrinhoValidar` normaliza/valida (chave `[a-z0-9_-]`, checkout https, preco<=de, parcelas 1-24, parcela `10,69`). O carrinho `padrao` não pode ser apagado.
 - `nova-landing/private/rastreio.php` — loga 1 linha por visita (canal, oferta, hora, origem externa, identificador anônimo) e **repassa `src`/UTM pro checkout Kiwify**. Venda se confirma em Kiwify → Vendas → Filtros → Parâmetros da URL → `src`. LGPD: IP nunca em texto claro (HMAC com sal do dia). Dados em `private/dados/` (gitignored no servidor, criado em uso).
+- **Compressão: feita no PHP, não no servidor.** Medido em 14/10/2026 na
+  produção: **o nginx da frente NÃO repassa o header `Accept-Encoding` para o
+  PHP** (sonda no próprio PHP mostrou `$_SERVER`/`getallheaders()` só com Host,
+  Accept, User-Agent e `X-Forwarded-*`) e **o `mod_deflate` não está carregado
+  no Apache desse host**. São dois bloqueios independentes: sem o header, nem
+  o `mod_deflate` teria como decidir (ele também não enxerga o que o cliente
+  aceita), e instalar módulo só é possível pelo WHM. Resultado: pedi gzip e br
+  em HTML, SVG e WebP e nenhum `Content-Encoding` voltava — 80 KB de HTML
+  (quase todo CSS inline, e render-blocking) iam crus a cada visita.
+  A solução é `comprimir_resposta_gzip()` no topo do `index.php`: bufferiza a
+  página e comprime com `gzencode()` numa `register_shutdown_function`.
+  **Comprimir sem conseguir ler o `Accept-Encoding` é seguro por norma** — o RFC
+  9110 §12.5.3 diz que, sem esse header, "qualquer codificação de conteúdo é
+  considerada aceitável" — e é o que o `zlib.output_compression = On` do
+  php.ini faria. Medido no ar: 80.552 → 20.852 bytes (−74%, 58 KB a menos por
+  visita). Os headers `Content-Encoding`/`Content-Length` são declarados
+  **dentro** da função e só se a compressão aconteceu, então qualquer falha
+  (gzencode quebrado, buffer drenado por outro código, página < 1 KB) sai crua
+  e sem header nenhum — nunca gzip pela metade. O `<IfModule mod_deflate.c>`
+  do `.htaccess` foi mantido, inofensivo, para o dia que a host ligar o módulo.
+  **Armadilha já paga:** `ob_start('ob_gzhandler')` **não** resolve — o zlib lê
+  o header no nível do SAPI, não do `$_SERVER`, então forjar
+  `$_SERVER['HTTP_ACCEPT_ENCODING'] = 'gzip'` não faz nada (verificado: sem
+  header, com `identity` ou com `br`, o PHP recusa comprimir). E
+  `DeflateCompressionLevel` em `.htaccess` derruba o site com **500** (só é
+  aceita em nível de servidor, precisa de `AllowOverride Options`).
+- `srcset` nas 10 imagens de antes/depois: variantes de 360w em
+  `conteudo/prova/*-360.webp` (136 KB) com
+  `srcset="X-360.webp 360w, X.webp 720w"` e
+  `sizes="(max-width:760px) 92vw, 350px"`. Medido no navegador: mobile 390@3x
+  escolhe a 720w, desktop 1440@1x escolhe a 360w (14 KB em vez de 27). **O
+  `sizes` está hardcoded em 350px porque o quadro antes/depois tem
+  `max-width: 420px` e o celular ocupa 92vw — se o CSS mudar, o `sizes` tem que
+  mudar junto**, senão o navegador escolhe a variante errada. As duas proporções
+  são 9:16, então `width`/`height` continuam valendo para o CLS.
+- `ferramentas/deploy-ftp.py` — deploy por FTPS direto, para quando o GitHub
+  Actions não estiver disponível (**os créditos da conta acabaram em
+  14/10/2026**; até virarem, este é o caminho). Lê `FTP_SERVER`,
+  `FTP_USERNAME` e `FTP_PASSWORD` do ambiente — **nenhum segredo no repo** —,
+  força `AUTH TLS` + `PROT P` (a senha nunca vai em texto claro), **não apaga
+  nada** do servidor e **nunca sobe para `/nova/`**. É idempotente: arquivo já
+  no ar com o mesmo tamanho é pulado. O login da conta FTP já cai na raiz do
+  site (`public_html`), então não há `cd`.
 - Bônus no mobile: todos os 9 visíveis sempre (o gate "Ver todos os 9 bônus" foi removido — dona pediu full).
 - `index.html` é **artefato gerado**, não fonte: espelha o `index.php` (fallback sem PHP e alvo dos testes). Editar sempre no `index.php` e espelhar; a guarda de sincronia roda no CI.
 - Variantes de experimento (`indexnovo`, `indexdesign`) foram removidas — experiments vão num branch, nunca no `main`.
