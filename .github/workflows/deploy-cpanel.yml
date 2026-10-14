@@ -45,7 +45,10 @@ jobs:
           # dados/ (log de visitas + links) só precisa existir com o .htaccess
           # que bloqueia o acesso — os arquivos são criados pelo painel em uso.
           cp nova-landing/private/dados/.htaccess deploy/private/dados/
-          cp conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.jpg conteudo/imagens/*.svg deploy/imagens/
+          # webp entrou na lista com a foto da Naty (recorte com alfa). Sem
+          # esta extensao o arquivo simplesmente NAO chegava ao servidor — a
+          # landing referenciava e o servidor devolvia 404.
+          cp conteudo/imagens/*.png conteudo/imagens/*.jpeg conteudo/imagens/*.jpg conteudo/imagens/*.webp conteudo/imagens/*.svg deploy/imagens/
           cp conteudo/prova/*.jpg deploy/prova/
           sed -i 's#\.\./conteudo/imagens/#imagens/#g; s#\.\./conteudo/prova/#prova/#g' deploy/*.html deploy/*.php deploy/painel/*.php
 

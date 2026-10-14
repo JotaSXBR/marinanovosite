@@ -107,8 +107,15 @@ html[data-tema="escuro"] .tema-toggle .icone-lua{display:none}
 }
 .hero .sub{font-size:1.05rem;margin:0 0 28px}
 .hero-foto{position:relative}
-.hero-foto::after{content:"";position:absolute;inset:22px -14px -14px 22px;border:3px solid var(--rosa);border-radius:26px;z-index:-1}
-.hero-foto img{border-radius:26px;width:100%;box-shadow:0 24px 60px rgba(63,1,66,.18)}
+/* A foto virou recorte com fundo transparente (WebP), e isso tira tres
+   enfeites que so faziam sentido com imagem opaca:
+   - a moldura ::after era um retangulo rosa DURO atras da foto; agora o rosa
+     e um brilho suave ja assado na imagem, e os dois brigavam;
+   - border-radius:26px cortaria os joelhos, que vao ate a borda do recorte;
+   - box-shadow projeta o RETANGULO do elemento, nao o alpha — apareceria uma
+     sombra quadrada em volta dos joelhos.
+   O brilho rosa substitui os tres. */
+.hero-foto img{width:100%}
 .hero-h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(1.25rem,2.6vw,1.8rem);line-height:1.15;color:var(--rosa-texto);margin:0 0 16px;text-wrap:balance}
 h2{text-wrap:balance}
 /* Faixa de numeros */
@@ -411,7 +418,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         <a class="btn" href="https://pay.kiwify.com.br/U4n0qN7">Começar agora</a>
       </div>
       <div class="hero-foto">
-        <img src="../conteudo/imagens/Nath-com-fundo.png" alt="Natália Pereira, instrutora de Pilates" fetchpriority="high" width="880" height="880">
+        <img src="../conteudo/imagens/nath-hero-b3.webp" alt="Natália Pereira, instrutora de Pilates" fetchpriority="high" width="1244" height="1244" decoding="async">
       </div>
     </div>
   </section>
