@@ -128,8 +128,8 @@ npx lighthouse https://maricoachfit.com/ \
 ```
 
 No navegador: `F12` → aba **Lighthouse** → modo **Navigation** → **Analyze page
-load** (não rolar a página durante o teste). O placar de 17/10/2026 (Performance
-94 · Acessibilidade 91 · Boas práticas 100 · SEO 83) e a lista do que cada ponto
+load** (não rolar a página durante o teste). O placar final (Performance 100 · Acessibilidade 100 · Boas práticas 100 ·
+SEO 100 — desktop e mobile emulados) e a lista do que cada ponto
 pedia estão no `AGENTS.md`, seção **Lighthouse**. A única pendência fora do código
 é o **HTTP/2**, que é chamado no WHM do host.
 

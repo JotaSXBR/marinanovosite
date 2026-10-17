@@ -345,14 +345,16 @@ npx lighthouse https://maricoachfit.com/ --preset=desktop --output=json --output
 ```
 `--preset=desktop` mede a experiência de desktop; sem ele, emula mobile.
 
-**Placar de 17/10/2026:** Performance 94 · Acessibilidade 91 · Boas práticas 100 ·
-SEO 83 · Agentic 100.
+**Placar após as correções (medido em 17/10/2026, sem extensão, auditoria limpa):**
+Desktop Performance 100 · Acessibilidade 100 · Boas práticas 100 · SEO 100 · Agentic 100.
+Mobile (emulado) Performance 100 · Acessibilidade 100 · Boas práticas 100 · SEO 100.
+Antes: Performance 94 · Acessibilidade 91 · Boas práticas 100 · SEO 83 · Agentic 100.
 
 | Audit que não estava cheio | Causa real | Status |
 |---|---|---|
 | `color-contrast` (a11y) | `--cta` como texto e `--rosa` no bloco rosa, só no tema escuro | corrigido (`--cta-texto`) |
 | `canonical` (seo) | `href="./"` é **relativo** → "Is not an absolute URL (./)" | corrigido (absoluto via `$baseUrl`) |
-| `image-delivery-insight` (perf) | 647 KiB: hero e carrosséis sem `srcset` | corrigido (hero 106→53 KB, cards 29–80→8–21 KB) |
+| `image-delivery-insight` (perf) | 647 KiB: hero e carrosséis sem `srcset` | corrigido: hero 106→53 KB (ladder 640/828/1024/1244), cards 29–80→8–21 KB. Restam 22–29 KiB no ladder dos cards (abaixo da dobra, lazy) — não afeta a nota |
 | `render-blocking-insight` (perf) | 180–279 ms do CSS do Google Fonts | corrigido (self-host, zero bloqueio) |
 | `network-dependency-tree-insight` (perf) | cadeia `fonts.googleapis` → `fonts.gstatic` (879 ms) | corrigido junto |
 | `modern-http-insight` (perf) | `protocol: http/1.1` | **depende do WHM** (`ea-nginx-http2`) — ver "Cache e compressão" |

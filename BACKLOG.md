@@ -52,8 +52,12 @@ Como vamos fazer (só CSS + JS leve, sem biblioteca):
 
 ## 5. Lighthouse 100% (rodada de 17/10/2026) ✅ FEITO, 1 pendência de host
 
-Relatório em `research/maricoachfit.com-20261017T093242.json`: Performance 94 ·
-Acessibilidade 91 · Boas práticas 100 · SEO 83 · Agentic 100.
+Relatório inicial em `research/maricoachfit.com-20261017T093242.json`:
+Performance 94 · Acessibilidade 91 · Boas práticas 100 · SEO 83 · Agentic 100.
+
+**Resultado final (medido em 17/10/2026, sem extensão, auditoria limpa):**
+Desktop Performance 100 · Acessibilidade 100 · Boas práticas 100 · SEO 100 · Agentic 100.
+Mobile (emulado) Performance 100 · Acessibilidade 100 · Boas práticas 100 · SEO 100.
 
 **Corrigido no código (17/10/2026):**
 
@@ -66,6 +70,10 @@ Acessibilidade 91 · Boas práticas 100 · SEO 83 · Agentic 100.
 3. **Performance → imagens**: `srcset`/`sizes` no hero e nos 13 cards dos
    carrosséis. Hero 106→53 KB; depoimentos 29–54→8–11 KB; grupo 48–80→17–21 KB
    (647 KiB que o Lighthouse apontava como desperdício).
+   **Rodada 2 (mobile):** ladder do hero foi 640/1244 — em DPR ≥1,75 o
+   navegador pulava para o arquivo completo (77 KiB desperdiçados). Adicionados
+   828w e 1024w (640/828/1024/1244) → mobile Perf 99→100. Sobram 22–29 KiB
+   no ladder dos cards (lazy, abaixo da dobra) — opcional, não afeta a nota.
 4. **Performance → fontes**: self-host (Anton + Montserrat em `.woff2`). Sai o
    `<link>` do Google Fonts (180–279 ms de render-blocking + cadeia de 879 ms
    até o `gstatic`); tudo vira `@font-face` inline + `fontes/`. **Zero recurso
