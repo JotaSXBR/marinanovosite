@@ -9,6 +9,6 @@
     "dev:php:log": "docker compose logs -f",
     "dev:php:down": "docker compose down",
     "test": "npm --prefix tests test",
-    "test:php": "npm --prefix tests test:servidor"
+    "test:php": "docker compose up -d && npm --prefix tests run test:servidor"
   }
 }

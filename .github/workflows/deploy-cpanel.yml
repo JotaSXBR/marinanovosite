@@ -30,8 +30,12 @@ jobs:
           else
             echo "AVISO: php ausente no runner, lint pulado"
           fi
-          rm -rf deploy && mkdir -p deploy/imagens deploy/prova deploy/private/dados deploy/painel/partes
+          rm -rf deploy && mkdir -p deploy/imagens deploy/prova deploy/fontes deploy/private/dados deploy/painel/partes
           cp nova-landing/index.html nova-landing/index.php nova-landing/privacidade.html nova-landing/termos.html deploy/
+          # Fontes self-hosted (Anton + Montserrat em .woff2). Ficam em fontes/,
+          # ao lado do index: o @font-face usa caminho relativo, então funciona
+          # na raiz e em subpasta sem sed nenhum.
+          cp -f nova-landing/fontes/*.woff2 deploy/fontes/ 2>/dev/null || true
           # indexnovo/indexdesign NÃO publicam: são variantes locais de experimento
           # (testes Playwright usam o preview local). Não subir = a Action apaga
           # as cópias antigas do servidor no próximo deploy incremental.
@@ -74,7 +78,12 @@ jobs:
           fi
           # carrinhos.php tem que existir: sem ele o painel cai em erro fatal
           [ -f deploy/private/carrinhos.php ] || { echo "ERRO: carrinhos.php ausente no deploy"; exit 1; }
-          echo "links ok | php sem checkout hardcoded ok | painel com hash real | carrinhos ok"
+          # fontes self-hosted: toda url("fontes/*.woff2") do html tem que ter
+          # arquivo correspondente — fonte ausente = texto caindo no fallback.
+          for f in $(grep -o 'fontes/[A-Za-z0-9._-]*\.woff2' deploy/index.html | sort -u); do
+            [ -f "deploy/$f" ] || { echo "ERRO: fonte referenciada e ausente no deploy: $f"; exit 1; }
+          done
+          echo "links ok | php sem checkout hardcoded ok | painel com hash real | carrinhos ok | fontes ok"
 
       # DESTINO DO DEPLOY: vem da variable CPANEL_SERVER_DIR, que precisa estar na
       # aba *Variables* do GitHub — em *Secrets* ela é ignorada em silêncio e

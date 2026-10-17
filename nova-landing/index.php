@@ -81,10 +81,14 @@ $isSecreta = ($chave !== 'padrao');
 if ($isSecreta && !headers_sent()) { header('X-Robots-Tag: noindex, nofollow', true); }
 $offPerc = (int) round((1 - $of['preco'] / $of['cheio']) * 100);
 function e($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); }
-// Base absoluta p/ OG: monta a partir do host atual (sanitizado) + pasta do
-// script. Funciona em qualquer domínio e em subpasta de teste (/nova/) ou na
-// raiz, sem precisar editar o código no go-live.
-$host = isset($_SERVER['HTTP_HOST']) ? preg_replace('/[^A-Za-z0-9.-]/', '', (string) $_SERVER['HTTP_HOST']) : '';
+// Base absoluta p/ OG e canonical: monta a partir do host atual (sanitizado) +
+// pasta do script. Funciona em qualquer domínio e em subpasta de teste (/nova/)
+// ou na raiz, sem precisar editar o código no go-live.
+// A PORTA sai antes do filtro: o filtro descarta o ":" e "127.0.0.1:8080"
+// viraria "127.0.0.18080" no canonical/og:url (visto rodando no container).
+$host = isset($_SERVER['HTTP_HOST']) ? (string) $_SERVER['HTTP_HOST'] : '';
+$host = preg_replace('/:\d+$/', '', $host);
+$host = preg_replace('/[^A-Za-z0-9.-]/', '', $host);
 if ($host === '') { $host = 'maricoachfit.com'; }
 $basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
 $baseUrl = 'https://' . $host . ($basePath === '' ? '' : $basePath);
@@ -113,12 +117,19 @@ $baseUrl = 'https://' . $host . ($basePath === '' ? '' : $basePath);
 <?php if ($isSecreta): ?>
 <meta name="robots" content="noindex, nofollow">
 <?php endif; ?>
-<link rel="canonical" href="./">
+<link rel="canonical" href="<?= e($baseUrl . '/') ?>">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233F0142'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='36' font-weight='bold' fill='%23FF51C9' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
+/* Fontes self-hosted (woff2). Antes vinham do Google Fonts: 2 origens externas
+   + 1 folha bloqueando a renderizacao. Montserrat normal e fonte VARIAVEL (um
+   arquivo cobre 400-700); a italica e instancia 400. Subsets latin/latin-ext.
+   Trocar arquivo de fonte = MUDAR O NOME (cache immutable de 1 ano). */
+@font-face{font-family:"Anton";font-style:normal;font-weight:400;font-display:swap;src:url("fontes/anton-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Anton";font-style:normal;font-weight:400;font-display:swap;src:url("fontes/anton-normal-ext.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Montserrat";font-style:normal;font-weight:100 900;font-display:swap;src:url("fontes/montserrat-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Montserrat";font-style:normal;font-weight:100 900;font-display:swap;src:url("fontes/montserrat-normal-ext.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Montserrat";font-style:italic;font-weight:400;font-display:swap;src:url("fontes/montserrat-italic.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Montserrat";font-style:italic;font-weight:400;font-display:swap;src:url("fontes/montserrat-italic-ext.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
 /* Tokens da marca original preservados: rosa #FF51C9, roxo #3F0142, Anton + Montserrat */
 :root{
   color-scheme:light dark;
@@ -141,6 +152,7 @@ $baseUrl = 'https://' . $host . ($basePath === '' ? '' : $basePath);
   --sup:light-dark(#FFFFFF,#3E2A38);
   --borda:light-dark(#F0D4E6,#5E3D55);
   --borda-suave:light-dark(#F3D9EA,#593850);
+  --cta-texto:light-dark(#A80077,#F87DFF);
 }
 html[data-tema="claro"]{color-scheme:light}
 html[data-tema="escuro"]{color-scheme:dark}
@@ -159,7 +171,7 @@ p,h1,h2,h3,.sub,.eyebrow,.carrossel-titulo,.trans-lista{text-align:center}
 .trans-lista{list-style:none}
 .trans-lista li{border-left:0;padding-left:0}
 section{padding:72px 0}
-.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cta);color:light-dark(var(--cta),var(--rosa));margin-bottom:12px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cta-texto);margin-bottom:12px}
 h2{font-size:clamp(1.7rem,3.4vw,2.5rem);margin-bottom:14px}
 .sub{color:var(--cinza);max-width:62ch;margin-left:auto;margin-right:auto}
 /* Botoes: um rotulo unico de compra na pagina inteira */
@@ -179,7 +191,7 @@ header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);bac
 .marca span{color:var(--rosa-texto)}
 .nav-links{display:flex;gap:26px;align-items:center}
 .nav-links a{color:var(--tinta);text-decoration:none;font-size:.92rem;font-weight:500}
-.nav-links a:hover{color:var(--cta)}
+.nav-links a:hover{color:var(--cta-texto)}
 .nav-toggle{display:none}
 .tema-toggle{background:none;border:1px solid var(--borda);border-radius:999px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tinta);flex:none;padding:0}
 .tema-toggle svg{width:20px;height:20px}
@@ -262,8 +274,8 @@ h2{text-wrap:balance}
 /* Antes/depois no celular: 1 quadrado rotativo (só indexnovo) */
 .ba-mobile-nav{display:none}
 .ba-contador{display:none}
-.ba-seta{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--borda);background:var(--sup);color:var(--cta);color:light-dark(var(--cta),var(--rosa));font-size:1.5rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.ba-seta:hover{border-color:var(--cta)}
+.ba-seta{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--borda);background:var(--sup);color:var(--cta-texto);font-size:1.5rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ba-seta:hover{border-color:var(--cta-texto)}
 .ba-dots{display:flex;gap:0;align-items:center;justify-content:center}
 .ba-dots button{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:none;border:0;cursor:pointer;padding:0}
 .ba-dots button::after{content:"";width:11px;height:11px;border-radius:50%;background:var(--borda)}
@@ -298,7 +310,7 @@ h2{text-wrap:balance}
 .cel{background:var(--fundo);border:1px solid var(--borda);border-radius:var(--raio);padding:26px;min-height:190px}
 .cel h3{font-family:"Montserrat",sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:8px}
 .cel p{font-size:.93rem;color:var(--cinza)}
-.cel .vale{font-size:.85rem;font-weight:700;color:var(--cta);margin-top:10px}
+.cel .vale{font-size:.85rem;font-weight:700;color:var(--cta-texto);margin-top:10px}
 .cel .ressalva{font-size:.7rem;font-style:italic}
 .cel .vale s{color:var(--cinza);font-weight:400;margin-right:6px}
 .cel.app-cel .vale,.cel.comunidade-cel .vale{color:#fff}
@@ -335,7 +347,7 @@ h2{text-wrap:balance}
 .off-linha{margin:0 0 10px}
 .off-pill{display:inline-block;background:linear-gradient(120deg,var(--cta),var(--roxo-2));color:#fff;font-weight:700;font-size:.82rem;padding:6px 16px;border-radius:999px;letter-spacing:.02em}
 .trust{list-style:none;display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;margin:16px 0 0;font-size:.85rem;color:var(--tinta)}
-.trust li::before{content:"✓ ";font-weight:700;color:var(--cta);color:light-dark(var(--cta),var(--rosa))}
+.trust li::before{content:"✓ ";font-weight:700;color:var(--cta-texto)}
 .oferta-card .btn{width:100%;padding:16px 10px}
 .oferta-card .selo-oferta{width:96px;margin:14px auto 0}
 /* Texto pequeno de leitura: alinhado à ESQUERDA. Justificado sem hifenização
@@ -343,7 +355,7 @@ h2{text-wrap:balance}
    pior para quem tem baixa visão ou dislexia. Sem text-wrap:balance também:
    em bloco curto ele gera linhas irregulares brigando com o resto centrado. */
 .oferta-card .micro{font-size:.95rem;color:var(--cinza);margin:12px 0 0;text-align:left;line-height:1.6;hyphens:none}
-.oferta-card .micro b{color:var(--cta)}
+.oferta-card .micro b{color:var(--cta-texto)}
 .duvida{font-size:.88rem;margin-top:12px}
 .oferta-card .duvida{color:var(--cinza)}
 .cta-final .duvida{color:#F2D3EA;margin-top:22px}
@@ -400,7 +412,7 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
   body.com-cta .cta-fixo{transform:none;visibility:visible}
   .cta-fixo-preco{font-size:.85rem;margin:0 0 8px;color:var(--tinta)}
   .cta-fixo-preco s{color:var(--cinza)}
-  .cta-fixo-preco b{color:var(--cta)}
+  .cta-fixo-preco b{color:var(--cta-texto)}
   .cta-fixo .btn{position:relative;width:100%;padding:14px 10px;overflow:hidden}
   .cta-fixo .btn::after{content:"";position:absolute;top:-20%;bottom:-20%;left:-30%;width:38px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);animation:brilho 4.2s ease-in-out infinite}
 @keyframes brilho{0%{left:-30%}55%,100%{left:130%}}
@@ -409,16 +421,16 @@ footer a{color:var(--roxo);font-weight:600;text-decoration:none}
 /* A11y + ajustes finos (auditoria: guidelines + WCAG) */
 .skip{position:absolute;left:12px;top:-70px;z-index:100;background:var(--roxo);color:#fff;padding:10px 18px;border-radius:0 0 12px 12px;font-weight:700;text-decoration:none;transition:top .2s ease}
 .skip:focus{top:0;color:#fff}
-a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--cta);outline-color:light-dark(var(--cta),var(--rosa));outline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--cta);outline-color:var(--cta-texto);outline-offset:2px}
 section[id]{scroll-margin-top:84px}
 body{touch-action:manipulation}
 a,button{-webkit-tap-highlight-color:rgba(168,0,119,.25)}
 .faixa-num,.oferta-card .por{font-variant-numeric:tabular-nums}
-summary:hover{color:var(--cta)}
-footer nav a:hover{color:var(--cta);text-decoration:underline}
+summary:hover{color:var(--cta-texto)}
+footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
 .ba:focus-within .ba-linha{box-shadow:0 0 0 4px var(--cta),0 0 12px rgba(63,1,66,.35)}
 .ba:focus-within .ba-puxador{outline:3px solid #fff;outline-offset:3px}
-.pausa{background:none;border:1px solid var(--borda);border-radius:999px;padding:8px 18px;font-size:.85rem;font-weight:600;color:var(--cta);color:light-dark(var(--cta),var(--rosa));cursor:pointer;margin:14px auto 0;display:block}
+.pausa{background:none;border:1px solid var(--borda);border-radius:999px;padding:8px 18px;font-size:.85rem;font-weight:600;color:var(--cta-texto);cursor:pointer;margin:14px auto 0;display:block}
 .pausa-linha{text-align:center}
 /* Entradas de rolagem (keyframes inspirados em Animate.css v4.1.1 — inline p/ manter single-file) */
 .animar{opacity:0}
@@ -514,7 +526,7 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
         <a class="btn" href="<?= $checkout ?>">Começar agora</a>
       </div>
       <div class="hero-foto">
-        <img src="../conteudo/imagens/nath-hero-v2.webp" alt="Natália Pereira, instrutora de Pilates" fetchpriority="high" width="1244" height="1244" decoding="async">
+        <img src="../conteudo/imagens/nath-hero-v2.webp" srcset="../conteudo/imagens/nath-hero-v2-640.webp 640w, ../conteudo/imagens/nath-hero-v2.webp 1244w" sizes="(max-width:900px) 92vw, 509px" alt="Natália Pereira, instrutora de Pilates" fetchpriority="high" width="1244" height="1244" decoding="async">
       </div>
     </div>
   </section>
@@ -615,14 +627,14 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
       <h3 class="carrossel-titulo">O que elas contam</h3>
       <button class="pausa" data-pausa="carrossel" aria-pressed="false">Pausar movimento</button>
       <div class="carrossel" id="carrossel-depo" tabindex="0" role="region" aria-label="Depoimentos das alunas">
-        <figure><img src="../conteudo/prova/dp1.webp" width="1080" height="675" alt="Depoimento de aluna: finalizou o programa Celulite Zero em 28 dias e conta que pernas e bumbum ficaram lisinhos, sem furinhos, com a autoestima lá no alto" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/dp2.webp" width="1080" height="675" alt="Depoimento de aluna: em menos de um mês as pernas ficaram mais suaves, a celulite praticamente sumiu e ela se sente confiante como nunca" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/dp3.webp" width="1080" height="675" alt="Depoimento de aluna: na metade do programa as pernas já estão mais lisinhas; diz que as orientações são fáceis de seguir e queria ter começado antes" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/dp4.webp" width="1080" height="675" alt="Depoimento de Lucia Alves no WhatsApp: esperava diminuir um pouco a celulite, mas reduziu praticamente toda; diz que mudou a vida dela" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/dp5.webp" width="1080" height="675" alt="Depoimento de Poliana Lopes: no 12º dia mais da metade das celulites sumiram; achou que seria mais um método que não funciona e se surpreendeu" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/dp6.webp" width="1080" height="675" alt="Depoimento de aluna: treinos e orientações super tranquilos de seguir e praticar; era tudo que ela estava precisando" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/dp7.webp" width="1080" height="675" alt="Depoimento de aluna: começou sem expectativa e em menos de um mês a diferença é notável, com resultado real nas celulites" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/dp8.webp" width="1080" height="675" alt="Depoimento de Mellissa Bittencourt: radiante na metade do programa, com as pernas mais lisinhas e orientações fáceis de seguir" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp1.webp" srcset="../conteudo/prova/dp1-360.webp 360w, ../conteudo/prova/dp1.webp 1080w" sizes="(max-width:384px) 78vw, 300px" width="1080" height="675" alt="Depoimento de aluna: finalizou o programa Celulite Zero em 28 dias e conta que pernas e bumbum ficaram lisinhos, sem furinhos, com a autoestima lá no alto" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp2.webp" srcset="../conteudo/prova/dp2-360.webp 360w, ../conteudo/prova/dp2.webp 1080w" sizes="(max-width:384px) 78vw, 300px" width="1080" height="675" alt="Depoimento de aluna: em menos de um mês as pernas ficaram mais suaves, a celulite praticamente sumiu e ela se sente confiante como nunca" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp3.webp" srcset="../conteudo/prova/dp3-360.webp 360w, ../conteudo/prova/dp3.webp 1080w" sizes="(max-width:384px) 78vw, 300px" width="1080" height="675" alt="Depoimento de aluna: na metade do programa as pernas já estão mais lisinhas; diz que as orientações são fáceis de seguir e queria ter começado antes" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp4.webp" srcset="../conteudo/prova/dp4-360.webp 360w, ../conteudo/prova/dp4.webp 1080w" sizes="(max-width:384px) 78vw, 300px" width="1080" height="675" alt="Depoimento de Lucia Alves no WhatsApp: esperava diminuir um pouco a celulite, mas reduziu praticamente toda; diz que mudou a vida dela" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp5.webp" srcset="../conteudo/prova/dp5-360.webp 360w, ../conteudo/prova/dp5.webp 1080w" sizes="(max-width:384px) 78vw, 300px" width="1080" height="675" alt="Depoimento de Poliana Lopes: no 12º dia mais da metade das celulites sumiram; achou que seria mais um método que não funciona e se surpreendeu" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp6.webp" srcset="../conteudo/prova/dp6-360.webp 360w, ../conteudo/prova/dp6.webp 1080w" sizes="(max-width:384px) 78vw, 300px" width="1080" height="675" alt="Depoimento de aluna: treinos e orientações super tranquilos de seguir e praticar; era tudo que ela estava precisando" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp7.webp" srcset="../conteudo/prova/dp7-360.webp 360w, ../conteudo/prova/dp7.webp 1080w" sizes="(max-width:384px) 78vw, 300px" width="1080" height="675" alt="Depoimento de aluna: começou sem expectativa e em menos de um mês a diferença é notável, com resultado real nas celulites" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/dp8.webp" srcset="../conteudo/prova/dp8-360.webp 360w, ../conteudo/prova/dp8.webp 1080w" sizes="(max-width:384px) 78vw, 300px" width="1080" height="675" alt="Depoimento de Mellissa Bittencourt: radiante na metade do programa, com as pernas mais lisinhas e orientações fáceis de seguir" loading="lazy"></figure>
       </div>
       <div class="foto-nav" id="depo-nav" hidden>
         <div class="ba-fileira">
@@ -634,11 +646,11 @@ footer nav a:hover{color:var(--cta);text-decoration:underline}
       </div>
       <h3 class="carrossel-titulo">Direto do grupo VIP</h3>
       <div class="carrossel grupo" tabindex="0" role="region" aria-label="Conversas do grupo VIP">
-        <figure><img src="../conteudo/prova/1-1.webp" width="800" height="1000" alt="Conversa no grupo VIP: alunas trocam receita de tapioca com banana, canela e pasta de amendoim e elogiam o material do programa" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/2-1.webp" width="800" height="1000" alt="Conversa no grupo VIP: aluna Mirian Prado agradece a dedicação da Mari e outra aluna celebra motivação para manter a rotina" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/3-1.webp" width="800" height="1000" alt="Depoimento de Cristina no grupo VIP: nunca seguiu programa em casa por desânimo; está amando cada aula, com resultados chegando; trata flacidez na menopausa" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/1.webp" width="800" height="1000" alt="Conversa no grupo VIP: Mirian Prado diz que é o melhor grupo de que já participou e Alexandre Mendonça concorda" loading="lazy"></figure>
-        <figure><img src="../conteudo/prova/2.webp" width="800" height="1000" alt="Conversa no grupo VIP: aluna Tatuzinho comemora ter perdido o primeiro quilo em 14 dias de aulas e diz que entrar no projeto foi uma das melhores escolhas" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/1-1.webp" srcset="../conteudo/prova/1-1-360.webp 360w, ../conteudo/prova/1-1.webp 800w" sizes="(max-width:384px) 78vw, 300px" width="800" height="1000" alt="Conversa no grupo VIP: alunas trocam receita de tapioca com banana, canela e pasta de amendoim e elogiam o material do programa" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/2-1.webp" srcset="../conteudo/prova/2-1-360.webp 360w, ../conteudo/prova/2-1.webp 800w" sizes="(max-width:384px) 78vw, 300px" width="800" height="1000" alt="Conversa no grupo VIP: aluna Mirian Prado agradece a dedicação da Mari e outra aluna celebra motivação para manter a rotina" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/3-1.webp" srcset="../conteudo/prova/3-1-360.webp 360w, ../conteudo/prova/3-1.webp 800w" sizes="(max-width:384px) 78vw, 300px" width="800" height="1000" alt="Depoimento de Cristina no grupo VIP: nunca seguiu programa em casa por desânimo; está amando cada aula, com resultados chegando; trata flacidez na menopausa" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/1.webp" srcset="../conteudo/prova/1-360.webp 360w, ../conteudo/prova/1.webp 800w" sizes="(max-width:384px) 78vw, 300px" width="800" height="1000" alt="Conversa no grupo VIP: Mirian Prado diz que é o melhor grupo de que já participou e Alexandre Mendonça concorda" loading="lazy"></figure>
+        <figure><img src="../conteudo/prova/2.webp" srcset="../conteudo/prova/2-360.webp 360w, ../conteudo/prova/2.webp 800w" sizes="(max-width:384px) 78vw, 300px" width="800" height="1000" alt="Conversa no grupo VIP: aluna Tatuzinho comemora ter perdido o primeiro quilo em 14 dias de aulas e diz que entrar no projeto foi uma das melhores escolhas" loading="lazy"></figure>
       </div>
       <div class="foto-nav" id="grupo-nav" hidden>
         <div class="ba-fileira">

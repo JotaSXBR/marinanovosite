@@ -1,19 +1,40 @@
 # Pilates em Casa (antes Mari Coach Fit)
 
-Rebuild estático da landing. Sem build, sem banco: HTML + CSS + JS inline.
+Landing do maricoachfit.com: **PHP + painel da proprietária**, sem build e sem
+banco (HTML + CSS + JS inline). O `AGENTS.md` é o mapa técnico e as armadilhas;
+este README detalha o ambiente local e o deploy.
 
 ## Pastas
 
-| Pasta | O que é |
+| Caminho | O que é |
 |---|---|
-| `nova-landing/` | O site novo (`index.html`, `privacidade.html`, `termos.html`). É aqui que se edita |
-| `conteudo/imagens/` | Imagens reaproveitadas do WordPress original |
-| `conteudo/layout/` | HTML original de referência (não publica) |
-| `tests/` | Testes Playwright (`npm test`) |
-| `deploy/` | Gerada pela Action, não versionada (é o que sobe para a Hostinger) |
+| `nova-landing/index.php` | **Fonte de produção.** A oferta é resolvida no servidor (`?o=CODIGO`) |
+| `nova-landing/index.html` | Artefato gerado: espelho estático da oferta `padrão` (fallback sem PHP e alvo do `npm test`) |
+| `nova-landing/privacidade.html`, `termos.html` | Páginas legais |
+| `nova-landing/private/` | Ofertas, gestão de carrinhos e rastreio — nunca acessível por URL |
+| `nova-landing/painel/` | Painel da proprietária (login, carrinhos, links por canal) |
+| `nova-landing/fontes/` | Anton + Montserrat em `.woff2` (self-host) |
+| `conteudo/imagens/`, `conteudo/prova/` | Imagens reaproveitadas do original (`.webp`) |
+| `conteudo/layout/`, `conteudo/referencia/`, `conteudo/guardado/` | Referência do original (não publica) |
+| `research/` | Pesquisa de concorrente (não publica) |
+| `ferramentas/` | `deploy-ftp.py` — deploy manual por FTPS |
+| `tests/` | Testes Playwright (`npm test`, `npm run test:php`) |
+| `deploy/` | Gerada pela Action, não versionada (é o que sobe para o cPanel) |
 | `.agents/skills/` | Skills instaladas via `npx skills` (pin em `skills-lock.json`) |
 
-Docs: `INVENTARIO.md` (o que veio do WordPress), `ANALISE-COPY.md` (auditoria de copy), `QUESTIONARIO.md` (respostas da dona).
+Docs: `AGENTS.md` (mapa técnico + armadilhas), `INVENTARIO.md` (o que veio do
+WordPress), `ANALISE-COPY.md` (auditoria de copy), `QUESTIONARIO.md` (respostas da
+dona), `BACKLOG.md` (futuro).
+
+## Scripts
+
+| Comando | O que faz |
+|---|---|
+| `npm run dev` | Preview **estático** em `http://localhost:8901` (não executa PHP) |
+| `npm run dev:php` | Apache + PHP 8.2 (Docker) em `http://localhost:8080` — o PHP real |
+| `npm run dev:php:log` / `npm run dev:php:down` | Log de erros do PHP / derruba o container |
+| `npm test` | Suíte estática (46 passam + 2 pulados) |
+| `npm run test:php` | Suíte do PHP real no container (30; 8 pulados sem `PAINEL_SENHA`) |
 
 ## Ambiente dev
 
@@ -59,14 +80,18 @@ verdade — os bloqueios de `private/` e `painel/` podem ser conferidos local
 Duas suítes, porque testam coisas diferentes:
 
 ```bash
-npm test         # 38 testes · contra o index.html estático (layout/copy/CSS)
+npm test         # 46 passam + 2 pulados · contra o index.html estático (layout/copy/CSS/fontes/srcset)
 
 PAINEL_SENHA='...' npm run test:php
-                  # 30 testes · contra o PHP real no container (:8080)
+                  # 30 · contra o PHP real no container (:8080) — o script sobe o container
 ```
 
 **`npm test`** sobe o preview estático e confere o que dá para conferir sem
-executar PHP: layout, copy, carrosséis, tema, bônus.
+executar PHP: layout, copy, carrosséis, tema, bônus, a **sincronia do artefato**
+(o `index.html` tem que espelhar o corpo do `index.php` — sem isso, produção e
+fallback divergem em silêncio), as **fontes self-hosted** (nenhuma origem externa
+e todo `.woff2` em `fontes/` respondendo 200), todo **candidato de `srcset`** e o
+`canonical` absoluto.
 
 **`npm run test:php`** sobe o container e cobre o que só existe com PHP:
 oferta por `?o=`, repasse do canal para o checkout, painel (login, carrinhos,
@@ -80,6 +105,33 @@ são pulados com aviso.
 > Detalhe do desenho: `workers: 1` na suíte do servidor. Os testes mexem em
 > estado compartilhado (log de visitas, contador de tentativas) e o bloqueio do
 > antibrute é por IP — em paralelo, um teste derrubaria o login dos outros.
+
+## Auditoria Lighthouse
+
+O relatório mede **a página no ar**, então rode contra `https://maricoachfit.com/`
+(o `npm run dev:php` mede a mesma coisa em `http://localhost:8080`).
+
+**Sem extensão é obrigatório** — adblock e afins injetam `chrome-extension://` no
+relatório e sujam 3 audits (342 KiB de JS "não usado", 73 KiB de "minificar JS" e
+um `image-alt` do ícone da própria extensão). Janela anônima **não** resolve:
+extensão marcada "permitir em anônima" continua injetando.
+
+```bash
+# perfil novo e vazio (o caminho confiável) — no WSL:
+"/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" \
+  --user-data-dir=/tmp/lh-perfil --no-first-run --no-default-browser-check
+
+# ou direto pela CLI, sem perfil nenhum:
+npx lighthouse https://maricoachfit.com/ \
+  --preset=desktop --output=json --output-path=research/lh.json \
+  --chrome-flags="--headless=new"
+```
+
+No navegador: `F12` → aba **Lighthouse** → modo **Navigation** → **Analyze page
+load** (não rolar a página durante o teste). O placar de 17/10/2026 (Performance
+94 · Acessibilidade 91 · Boas práticas 100 · SEO 83) e a lista do que cada ponto
+pedia estão no `AGENTS.md`, seção **Lighthouse**. A única pendência fora do código
+é o **HTTP/2**, que é chamado no WHM do host.
 
 ## Deploy (GitHub → cPanel do maricoachfit.com)
 
@@ -96,7 +148,7 @@ com links reescritos) e envia via **FTPS** a cada `push` na `main`.
    > É este campo que define onde os arquivos caem. Se ficar apontando para
    > `public_html/upload` (o padrão quando o campo não é alterado), tudo será
    > enviado para a subpasta errada.
-6. **Limite:** sem limite (ou o que couber) — as imagens somam ~12 MB.
+6. **Limite:** sem limite (ou o que couber) — as imagens somam ~2,5 MB.
 
 O login é sempre `usuario@seudominio.com` — é esse formato (não só `deploy`)
 que vai no secret do GitHub.
@@ -115,7 +167,7 @@ que vai no secret do GitHub.
 
 | Nome | Valor |
 |---|---|
-| `CPANEL_SERVER_DIR` | `nova/` |
+| `CPANEL_SERVER_DIR` | *(deixar **vazia/ausente** — é o estado atual, publica na raiz. Criar com `nova/` só para testar em subpasta.)* |
 
 > ⚠️ **Variables ≠ Secrets.** O workflow lê `vars.CPANEL_SERVER_DIR`, então a
 > chave precisa estar na aba **Variables**. Se for criada em **Secrets**, é
@@ -165,7 +217,9 @@ pacote, mesma conta, mesmas travas — só muda quem executa.
 ```bash
 # 1. Montar o pacote (o mesmo bloco que a Action executa)
 #    as linhas exatas estão em .github/workflows/deploy-cpanel.yml, passo
-#    "Montar pasta de deploy"
+#    "Montar pasta de deploy". Não esquecer a linha das FONTES
+#    (cp nova-landing/fontes/*.woff2 deploy/fontes/): sem ela o site publica
+#    inteiro sem a fonte da marca, e a página continua "funcionando".
 
 # 2. Credenciais no AMBIENTE — nunca na linha de comando,
 #    senão a senha fica no histórico do shell

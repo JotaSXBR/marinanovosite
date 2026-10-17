@@ -4,7 +4,16 @@
 //
 // Sobe o container sozinho se nao estiver no ar.
 //
-//   npm run test:php
+//   npm run test:php        (recomendado: sobe o container e roda)
+//   npm run dev:php         (sobe o container e deixa no ar)
+//   npm run dev:php:down    (derruba)
+//
+// ATENCAO: rodar `playwright test -c playwright.servidor.config.js` direto, com
+// o container FORA DO AR, falha com "webServer exited early" — o comando do
+// webServer abaixo e `docker compose up -d`, que sai na hora (destacado) e o
+// Playwright entende como servidor que morreu. Por isso o script npm sobe o
+// container ANTES (com reuseExistingServer: true, o Playwright entao reaproveita
+// o container ja no ar em vez de tentar subir um).
 //
 // Testes que precisam da senha do painel usam a variavel de ambiente
 // PAINEL_SENHA. A senha NUNCA fica no repo (no config.php so existe o hash

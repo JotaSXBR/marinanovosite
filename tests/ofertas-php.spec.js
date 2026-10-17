@@ -22,6 +22,10 @@ test('index.php nao vaza checkout nem lista de ofertas no fonte', async ({ page 
   // secreta nunca indexa (meta + header)
   expect(fonte).toContain('name="robots" content="noindex, nofollow"');
   expect(fonte).toContain('X-Robots-Tag');
+  // canonical do fonte tem que ser ABSOLUTO: com href="./" o audit `canonical`
+  // do Lighthouse reprova ("Is not an absolute URL") — foi o caso ate 17/10/2026.
+  expect(fonte).not.toContain('rel="canonical" href="./"');
+  expect(fonte).toContain("rel=\"canonical\" href=\"<?= e($baseUrl . '/') ?>\"");
 });
 
 test('private/ bloqueado em duas camadas (htaccess + guarda no codigo)', async ({ page }) => {
@@ -40,4 +44,36 @@ test('private/ bloqueado em duas camadas (htaccess + guarda no codigo)', async (
   expect(raiz).toContain('o=');
   // carrinhos.php tambem precisa estar coberto pela FilesMatch do .htaccess raiz
   expect(raiz).toContain('carrinhos');
+});
+
+// Guarda de sincronia do artefato: index.html precisa ser o espelho estático
+// do corpo do index.php (oferta 'padrao'). Sem isso, a landing de produção e o
+// fallback divergem em silêncio — foi o que aconteceu com o objeto JS OFERTAS,
+// que sobreviveu no index.html muito depois de o index.php passar a resolver a
+// oferta no servidor. Esta é a guarda que "roda no CI" — na prática, no
+// `npm test`, que é o que executa de verdade (a Action está sem créditos).
+test('index.html espelha o corpo do index.php (sem drift do artefato)', async ({ page }) => {
+  const php = await (await page.request.get('/nova-landing/index.php')).text();
+  const html = await (await page.request.get('/nova-landing/index.html')).text();
+
+  // 1. o snapshot não carrega o objeto que vazava as ofertas no fonte
+  expect(html).not.toContain('var OFERTAS');
+
+  // 2. toda linha ESTÁTICA do corpo do index.php existe no index.html, na mesma
+  //    ordem. Ficam de fora as linhas com PHP (<?) e o meta de noindex, que só
+  //    a oferta secreta renderiza — as demais o index.php já resolve sozinho.
+  const corpo = php.slice(php.indexOf('<!DOCTYPE html>'));
+  const estaticas = corpo
+    .split('\n')
+    .filter((l) => !l.includes('<?'))
+    .filter((l) => l.trim() !== '<meta name="robots" content="noindex, nofollow">')
+    .map((l) => l.trim())
+    .filter((l) => l !== '');
+
+  let cursor = 0;
+  for (const linha of estaticas) {
+    const pos = html.indexOf(linha, cursor);
+    expect(pos, `linha do index.php ausente/fora de ordem no index.html: ${linha.slice(0, 90)}`).toBeGreaterThanOrEqual(0);
+    cursor = pos + linha.length;
+  }
 });

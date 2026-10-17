@@ -69,6 +69,61 @@ test('todas as imagens locais retornam 200', async ({ page }) => {
   expect(heroW).toBeGreaterThan(0);
 });
 
+// As fontes sairam do Google Fonts: @font-face inline + .woff2 em fontes/.
+// Sem esta guarda, um rename de arquivo deixaria a pagina em fonte de sistema
+// sem ninguem notar (a pagina continua "funcionando").
+test('fontes self-hosted: nenhuma origem externa e todo woff2 responde 200', async ({ page, baseURL }) => {
+  const fonte = await (await page.request.get(PAGE)).text();
+
+  expect(fonte).not.toContain('fonts.googleapis.com');
+  expect(fonte).not.toContain('fonts.gstatic.com');
+  // preconnect/render-blocking de terceiro nao pode voltar
+  expect(fonte).not.toContain('rel="preconnect" href="https://fonts');
+
+  const fontes = [...new Set([...fonte.matchAll(/url\("(fontes\/[^"]+\.woff2)"\)/g)].map((m) => m[1]))];
+  expect(fontes.length).toBe(6);
+  for (const f of fontes) {
+    const res = await page.request.get(new URL(f, baseURL + PAGE).href);
+    expect(res.status(), f).toBe(200);
+  }
+
+  // e as fontes de fato carregam (Montserrat variavel cobre 400 e 700)
+  await page.goto(PAGE);
+  const carregadas = await page.evaluate(async () => {
+    await document.fonts.ready;
+    return [
+      document.fonts.check('400 16px Montserrat'),
+      document.fonts.check('700 16px Montserrat'),
+      document.fonts.check('16px Anton'),
+    ];
+  });
+  expect(carregadas).toEqual([true, true, true]);
+});
+
+// Toda variante do srcset (as -360.webp) precisa existir: o navegador escolhe
+// pelo viewport, entao um arquivo faltando so apareceria em alguns tamanhos.
+test('todo candidato de srcset responde 200', async ({ page }) => {
+  const fonte = await (await page.request.get(PAGE)).text();
+  const candidatos = [...new Set([...fonte.matchAll(/srcset="([^"]+)"/g)]
+    .flatMap((m) => m[1].split(',').map((c) => c.trim().split(/\s+/)[0])))]
+    .map((c) => c.replace('../conteudo/', '/conteudo/'));
+  expect(candidatos.length).toBeGreaterThanOrEqual(28);
+  for (const c of candidatos) {
+    const res = await page.request.get(c);
+    expect(res.status(), c).toBe(200);
+  }
+});
+
+// Lighthouse reprova canonical RELATIVO ("Is not an absolute URL (./)") e a
+// ausencia passa por acidente. Com URL absoluta o audit passa de verdade e as
+// URLs de campanha (?o=/?src/UTM) ficam consolidadas numa so pagina.
+test('canonical absoluto no head', async ({ page }) => {
+  const fonte = await (await page.request.get(PAGE)).text();
+  const m = fonte.match(/<link rel="canonical" href="([^"]+)">/);
+  expect(m, 'sem <link rel="canonical"> no index.html').not.toBeNull();
+  expect(m[1]).toBe('https://maricoachfit.com/');
+});
+
 test('carrossel nao quebra o layout ao rolar', async ({ page }) => {
   await page.goto(PAGE);
   const tracks = page.locator('.carrossel');

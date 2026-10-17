@@ -1,177 +1,423 @@
 # AGENTS.md
 
-## State
-- Rebuild do maricoachfit.com (WordPress/Elementor) em andamento.
-- ~~`site-original/`~~ — **saiu da pasta em 14/10/2026** (limpeza de disco). O
-  espelho wget do WordPress antigo (119 arquivos, 15 MB) **continua no histórico
-  do git**: recuperar com `git checkout 727727c -- site-original/`. Não voltar a
-  versionar.
-- `conteudo/imagens/` — imagens reaproveitadas do WordPress original, **todas em `.webp` desde 14/10/2026** (limpeza de 11 MB). `conteudo/prova/` — 23 imagens (8 depoimentos + 5 grupo + 5 pares antes/depois 9:16 com cinturas alinhadas e rostos removidos). `conteudo/layout/` — HTML de referência. **Duas exceções que continuam fora do WebP:** `og-capa.jpg` (é o og:image que WhatsApp/Facebook leem — nenhum renderiza WebP em preview de link) e `Satisfacao-Garantida.svg` (vetor).
-- `conteudo/imagens/nath-hero-v2.webp` — foto do hero (recorte com alfa + brilho rosa, 106 KB). **v1 (inundação) foi descartado: deixava halo branco no cabelo.** Agora usa matting (BiRefNet portrait, MIT, via rembg). Regra para trocar esta imagem: **mudar o nome do arquivo**, não sobrescrever — o `ExpiresByType` do `.htaccess` não vale nesse host (produção não devolve `Cache-Control`/`Expires`), mas trocar o nome elimina qualquer cache de browser de uma vez.
-- `INVENTARIO.md` — mapa do que foi baixado, vídeo (embed YouTube `youtu.be/WDEG6QFKQlo`, sem MP4 próprio) e problemas do original.
-- `ANALISE-COPY.md` — auditoria de copy seção por seção (skill `copywriting`), proposta de reordenação e backlog. Ler antes de mexer em textos.
-- `QUESTIONARIO.md` — perguntas para a dona (oferta, público, prova, produto, marca, jurídico). Aguardando respostas; aplicar na landing quando chegarem.
-- `BACKLOG.md` — futuro (não fazer agora): site dinâmico com ofertas via `?oferta=` e preview de link com imagem (OG).
-- `nova-landing/index.php` — PRINCIPAL (produção): mesma página do `index.html`, mas a oferta é resolvida no servidor via `?o=CODIGO` (cai na `padrao` sem parâmetro). O HTML entregue contém SÓ a oferta ativa — as demais nunca aparecem no fonte. `og:url`/`og:image` montados do host atual (funciona na raiz e em subpasta `/nova/`, sem editar no go-live). `nova-landing/index.html` — snapshot estático da padrão (fallback + preview local sem PHP + base dos testes). `nova-landing/private/ofertas.php` — ARQUIVO LOCAL EDITÁVEL com todas as ofertas/checkouts (sobe no deploy mas bloqueado por `private/.htaccess` + guarda 403 no código). Nova oferta = novo checkout Kiwify + entrada com código aleatório nesse arquivo + link `?o=CODIGO`. Oferta secreta recebe `noindex` automático. `privacidade.html` + `termos.html` (LGPD/CDC padrão). Sem vídeo (dona pediu remoção). Abrir o arquivo direto no browser p/ preview.
-- `tests/` — duas suítes Playwright. `npm test` (38) roda contra o `index.html` estático (layout/copy/carrossel). `npm run test:php` (30) roda contra o **PHP real** no container (`docker compose up -d`, :8080) e cobre o que o estático não executa: `?o=`, repasse de src ao checkout, painel (login/carrinhos/ciclo de link/logout), cookie, CSRF, antibrute e os 403. Senha do painel via env `PAINEL_SENHA` (nunca no repo); sem ela os 8 testes de painel são pulados. `workers: 1` na suíte do servidor porque os testes compartilham estado e o antibrute bloqueia por IP.
-- Ambiente PHP local = Docker (`docker/Dockerfile`, `docker-compose.yml`): `php:8.2-apache` + `AllowOverride All` (sem isso o `.htaccess` é ignorado e os bloqueios não existem local). `npm run dev:php`. Docker e não apt porque o WSL exige senha de sudo.
-- Dev: `npm run dev` (serve a raiz na 8901). Deploy: push na `main` → Action `deploy-cpanel.yml` monta `deploy/` (gitignored) e envia p/ cPanel do maricoachfit.com via FTPS. Segredos (`FTP_SERVER/FTP_USERNAME/FTP_PASSWORD`). **Destino ATUAL: raiz `public_html/` — a variable `CPANEL_SERVER_DIR` foi removida de propósito**, então `server-dir` fica vazio e publica em `https://maricoachfit.com/` (painel em `/painel/`). Para testar numa subpasta sem mexer na raiz, criar a variable em **Variables** (nunca em Secrets, que é ignorado em silêncio) com valor `nova/`. Ver `README.md`.
-- A pasta `/nova/` no servidor é uma **cópia congelada** de uma publicação antiga (quando `CPANEL_SERVER_DIR=nova/`). Não é mais alvo de deploy — não usar para conferir o estado atual, sempre olhar a raiz. Foi por isso que uma auditoria "não encontrava" as mudanças no servidor.
-- **Backup do WordPress antigo: `cgi-bin.zip`** (109 MB, na raiz, gitignored, NUNCA versionar — tem `wp-admin`, `wp-includes`, `wp-content` e o `wp-config.php` com a senha do banco). **Decisão de 14/10/2026: MANTER no lugar.** É 94% do peso da pasta, mas é o único backup do WordPress e apaguá-lo torna o site antigo irrecuperável. Não está em `public_html` (404 em `/wp-admin/`).
-- `nova-landing/painel/` — CMS próprio da proprietária (PHP, sem framework): login por senha, relatório de cliques por canal (alinhado, com total), **gestão de carrinhos** (cadastrar/editar/apagar/restarurar), **links prontos por canal** (botões de um clique para WhatsApp/IG/TikTok/Kwai/Meta + link personalizado), export CSV, botão copiar. Senha = HASH bcrypt em `painel/config.php` (nunca texto puro); a Action **falha o deploy** enquanto o placeholder `COLE_AQUI_O_HASH` estiver lá. Guardas: CSRF token, sessão httpOnly, `noindex`, `private/` negada por `.htaccess`.
-- `nova-landing/painel/partes/cabeca.php` — **todo** o CSS do painel (design
-  system + responsivo) num arquivo só. **Tema noturno com `light-dark()`**: quem
-  escolhe o lado é `color-scheme`, e o interruptor sol/lua só força esse atributo
-  (`html[data-tema]` + `localStorage painelTema`) — sem lista de tokens
-  duplicada. O `data-tema` é escrito **sempre** no `<head>` (valor salvo; senão a
-  preferência do sistema), porque sem ele nenhum CSS consegue perguntar qual lado
-  vale. Consequência: não pode sobrar cor fixa no arquivo (todo `#fff` viraria
-  mancha branca no escuro) — se precisar, criar token.
-- `nova-landing/private/carrinhos.php` — camada de gestão dos carrinhos. **Dois arquivos, de propósito:** `private/ofertas.php` é o cardápio base versionado no git (re-publicado a cada deploy); `private/dados/ofertas.json` é o que a dona cria/edita pelo painel e **NÃO está no git**, então o deploy não apaga. Na leitura o JSON **sobrepõe** o base. `carrinhoApagar` de um carrinho do base guarda a chave em `_ocultos` (não some do código); `carrinhoRestaurar` desfaz a edição. `index.php` chama `carrinhosTodos()` — nunca o base direto. `carrinhoValidar` normaliza/valida (chave `[a-z0-9_-]`, checkout https, preco<=de, parcelas 1-24, parcela `10,69`). O carrinho `padrao` não pode ser apagado.
-- `nova-landing/private/rastreio.php` — loga 1 linha por visita (canal, oferta, hora, origem externa, identificador anônimo) e **repassa `src`/UTM pro checkout Kiwify**. Venda se confirma em Kiwify → Vendas → Filtros → Parâmetros da URL → `src`. LGPD: IP nunca em texto claro (HMAC com sal do dia). Dados em `private/dados/` (gitignored no servidor, criado em uso).
-- **Compressão: feita no PHP, não no servidor.** Medido em 14/10/2026 na
-  produção: **o nginx da frente NÃO repassa o header `Accept-Encoding` para o
-  PHP** (sonda no próprio PHP mostrou `$_SERVER`/`getallheaders()` só com Host,
-  Accept, User-Agent e `X-Forwarded-*`) e **o `mod_deflate` não está carregado
-  no Apache desse host**. São dois bloqueios independentes: sem o header, nem
-  o `mod_deflate` teria como decidir (ele também não enxerga o que o cliente
-  aceita), e instalar módulo só é possível pelo WHM. Resultado: pedi gzip e br
-  em HTML, SVG e WebP e nenhum `Content-Encoding` voltava — 80 KB de HTML
-  (quase todo CSS inline, e render-blocking) iam crus a cada visita.
-  A solução é `comprimir_resposta_gzip()` no topo do `index.php`: bufferiza a
-  página e comprime com `gzencode()` numa `register_shutdown_function`.
-  **Comprimir sem conseguir ler o `Accept-Encoding` é seguro por norma** — o RFC
-  9110 §12.5.3 diz que, sem esse header, "qualquer codificação de conteúdo é
-  considerada aceitável" — e é o que o `zlib.output_compression = On` do
-  php.ini faria. Medido no ar: 80.552 → 20.852 bytes (−74%, 58 KB a menos por
-  visita). Os headers `Content-Encoding`/`Content-Length` são declarados
-  **dentro** da função e só se a compressão aconteceu, então qualquer falha
-  (gzencode quebrado, buffer drenado por outro código, página < 1 KB) sai crua
-  e sem header nenhum — nunca gzip pela metade. O `<IfModule mod_deflate.c>`
-  do `.htaccess` foi mantido, inofensivo, para o dia que a host ligar o módulo.
-  **Armadilha já paga:** `ob_start('ob_gzhandler')` **não** resolve — o zlib lê
-  o header no nível do SAPI, não do `$_SERVER`, então forjar
-  `$_SERVER['HTTP_ACCEPT_ENCODING'] = 'gzip'` não faz nada (verificado: sem
-  header, com `identity` ou com `br`, o PHP recusa comprimir). E
-  `DeflateCompressionLevel` em `.htaccess` derruba o site com **500** (só é
-  aceita em nível de servidor, precisa de `AllowOverride Options`).
-- **Como consertar no servidor (doc oficial do cPanel, lida em 14/10/2026):
-  no cPanel NÃO dá.** A doc diz textualmente que o *Optimize Website* (cPanel »
-  Software » Optimize Website) **não funciona com NGINX** e que mudanças ali
-  não afetam a compressão. O único caminho suportado é **WHM como root**:
-  EasyApache 4 » *Additional Packages* » **`ea-nginx-gzip`** (e
-  `ea-nginx-brotli`, que é melhor que gzip). Se a hospedagem for compartilhada
-  sem root, **ninguém consegue fazer** — e aí a compressão no PHP já é a
-  resposta completa para a página dinâmica. O que a conta do cPanel não alcança
-  é só a compressão dos **estáticos** (`privacidade.html`, `termos.html`), que
-  seguem sem gzip; a landing, que é o que pesa, já está comprimida. Instalar o
-  pacote depois **não** duplica nada: o nginx não re-comprime resposta que já
-  chega com `Content-Encoding`.
-- **HTTP/2 está desligado** (medido: ALPN anuncia e escolhe `http/1.1`, TLS
-  1.3). A doc diz que HTTP/2 **exige** o pacote `ea-nginx-http2` no EasyApache
-  4. Mesma raiz dos pacotes faltando — vale pedir junto no mesmo chamado.
-- **Como ficou PROVADO que o `mod_deflate` não está carregado** (antes era
-  inferência minha): `mod_deflate` **sempre** acrescenta
-  `Vary: Accept-Encoding` quando o filtro DEFLATE roda, mesmo recusando
-  comprimir — conferido no container com o módulo ligado, inclusive em `.html`
-  estático, que não passa pelo PHP. Em produção, `/termos.html` (estático, fora
-  do meu código) **não tinha nenhum `Vary`**. Filtro nunca rodou = módulo
-  ausente.
-- **BREACH:** a doc do cPanel alerta que comprimir em TLS pode vazar dado
-  refletido. Conferido: o `?o=CODIGO` **não** aparece no HTML (0 ocorrências) —
-  `canonical` é `./` e o `og:url` é a raiz do host — e o painel não passa pelo
-  `index.php`, então não é comprimido. Risco nulo.
-- `srcset` nas 10 imagens de antes/depois: variantes de 360w em
-  `conteudo/prova/*-360.webp` (136 KB) com
-  `srcset="X-360.webp 360w, X.webp 720w"` e
-  `sizes="(max-width:760px) 92vw, 350px"`. Medido no navegador: mobile 390@3x
-  escolhe a 720w, desktop 1440@1x escolhe a 360w (14 KB em vez de 27). **O
-  `sizes` está hardcoded em 350px porque o quadro antes/depois tem
-  `max-width: 420px` e o celular ocupa 92vw — se o CSS mudar, o `sizes` tem que
-  mudar junto**, senão o navegador escolhe a variante errada. As duas proporções
-  são 9:16, então `width`/`height` continuam valendo para o CLS.
-- `ferramentas/deploy-ftp.py` — deploy por FTPS direto, para quando o GitHub
-  Actions não estiver disponível (**os créditos da conta acabaram em
-  14/10/2026**; até virarem, este é o caminho). Lê `FTP_SERVER`,
-  `FTP_USERNAME` e `FTP_PASSWORD` do ambiente — **nenhum segredo no repo** —,
-  força `AUTH TLS` + `PROT P` (a senha nunca vai em texto claro), **não apaga
-  nada** do servidor e **nunca sobe para `/nova/`**. É idempotente: arquivo já
-  no ar com o mesmo tamanho é pulado. O login da conta FTP já cai na raiz do
-  site (`public_html`), então não há `cd`.
-- Bônus no mobile: todos os 9 visíveis sempre (o gate "Ver todos os 9 bônus" foi removido — dona pediu full).
-- `index.html` é **artefato gerado**, não fonte: espelha o `index.php` (fallback sem PHP e alvo dos testes). Editar sempre no `index.php` e espelhar; a guarda de sincronia roda no CI.
-- Variantes de experimento (`indexnovo`, `indexdesign`) foram removidas — experiments vão num branch, nunca no `main`.
-- Tema claro/escuro: segue o sistema por padrão, toggle sol/lua no nav alterna e persiste (`localStorage tema` + `html[data-tema]` + tokens `light-dark()`).
-- Sem build/test/lint além de `tests/`.
+Rebuild do **maricoachfit.com** (saiu de WordPress/Elementor) para uma landing
+própria em **PHP + painel da proprietária**. Sem framework, sem build, sem banco.
+Leia este arquivo antes de mexer: ele guarda as **armadilhas já pagas** — quase
+todo erro caro aqui já aconteceu uma vez e está anotado.
+
+## Comandos
+
+```bash
+npm run dev          # preview ESTÁTICO (python http.server) em :8901
+npm run dev:php      # Apache + PHP 8.2 (Docker) em :8080 — o PHP de verdade
+npm run dev:php:log  # erros de PHP em tempo real
+npm run dev:php:down # derruba o container
+npm test             # suíte estática → 46 passam + 2 pulados (layout/copy/CSS/fontes/srcset)
+PAINEL_SENHA='...' npm run test:php   # suíte do PHP real → 30 (sobe o container; 8 pulados sem a senha)
+./ferramentas/deploy-ftp.py           # deploy manual por FTPS (ver "Deploy")
+```
+
+**Regra de ouro:** o preview estático **não executa PHP**. Tudo que depende do
+servidor (`?o=`, repasse de `src`, painel, `.htaccess`, 403) só se prova no
+`dev:php` / `test:php`. Para editar a landing, edita-se o `index.php` e roda-se
+`npm test` (a guarda de sincronia confere o espelho `index.html`).
+
+## Mapa do repositório
+
+| Caminho | Papel |
+|---|---|
+| `nova-landing/index.php` | **FONTE de produção** da landing. Oferta resolvida no servidor. Editar aqui. |
+| `nova-landing/index.html` | **Artefato gerado**: espelho estático da oferta `padrao` (fallback sem PHP + alvo da suíte `npm test`). Não é fonte. |
+| `nova-landing/privacidade.html`, `termos.html` | páginas legais (estáticas: **não** passam pela compressão do PHP) |
+| `nova-landing/private/` | `ofertas.php` (cardápio base), `carrinhos.php` (gestão), `rastreio.php`. **Nunca acessível por URL.** |
+| `nova-landing/private/dados/` | runtime do painel (JSON/JSONL) — **gitignored**, criado em uso |
+| `nova-landing/painel/` | CMS da dona; `partes/cabeca.php` concentra **todo** o CSS |
+| `nova-landing/fontes/` | Anton + Montserrat em `.woff2` (self-host, subsets latin/latin-ext). Público: sobe como `fontes/`. |
+| `nova-landing/.htaccess` | cache, HTTPS, 403, headers de segurança |
+| `conteudo/imagens/`, `conteudo/prova/` | imagens usadas pela landing (`.webp`) |
+| `conteudo/layout/`, `conteudo/referencia/`, `conteudo/guardado/` | referência do original; **não publica** |
+| `research/` | pesquisa (screenshots/HTML de concorrente); **não publica** |
+| `ferramentas/deploy-ftp.py` | deploy manual por FTPS |
+| `docker/`, `docker-compose.yml` | Apache + PHP 8.2 local |
+| `tests/` | Playwright (`npm test`, `npm run test:php`) |
+| `REVISAO-CONTEUDO.xlsx` | revisão de conteúdo da dona |
+| `deploy/`, `entrega-site*`, `cgi-bin.zip` | artefatos locais, **gitignored** |
+| `.agents/skills/`, `skills-lock.json` | skills instaladas via `npx skills` |
+
+Docs de contexto: `README.md` (deploy passo a passo), `INVENTARIO.md` (o que veio
+do WordPress), `ANALISE-COPY.md` (**ler antes de mexer em texto**),
+`QUESTIONARIO.md` (respostas da dona), `BACKLOG.md` (futuro).
+
+## Landing: oferta resolvida no servidor
+
+`index.php` lê `?o=CODIGO` e entrega **só a oferta ativa** — as demais nunca
+aparecem no Ver código-fonte. Sem parâmetro (ou código inválido) cai na `padrao`.
+`?oferta=` continua aceito como alias de links antigos. Oferta ≠ `padrao` recebe
+`noindex` automático (meta + `X-Robots-Tag`).
+
+- `og:url` / `og:image` / `canonical` são montados do host atual (funciona na
+  raiz e em subpasta sem editar no go-live). O `canonical` precisa ser **URL
+  absoluta**: com `href="./"` o audit `canonical` do Lighthouse reprova
+  (`Is not an absolute URL (./)`) — ver "Lighthouse".
+- O preço **cobrado** é sempre o da Kiwify (1 checkout por preço). Os valores do
+  painel controlam só o texto da landing — se divergirem, a pessoa vê um preço e
+  paga outro.
+- `private/ofertas.php` é o cardápio **base versionado**; `private/dados/ofertas.json`
+  é o que a dona cria/edita pelo painel (**fora do git**, o deploy não apaga). Na
+  leitura o JSON **sobrepõe** o base — por isso o painel nunca grava no `.php`.
+  `carrinhoApagar` de um carrinho do base guarda a chave em `_ocultos`;
+  `carrinhoRestaurar` desfaz. `carrinhoValidar` normaliza/valida (chave
+  `[a-z0-9_-]`, checkout https, `preco<=cheio`, parcelas 1–24, parcela `10,69`).
+  O carrinho `padrao` não pode ser apagado. **`index.php` chama `carrinhosTodos()`,
+  nunca o base direto.**
+
+### Artefato gerado: `index.html`
+
+`index.html` é **artefato**, não fonte: espelha o corpo do `index.php` com os
+valores da oferta `padrao`. Serve de fallback sem PHP, de preview local e de alvo
+da suíte estática. **Editar sempre no `index.php` e refletir no `index.html`** — a
+sincronia é conferida por um teste (`npm test`, caso "sem drift do artefato"), que
+exige que toda linha estática do `index.php` exista no `index.html` na mesma
+ordem e que o `index.html` não carregue `var OFERTAS` (objeto antigo que vazava as
+ofertas no fonte). A Action está sem créditos, então a guarda vive no `npm test`,
+não no CI.
+
+## Painel da proprietária (`nova-landing/painel/`)
+
+CMS próprio (PHP, sem framework): login por senha, relatório de cliques por canal
+(alinhado, com total), **gestão de carrinhos** (cadastrar/editar/apagar/restaurar),
+**links prontos por canal** (um clique para WhatsApp/IG/TikTok/Kwai/Meta + link
+personalizado), export CSV, botão copiar.
+
+- Senha = **hash bcrypt** em `painel/config.php` (nunca texto puro). A Action
+  **falha o deploy** enquanto o placeholder `COLE_AQUI_O_HASH` estiver lá (guarda
+  contra senha vazia).
+- Guardas: CSRF token, sessão httpOnly + SameSite=Strict, `noindex`, `private/`
+  negada por `.htaccess`.
+- `partes/cabeca.php` = **todo** o CSS do painel. **Tema noturno com
+  `light-dark()`**: quem escolhe o lado é `color-scheme`, e o toggle sol/lua só
+  força esse atributo (`html[data-tema]` + `localStorage painelTema`) — sem lista
+  de tokens duplicada. O `data-tema` é escrito **sempre** no `<head>` (valor salvo;
+  senão a preferência do sistema), porque sem ele nenhum CSS consegue perguntar
+  qual lado vale. Consequência: **não pode sobrar cor fixa no arquivo** (todo `#fff`
+  viraria mancha branca no escuro) — se precisar, criar token.
+
+## Rastreio e clique por canal (`private/rastreio.php`)
+
+Loga 1 linha por visita (canal, oferta, hora, origem externa, identificador
+anônimo) e **repassa `src`/UTM ao checkout Kiwify**. A venda se confirma em
+Kiwify → Vendas → Filtros → Parâmetros da URL → `src`. LGPD: o IP nunca fica em
+texto claro (HMAC com sal do dia). Dados em `private/dados/` (gitignored no
+servidor, criado em uso).
+
+## Testes (`tests/`)
+
+Duas suítes, porque testam coisas diferentes:
+
+- **`npm test`** (46 passam + 2 pulados) — contra o `index.html` estático, via
+  python http.server. Layout, copy, carrosséis, tema, bônus, sincronia do artefato,
+  **fontes self-hosted** (nenhuma origem externa + todo `.woff2` responde 200),
+  **candidatos de `srcset`** e `canonical` absoluto.
+- **`npm run test:php`** (30) — contra o **PHP real** no container (`docker compose
+  up -d`, :8080). O próprio script sobe o container antes. Cobre: `?o=`, repasse de
+  `src` ao checkout, painel (login/carrinhos/ciclo de link/logout), cookie, CSRF,
+  antibrute e os 403. Senha do painel via env `PAINEL_SENHA` (nunca no repo); sem
+  ela os **8 testes de painel** são pulados.
+
+> Rodar o Playwright do servidor **direto**, com o container fora do ar, falha com
+> "webServer exited early": o comando `docker compose up -d` sai na hora e o
+> Playwright lê como servidor caído. Use o `npm run test:php` (reuseExistingServer
+> reaproveita o container já no ar).
+
+`workers: 1` na suíte do servidor: os testes mexem em estado compartilhado (log de
+visitas, contador de tentativas) e o antibrute bloqueia por IP — em paralelo um
+teste derrubaria o login dos outros.
+
+## Deploy
+
+Push na `main` → Action `deploy-cpanel.yml` monta `deploy/` (link reescrito de
+`conteudo/` → `imagens/`/`prova/`) e envia por **FTPS**. Guardo os detalhes e o
+passo a passo no **`README.md`** (criar conta FTP, secrets, destino).
+
+- **Destino ATUAL: raiz `public_html/`.** A variable `CPANEL_SERVER_DIR` foi
+  removida de propósito (`server-dir` vazio → publica em
+  `https://maricoachfit.com/`, painel em `/painel/`). Para testar numa subpasta,
+  criar a variable em **Variables** (nunca em Secrets, que é ignorado em
+  silêncio) com valor `nova/`.
+- A pasta `/nova/` no servidor é **cópia congelada** de uma publicação antiga.
+  Não é alvo de deploy — **nunca** conferir o estado atual ali, sempre na raiz.
+- A Action também roda `php -l` em todo `.php` e aborta o deploy se a sintaxe
+  estiver inválida (foi assim que um `painel/partes/` quebrado foi pego).
+- **Fontes:** `nova-landing/fontes/*.woff2` vão para `deploy/fontes/` (o
+  `@font-face` usa caminho relativo, então não passa pelo `sed` dos `conteudo/`).
+  A Action **falha o deploy** se um `fontes/*.woff2` citado no `index.html` não
+  existir no pacote — fonte ausente não dá erro visível, só cai no fallback.
+- **Créditos do GitHub Actions acabaram em 14/10/2026** → caminho disponível é
+  `ferramentas/deploy-ftp.py` (lê `FTP_SERVER`/`FTP_USERNAME`/`FTP_PASSWORD` do
+  ambiente — nenhum segredo no repo; força `AUTH TLS` + `PROT P`; **não apaga**
+  nada do servidor; **nunca** sobe para `/nova/`; idempotente por tamanho). O
+  login da conta FTP já cai em `public_html`, então não há `cd`. A porta 990
+  (FTPS implícito) está bloqueada desta rede; o servidor atende AUTH TLS na 21.
+- **`cgi-bin.zip`** (109 MB, na raiz, gitignored) é o único backup do WordPress e
+  contém o `wp-config.php`. **NUNCA versionar.** Decisão de 14/10/2026: manter no
+  lugar (não está em `public_html`, `/wp-admin/` dá 404).
+
+## Receitas
+
+**Trocar texto/seção da landing** → edite `nova-landing/index.php`, reflita no
+`index.html`, rode `npm test`. Copy: ler `ANALISE-COPY.md` antes.
+
+**Adicionar oferta/carrinho** → crie o checkout na Kiwify (1 por preço) e adicione
+uma entrada em `private/ofertas.php` com **chave aleatória** (ex.: `a7X9k2` —
+nunca `vip`/`promo`, que são adivinháveis) + preencha `checkout/cheio/preco/total/
+parcN/parcV/rotulo`. Divulgue `https://maricoachfit.com/?o=CODIGO`. A dona também
+cadastra pelo painel (grave em `private/dados/ofertas.json`, fora do git).
+
+**Trocar/adicionar imagem** → coloque o `.webp` em `conteudo/imagens/` ou
+`conteudo/prova/` e **mude o nome do arquivo** (ver "Armadilhas → Cache").
+Prova antes/depois: gerar também a variante `-360.webp` e ajustar `srcset`/`sizes`.
+Gerar variante: `python3 -c "from PIL import Image; im=Image.open('x.webp'); im.resize((360, round(im.height*360/im.width)), Image.LANCZOS).save('x-360.webp','WEBP',quality=80,method=6)"`.
+
+**Trocar/adicionar fonte** → baixar o `.woff2` (subset latin/latin-ext) para
+`nova-landing/fontes/`, **mudar o nome do arquivo**, ajustar o `@font-face` no
+`<style>` do `index.php` (e espelhar no `index.html`) e rodar `npm test`.
+
+**Gerar hash da senha do painel** →
+`php -r "echo password_hash('SENHA', PASSWORD_DEFAULT), PHP_EOL;"`, colar em
+`nova-landing/painel/config.php`, commit e push.
+
+**Publicar** → `git push` na `main` (Action) ou, sem créditos, montar o `deploy/`
+como a Action faz e rodar `./ferramentas/deploy-ftp.py`.
+
+## Armadilhas já pagas (não repetir)
+
+### Cache e compressão — o servidor NÃO ajuda
+
+- **Compressão é feita no PHP, não no servidor.** Medido em 14/10/2026: o nginx
+  da frente **não repassa `Accept-Encoding`** ao PHP e o `mod_deflate` **não está
+  carregado** no Apache. A solução é `comprimir_resposta_gzip()` no topo do
+  `index.php` (bufferiza e comprime com `gzencode()` numa
+  `register_shutdown_function`). Medido no ar: **80.552 → 20.852 bytes (−74%)**.
+  Os headers só são declarados se a compressão aconteceu — nunca gzip pela metade.
+  **Detalhe completo no comentário do `index.php`** (inclusive por que
+  `ob_start('ob_gzhandler')` não resolve e por que `DeflateCompressionLevel` no
+  `.htaccess` derruba o site com 500). O `<IfModule mod_deflate.c>` do `.htaccess`
+  fica como rede de segurança para o dia que a host corrigir o proxy.
+- **No cPanel não dá para ligar compressão**: o *Optimize Website* não funciona com
+  NGINX; o único caminho é **WHM como root** → EasyApache 4 → pacotes
+  `ea-nginx-gzip` / `ea-nginx-brotli`. **HTTP/2 também está desligado** (falta
+  `ea-nginx-http2`). Ambos são chamado de WHM, não do site. Instalar depois não
+  duplica: o nginx não re-comprime resposta que já chega com `Content-Encoding`.
+  O audit `modern-http-insight` do Lighthouse reprova o site inteiro por isso
+  (`protocol: http/1.1`) — é a última pendência de Performance e **não tem
+  conserto no código**: pedir ao host o `ea-nginx-http2` (e o `ea-nginx-gzip`) no
+  WHM. Texto pronto para o chamado: *"Peço habilitar HTTP/2 e gzip/brotli no
+  nginx do domínio maricoachfit.com — instalar os pacotes `ea-nginx-http2`,
+  `ea-nginx-gzip` e `ea-nginx-brotli` no EasyApache 4."*
+- **Como sabemos que o `mod_deflate` não está carregado:** ele **sempre** põe
+  `Vary: Accept-Encoding` quando o filtro roda, mesmo recusando comprimir (visto
+  no container com o módulo ligado). Em produção `/termos.html` (estático, fora do
+  PHP) **não tinha `Vary`** = filtro nunca rodou.
+- **Cache:** `ExpiresByType` **não funciona** neste host (mod_expires inativo) —
+  tudo é feito com `Header set` (`mod_headers`, que funciona). Estáticos: 1 ano
+  `immutable`; HTML/PHP: `private, no-cache`; `?o=` presente: `private, no-store`.
+  **REGRA OPERACIONAL: trocar imagem = MUDAR O NOME DO ARQUIVO.** Com `immutable`
+  por 1 ano, sobrescrever mantendo o nome deixa a versão velha presa no cache de
+  quem já visitou (foi assim com o hero: `nath-hero-b3` → `nath-hero-v2`).
+- **BREACH:** conferido que `?o=CODIGO` **não** aparece no HTML (0 ocorrências) e
+  o painel não passa pelo `index.php` (não é comprimido). Risco nulo.
+- **`srcset` das 10 fotos de antes/depois:** variantes `-360.webp` com
+  `sizes="(max-width:760px) 92vw, 350px"`. **O `sizes` está hardcoded em 350px
+  porque o quadro tem `max-width: 420px` e o celular ocupa 92vw** — se o CSS
+  mudar, o `sizes` muda junto, senão o navegador escolhe a variante errada.
+- **`srcset` do hero e dos carrosséis** (17/10/2026, achado do Lighthouse: 647 KiB
+  de imagem desperdiçados). Cada card do carrossel é `grid-auto-columns:
+  min(300px,78vw)`, daí `sizes="(max-width:384px) 78vw, 300px"`; o hero é
+  `.hero-grid` de 2 colunas (509px no desktop) e vira 92vw abaixo de 900px, daí
+  `sizes="(max-width:900px) 92vw, 509px"`. Variantes: hero `nath-hero-v2-640.webp`
+  (53 KB, era 106), `dp1..dp8-360.webp` (8→11 KB, eram 29→54) e
+  `1/2/1-1/2-1/3-1-360.webp` (17→21 KB, eram 48→80). **`sizes` e CSS andam juntos.**
+
+### Imagens e conteúdo
+
+- `conteudo/imagens/` e `conteudo/prova/` são **100% `.webp`** desde 14/10/2026
+  (−11 MB). Exceções fora do WebP: `og-capa.jpg` (WhatsApp/Facebook não renderizam
+  WebP no preview de link) e `Satisfacao-Garantida.svg` (vetor).
+- `conteudo/imagens/nath-hero-v2.webp` (106 KB) é o hero, recorte com alfa +
+  brilho rosa via **matting** (BiRefNet portrait / rembg). A v1 (inundação) foi
+  descartada: deixava halo branco no cabelo.
+- `conteudo/prova/` tem 23 imagens (8 depoimentos + 5 grupo + 5 pares antes/depois
+  9:16 com cinturas alinhadas e rostos removidos).
+- Bônus no mobile: os **9 visíveis sempre** (o gate "Ver todos os 9 bônus" foi
+  removido — dona pediu full).
+
+### Fontes self-hosted (17/10/2026)
+
+- **Antes:** Google Fonts (`<link>` + 2 `preconnect`) — 180–279 ms de
+  render-blocking e uma cadeia de 3 requisições (`fonts.googleapis` →
+  `fonts.gstatic`). Era o **único** recurso bloqueante da página, porque todo o CSS
+  já é inline.
+- **Agora:** `@font-face` inline no `<style>` + `.woff2` em `nova-landing/fontes/`.
+  Zero origem externa, zero requisição bloqueante. `font-display:swap` (igual ao
+  `&display=swap` que o Google usava).
+- **Montserrat normal é fonte VARIÁVEL** (`wght 100–900`, conferido com fontTools):
+  um arquivo cobre 400/500/600/700 — daí o `@font-face` declarar
+  `font-weight:100 900`. A itálica é instância estática 400 (é o que o Google
+  serve para `1,400`).
+- Subsets: só `latin` + `latin-ext`. Todo o pt-BR cai em `latin` (inclusive `ã`,
+  `õ`, `ç`, `−`); `-ext` fica de reserva. Descartei cyrillic/vietnamese.
+- Trocar arquivo de fonte **exige mudar o nome** (mesma armadilha do `immutable`).
+- O teste "fontes self-hosted" quebra se voltar qualquer origem `fonts.g*`.
+
+### Contraste no tema escuro: `--cta` (fundo) ≠ `--cta-texto` (texto)
+
+- `--cta` (#A80077) é cor de **fundo** (`.btn`, `.off-pill`, `.ba-puxador`, dots):
+  no escuro continua #A80077 com texto branco por cima (7,16:1, ok).
+- Usar `var(--cta)` como **texto** sobre superfície escura dava **1,84:1**
+  (`.oferta-card .micro b`) e `--rosa` #FF51C9 no bloco rosa dava **4,06:1**
+  (`.eyebrow`, `.pausa`, `.trust::before`) — os 4 itens que o `color-contrast` do
+  Lighthouse reprovava.
+- Solução: token `--cta-texto:light-dark(#A80077,#F87DFF)`. No claro é **o mesmo
+  valor** (zero mudança visual); no escuro #F87DFF dá 5,24:1 no bloco rosa e
+  5,88–7,04:1 nas demais superfícies. `--rosa-claro` já era token da marca.
+- **Não** transformar `--cta` em `light-dark()`: o botão viraria rosa claro com
+  texto branco (~2,5:1) e trocaria um problema por outro pior.
+
+### Outros
+
+- `site-original/` saiu da pasta em 14/10/2026 (limpeza de disco), mas o espelho
+  wget do WordPress **continua no histórico do git**: `git checkout 727727c --
+  site-original/`. Não voltar a versionar.
+- Variantes de experimento vão em **branch**, nunca no `main` (`indexnovo`/
+  `indexdesign` foram removidas).
+- Tema claro/escuro da landing: segue o sistema por padrão, toggle sol/lua no nav
+  alterna e persiste (`localStorage tema` + `html[data-tema]` + tokens `light-dark()`).
+- Sem build. `php -l` roda só no deploy (importante distinguir "php ausente" de
+  "php com erro" — o lint precisa **falhar o job** quando há erro).
 
 ## Segurança (auditoria)
-- Skill `web-app-penetration-testing` (Strix) instalada, mas o binário `strix`
-  não está no ambiente e **exige chave de LLM** (custo do dono). Até ter isso,
-  a auditoria é feita à mão, aplicando a mesma checklist dela: auth bypass,
-  broken access control/IDOR, injeção, XSS, SSRF e business logic.
-- Regra de conduta: sondas **não destrutivas e de baixo volume**, sempre no
-  próprio site da cliente e com autorização explícita. Preferir o container
-  local (`:8080`) para o que mexe em dados; produção só para leitura/config.
-- **TLS: ok, sem pendência.** Cheguei a reportar TLS 1.0/1.1 como aceitos —
-  era FALSO POSITIVO meu: o grep casava com `Cipher is (NONE)`, que sai tanto
-  em handshake aceito quanto recusado. Refeito com socket Python (que ignora o
-  `openssl.cnf` da máquina local): o **servidor recusa** 1.0 e 1.1, aceita 1.2 e
-  1.3. Confirma a doc do cPanel 134+: *"only supports TLSv1.2 or later"*.
-  **Não procurar "Security Levels" no cPanel** — no 134+ o Wizard virou só
-  loja de certificados e não tem mais passo de ajustes.
-- **HTTP → HTTPS: RESOLVIDO no código** (2026-10-11). Estava devolvendo 200 em
-  vez de 301, e como o form de login do painel não tem `action`, uma 1ª visita
-  por http mandava a senha em claro. Corrigido em `nova-landing/.htaccess`
-  (que o deploy copia para `public_html/`), não no cPanel:
-  - Redireciona só quando **nenhum** sinal diz https (`%{HTTPS}` e
-    `X-Forwarded-Proto`), porque no cPanel o nginx fica na frente do Apache e o
-    Apache pode ver a conexão interna em http mesmo vinda de https.
-  - Destino com **host fixo** (`maricoachfit.com`), nunca `%{HTTP_HOST}` — senão
-    vira open redirect via `Host: evil.com`. `www` é normalizado ao canônico.
-  - Só age em `maricoachfit.com`/`www`, então `localhost:8080` não é afetado e
-    as suítes locais continuam funcionando.
+
+- Skill `web-app-penetration-testing` (Strix) instalada, mas o binário `strix` não
+  está no ambiente e **exige chave de LLM** (custo do dono). Até ter isso, a
+  auditoria é à mão, com a mesma checklist dela: auth bypass, broken access
+  control/IDOR, injeção, XSS, SSRF, business logic.
+- Conduta: sondas **não destrutivas e de baixo volume**, só no site da cliente e
+  com autorização explícita. Preferir o container local (`:8080`) para o que mexe
+  em dados; produção só para leitura/config.
+- **TLS: ok, sem pendência.** Um relato meu de TLS 1.0/1.1 era **falso positivo**
+  (o grep casava com `Cipher is (NONE)`, que sai em handshake aceito e recusado).
+  Refeito com socket Python: o servidor **recusa** 1.0/1.1 e aceita 1.2/1.3.
+  Confirma a doc do cPanel 134+. **Não procurar "Security Levels" no cPanel** (no
+  134+ o Wizard virou só loja de certificados).
+- **HTTP → HTTPS: RESOLVIDO no `.htaccess`** (2026-10-11). Antes devolvia 200 e,
+  como o form de login do painel não tem `action`, uma 1ª visita por http mandava
+  a senha em claro. Regras: redireciona só se **nenhum** sinal diz https
+  (`%{HTTPS}` e `X-Forwarded-Proto`, porque o nginx fica na frente do Apache);
+  destino com **host fixo** (`maricoachfit.com`, nunca `%{HTTP_HOST}` — senão é
+  open redirect via `Host: evil.com`); `www` normalizado ao canônico; só age em
+  `maricoachfit.com`/`www`, então `localhost:8080` não é afetado.
+
+## Lighthouse: como rodar limpo e o placar
+
+**Por que o número "de verdade" precisa de navegador sem extensão:** o adblock e
+afins injetam `chrome-extension://…` no relatório e derrubam/enganam 3 audits.
+Medido em 17/10/2026: 342 KiB de "unused JS" e 73 KiB de "minify JS" eram **só
+extensão**, e o `image-alt` reprovava por causa do `<img>` do ícone da extensão.
+Nada disso é do site.
+
+**Rodar sem extensão (o jeito que funciona):**
+
+1. Abrir o Chrome com um perfil **novo e vazio** — janela anônima **não** resolve,
+   porque extensão marcada "permitir em anônima" continua injetando:
+   ```bash
+   chrome --user-data-dir=/tmp/lh-perfil --no-first-run --no-default-browser-check
+   ```
+   (mesmo caminho para Edge/Brave; no Windows/WSL: `/mnt/c/Program Files/Google/Chrome/Application/chrome.exe`)
+2. Nesse perfil, abrir `chrome://extensions` e conferir que está **vazio**.
+3. Carregar `https://maricoachfit.com/`, `F12` → aba **Lighthouse** → modo
+   **Navigation**, categoria **Mobile** (é a que pontua mais duro) → **Analyze page
+   load**. Não tocar/rolar a página durante o teste.
+4. ⋮ → *Save as JSON* em `research/` para comparar depois (não publica no site).
+
+**Ou pela CLI, sem perfil nenhum (mais fiel entre execuções):**
+```bash
+npx lighthouse https://maricoachfit.com/ --preset=desktop --output=json --output-path=research/lh.json --chrome-flags="--headless=new"
+```
+`--preset=desktop` mede a experiência de desktop; sem ele, emula mobile.
+
+**Placar de 17/10/2026:** Performance 94 · Acessibilidade 91 · Boas práticas 100 ·
+SEO 83 · Agentic 100.
+
+| Audit que não estava cheio | Causa real | Status |
+|---|---|---|
+| `color-contrast` (a11y) | `--cta` como texto e `--rosa` no bloco rosa, só no tema escuro | corrigido (`--cta-texto`) |
+| `canonical` (seo) | `href="./"` é **relativo** → "Is not an absolute URL (./)" | corrigido (absoluto via `$baseUrl`) |
+| `image-delivery-insight` (perf) | 647 KiB: hero e carrosséis sem `srcset` | corrigido (hero 106→53 KB, cards 29–80→8–21 KB) |
+| `render-blocking-insight` (perf) | 180–279 ms do CSS do Google Fonts | corrigido (self-host, zero bloqueio) |
+| `network-dependency-tree-insight` (perf) | cadeia `fonts.googleapis` → `fonts.gstatic` (879 ms) | corrigido junto |
+| `modern-http-insight` (perf) | `protocol: http/1.1` | **depende do WHM** (`ea-nginx-http2`) — ver "Cache e compressão" |
+| `unused-javascript` / `unminified-javascript` | extensão do navegador | ruído: some sem extensão |
+| `image-alt` | `<img>` do ícone da extensão | ruído: some sem extensão |
+
+⚠️ **O audit `canonical` NÃO reprova canonical apontando para a raiz** (a nota
+antiga aqui dizia isso). Lido no fonte do Lighthouse
+(`core/audits/seo/canonical.js`, 17/10/2026): reprova quando (a) o `href` não é
+absoluto, (b) há dois canonicals conflitantes, ou (c) o canonical é a **raiz do
+domínio e a própria página não é a raiz** — este último é o caso de página interna
+apontando para a home, que não é o nosso. Se o `<link>` **não existe**, o audit
+passa como "not applicable". Preferi manter o canonical absoluto: além de passar,
+ele consolida as URLs de campanha (`?o=`, `?src=`, UTM) numa só.
 
 ## Skills do projeto
-Usar a skill certa **antes** de começar a tarefa, conforme o tipo de trabalho:
+
+Usar a skill certa **antes** de começar, conforme o tipo de trabalho:
 
 | Tipo de trabalho | Skill |
 |---|---|
-| Criar/redesenhar tela, hero, seção | `design-taste-frontend` (obrigatório: primeiro declarar o "Design Read" e os 3 dials) |
+| Criar/redesenhar tela, hero, seção | `design-taste-frontend` (obrigatório: declarar antes o "Design Read" e os 3 dials) |
 | Direção de arte, tipografia, layout | `frontend-design` |
 | Componente/controle/estado específico | `ui-ux-pro-max` |
-| Auditar UI já pronto | `web-design-guidelines` (buscar as regras atuais no `command.md` do vercel-labs) |
+| Auditar UI já pronto | `web-design-guidelines` (regras atuais no `command.md` do vercel-labs) |
 | Acessibilidade / WCAG | `accessibility` |
 | Texto de venda, seção, oferta | `copywriting` (ler `ANALISE-COPY.md` antes) |
 | Automação de browser / screenshot | `playwright-cli` |
 
 - Instaladas via `npx skills`, pin em `skills-lock.json`.
-- **`find-skills` é a ÚNICA chamada manual**: só usar quando não houver skill
-  para o que foi pedido — nunca carregar todas as skills de uma vez.
+- **`find-skills` é a ÚNICA chamada manual**: só quando não houver skill para o
+  pedido — nunca carregar todas de uma vez.
+
+## Documentação (Context7 é regra, não sugestão)
+
+- **REGRA PERMANENTE: sempre que a tarefa envolver API, função, header HTTP,
+  diretiva de servidor, CLI, configuração ou comportamento de QUALQUER tecnologia
+  do projeto, a PRIMEIRA ação é consultar o Context7 (MCP `context7`) — nunca
+  responder de memória nem copiar de blog.** Vale para todas as tecnologias
+  usadas aqui: **PHP**, **Apache / .htaccess** (mod_headers, mod_rewrite,
+  mod_deflate…), **Docker / Compose**, **Playwright / Node / npm**,
+  **HTML / CSS / JS e Web APIs** (ex.: `light-dark()`, `srcset`, `matchMedia`),
+  **Lighthouse**, **cPanel**, **Kiwify** e **Google Fonts**.
+- Fluxo: `resolve-library-id` (nome + o que procuro) → escolher o melhor ID →
+  `query-docs` com **uma pergunta por chamada** (um tema por vez; misturar temas
+  dilui o ranking e volta resposta rasa).
+- IDs já confirmados: PHP `/websites/php_net_manual_en` (`language: "php"`);
+  Apache HTTP Server 2.4 `/websites/httpd_apache_2_4` (`language: "apache"`). Para
+  o resto, resolver o ID na hora.
+- Se o Context7 não tiver a lib ou truncar, `webfetch` na **doc oficial** (ex.:
+  `developer.chrome.com/docs/lighthouse/…`, MDN) — `websearch` só para contexto
+  (blog, notícia), **nunca** para decidir sintaxe/parâmetro.
+- ✅ **ESTADO em 17/10/2026: chave renovada e funcionando.** A `Authorization:
+  Bearer ctx7sk-…` fica em `~/.config/opencode/opencode.json` (fora do repo). Se
+  voltar `Invalid API key`, renovar em context7.com e atualizar ali — até voltar,
+  usar a doc oficial via `webfetch`.
+- Motivo prático (por que não confiar em memória/blog): a doc oficial do
+  `mod_ratelimit` avisa que ele limita **bandwidth**, não nº de requisições, e
+  ocupa um worker durante a transferência toda. Usá-lo como "rate limit de
+  requisições" seria errado por dois motivos. E o audit `canonical` do Lighthouse
+  reprova canonical **relativo** ("Is not an absolute URL") — coisa que nenhum
+  snippet de blog conta e que o fonte do Lighthouse confirma.
 
 ## Working here
-- Do not assume a stack. Ask or inspect before adding tooling.
-- When a stack is chosen, update this file with: exact install/dev/build/test/lint commands, entrypoints, and monorepo boundaries.
-- Prefer editing existing files over creating new ones; keep new files only when needed.
 
-## Documentação (Context7 primeiro, pesquisa web como complemento)
-- **Antes de responder sobre API, função, header HTTP, módulo de servidor ou sintaxe
-  de plataforma, consultar o Context7 (MCP `context7`).** Ele devolve a doc oficial
-  e atualizada da versão certa; é mais confiável que snippet de blog.
-- Fluxo: `resolve-library-id` (libraryName + o que estou procurando) → escolher o
-  melhor ID → `query-docs` com **uma pergunta por chamada** (um tema por vez;
-  misturar temas na mesma query dilui o ranking e volta resposta rasa).
-- IDs confirmados neste projeto:
-  - PHP: `/websites/php_net_manual_en` (manual oficial; use `language: "php"`)
-  - Apache HTTP Server 2.4: `/websites/httpd_apache_2_4` (use `language: "apache"`)
-- `webfetch` ainda serve para ler a página exata da doc quando a resposta do
-  Context7 vier truncada, e `websearch` para contexto (blogs, casos, notícias
-  de versão) — mas **nunca** para decidir sintaxe ou parâmetro de função.
-- Motivo prático: doc de blog desatualiza em silêncio. Exemplo real — a doc
-  oficial do `mod_ratelimit` avisa que ele limita **bandawidth**, não nº de
-  requisições, e que cada resposta limitada **ocupa um worker durante a
-  transferência toda**, podendo exaurir o servidor. usar mod_ratelimit como
-  "rate limit de requisições" seria errado por dois motivos.
-
-## Skills
-- `design-taste-frontend` is installed for landing-page / portfolio / redesign work. Follow its brief-inference + design-read workflow when doing frontend design; ignore it for non-design tasks.
-- `web-design-guidelines`: para auditar UI, buscar as regras atuais no source que a skill indica (`command.md` no repo vercel-labs) e revisar no formato `arquivo:linha - problema`.
+- Não assumir stack: inspecionar antes de adicionar ferramenta.
+- Preferir editar arquivo existente a criar novo; arquivo novo só quando necessário.
+- Ao mexer em stack, atualizar este arquivo (comandos exatos, entrypoints, limites).

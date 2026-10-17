@@ -1,5 +1,10 @@
 # Backlog futuro
 
+> **Estado em 17/10/2026:** os 3 itens abaixo estão **implementados** e ficam como
+> registro do que foi feito e decidido. O que segue realmente aberto é
+> `QUESTIONARIO.md` (respostas da dona) e o ajuste de plataforma no servidor
+> (ver "Compressão/HTTP2" no `AGENTS.md`, que depende de WHM).
+
 ## 1. Site dinâmico: botões para checkouts/preços diferentes ✅ IMPLEMENTADO (server-side)
 
 > SUPERSEDE o plano original com objeto `OFERTAS` no JS (vazava tudo no fonte).
@@ -26,7 +31,7 @@ Hoje o link mostra só texto (ver print). Para aparecer a capa como no exemplo d
 - Criar `imagens/og-capa.jpg` 1200x630 (montar a partir da capa atual: fundo rosa + "DESAFIO PILATES EM CASA" + foto; reaproveitar `capa-video-Mari.png` ou `Nath-com-fundo.png`).
 - Adicionar OG/Twitter tags no `<head>`: `og:title`, `og:description`, `og:image` (URL absoluta `https://<dominio-final>/imagens/og-capa.jpg`), `og:type=website`, `twitter:card=summary_large_image`.
 - Atenção: WhatsApp guarda cache do preview; após publicar, forçar releitura (reenviar com parâmetro bobo `?v=2` ou aguardar expirar).
-- Validar com os testes: checar presença das tags no HTML. ✅ `og-capa.jpg` 1200x630 gerada + tags no ar. PENDENTE: trocar a URL absoluta para o domínio final (hoje aponta o temporário) e forçar releitura do cache do WhatsApp.
+- Validar com os testes: checar presença das tags no HTML. ✅ `og-capa.jpg` 1200x630 gerada + tags no ar. ✅ RESOLVIDO: `index.php` monta `og:url`/`og:image` do host atual (não há mais URL fixa a trocar no go-live) e o `index.html` usa `https://maricoachfit.com/`. Único cuidado residual: o WhatsApp guarda cache do preview — ao publicar mudança de capa, reenviar o link com um parâmetro bobo (`?v=2`) para forçar releitura.
 
 ## 3. Botão fixo no mobile com animações (CTA sempre visível) ✅ IMPLEMENTADO (base) — ver pesquisa abaixo
 
@@ -44,3 +49,34 @@ Como vamos fazer (só CSS + JS leve, sem biblioteca):
 - **Estrelas:** 6–8 partículas (✦ via CSS/`content`, dourado `#FFD166` + prata `#E8E8EC`) emitidas dentro do botão a cada ~4s com Web Animations API (`element.animate`, sem reflow de layout). Pausam com a aba oculta (`document.hidden`) e com `prefers-reduced-motion`.
 - **Acessibilidade:** `aria-hidden` nas partículas, botão com mesmo rótulo e destino dos demais (regra de CTA único), altura mínima 48px, não cobre o conteúdo (adicionar `padding-bottom` de respiro no `footer` no mobile).
 - **Teste Playwright novo:** no viewport mobile, rolar a página e conferir que o botão aparece, tem o href do checkout e não sobrepõe o CTA da oferta (checar `getBoundingClientRect` sem interseção).
+
+## 5. Lighthouse 100% (rodada de 17/10/2026) ✅ FEITO, 1 pendência de host
+
+Relatório em `research/maricoachfit.com-20261017T093242.json`: Performance 94 ·
+Acessibilidade 91 · Boas práticas 100 · SEO 83 · Agentic 100.
+
+**Corrigido no código (17/10/2026):**
+
+1. **Acessibilidade → `color-contrast`**: só no tema escuro. Token novo
+   `--cta-texto:light-dark(#A80077,#F87DFF)` para texto (o `--cta` continua cor de
+   fundo); 1,84:1 e 4,06:1 → 5,24:1 / 5,88–7,04:1.
+2. **SEO → `canonical`**: o `href="./"` era reprovado por ser **relativo**
+   ("Is not an absolute URL (./)"), não por apontar para a raiz. Agora é absoluto
+   (`$baseUrl`), o que também consolida as URLs `?o=`/`?src=`/UTM.
+3. **Performance → imagens**: `srcset`/`sizes` no hero e nos 13 cards dos
+   carrosséis. Hero 106→53 KB; depoimentos 29–54→8–11 KB; grupo 48–80→17–21 KB
+   (647 KiB que o Lighthouse apontava como desperdício).
+4. **Performance → fontes**: self-host (Anton + Montserrat em `.woff2`). Sai o
+   `<link>` do Google Fonts (180–279 ms de render-blocking + cadeia de 879 ms
+   até o `gstatic`); tudo vira `@font-face` inline + `fontes/`. **Zero recurso
+   bloqueante** na página.
+5. **Bug achado no caminho**: a porta entrava no `$host` sem o `:`
+   (`127.0.0.1:8080` → `127.0.0.18080`) e sujava `og:url`/`canonical`.
+
+**Ruído (não é do site):** `unused-javascript` (342 KiB), `unminified-javascript`
+(73 KiB) e `image-alt` vinham de extensões do navegador — somem numa auditoria sem
+extensão (receita no `README.md`).
+
+**Pendência única, fora do código:** `modern-http-insight` reprova tudo por
+`protocol: http/1.1`. Precisa do pacote `ea-nginx-http2` (e `ea-nginx-gzip` /
+`ea-nginx-brotli`) instalado no WHM como root — chamado do host, não do site.
