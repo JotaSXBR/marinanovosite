@@ -41,6 +41,10 @@ test('paginas legais no design da landing com voltar do browser', async ({ page 
     const voltar = page.locator('[data-voltar].btn');
     await expect(voltar).toContainText('Voltar');
     expect(await voltar.getAttribute('href')).toBe('./');
+    // mesmas fontes self-hosted (as legais nao passam pelo PHP, mas usam fontes/)
+    const fonte = await (await page.request.get(`/nova-landing/${slug}`)).text();
+    expect(fonte).not.toContain('fonts.googleapis.com');
+    expect(fonte).not.toContain('fonts.gstatic.com');
   }
   // vindo da landing, o voltar retorna para ela via histórico
   await page.goto(PAGE);

@@ -78,9 +78,10 @@ jobs:
           fi
           # carrinhos.php tem que existir: sem ele o painel cai em erro fatal
           [ -f deploy/private/carrinhos.php ] || { echo "ERRO: carrinhos.php ausente no deploy"; exit 1; }
-          # fontes self-hosted: toda url("fontes/*.woff2") do html tem que ter
-          # arquivo correspondente — fonte ausente = texto caindo no fallback.
-          for f in $(grep -o 'fontes/[A-Za-z0-9._-]*\.woff2' deploy/index.html | sort -u); do
+          # fontes self-hosted: toda url("fontes/*.woff2") de qualquer html do
+          # pacote (landing + paginas legais) tem que ter arquivo correspondente
+          # — fonte ausente nao da erro visivel, so cai no fallback.
+          for f in $(grep -oh 'fontes/[A-Za-z0-9._-]*\.woff2' deploy/*.html | sort -u); do
             [ -f "deploy/$f" ] || { echo "ERRO: fonte referenciada e ausente no deploy: $f"; exit 1; }
           done
           echo "links ok | php sem checkout hardcoded ok | painel com hash real | carrinhos ok | fontes ok"
