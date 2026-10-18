@@ -109,7 +109,11 @@ Loga 1 linha por visita (canal, oferta, hora, origem externa, identificador
 anônimo) e **repassa `src`/UTM ao checkout Kiwify**. A venda se confirma em
 Kiwify → Vendas → Filtros → Parâmetros da URL → `src`. LGPD: o IP nunca fica em
 texto claro (HMAC com sal do dia). Dados em `private/dados/` (gitignored no
-servidor, criado em uso).
+servidor, criado em uso). **Hora:** o log grava em UTC (`date('c')` embute o
+offset no `ts` de cada linha) e o painel **exibe** em `America/Sao_Paulo` —
+`tzPainel()` em `painel/apoio.php` converte na exibição e nos baldes de
+hoje/semana. Nunca mudar o fuso do LOG: linhas antigas (UTC) e futuras
+convertem igual só porque cada uma carrega o próprio offset.
 
 ## Testes (`tests/`)
 

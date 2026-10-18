@@ -46,10 +46,20 @@ function lerJson(string $file): array {
 function lerLinks(string $file): array { return lerJson($file); }
 
 // "2026-10-11T15:10:00-03:00" -> "11/10 15:10"
+//
+// O servidor grava em UTC (o ts carrega o offset), mas a dona está em
+// America/Sao_Paulo: TUDO que o painel exibe é convertido para cá. Assim
+// linhas antigas (UTC) e futuras convertem igual — o instante não muda, só
+// a representação (setTimezone, confirmado na doc do PHP).
+function tzPainel(): DateTimeZone {
+  return new DateTimeZone('America/Sao_Paulo');
+}
+
 function brDataHora(string $iso): string {
   if ($iso === '') return '—';
   try {
     $d = new DateTime($iso);
+    $d->setTimezone(tzPainel());
     return $d->format('d/m H:i');
   } catch (Exception $e) {
     return substr($iso, 8, 2) . '/' . substr($iso, 5, 2) . ' ' . substr($iso, 11, 5);
@@ -60,6 +70,12 @@ function brDataHora(string $iso): string {
 // Agrega as linhas do acessos.jsonl por canal.
 function resumo(array $linhas): array {
   $r = array();
+  // "Hoje" e "semana" no fuso da dona: a visita às 22:00 de SP é 01:00 UTC do
+  // dia SEGUINTE no log — sem converter, ela sairia do balde "hoje" errado.
+  $tz = tzPainel();
+  $agora = new DateTime('now', $tz);
+  $hoje = $agora->format('Y-m-d');
+  $inicioSemana = (clone $agora)->modify('-6 days')->format('Y-m-d');
   foreach ($linhas as $l) {
     $c = $l['canal'] ?? 'direto';
     if (!isset($r[$c])) {
@@ -69,12 +85,18 @@ function resumo(array $linhas): array {
     $r[$c]['oferta'] = $l['o'] ?? '';
     $ts = $l['ts'] ?? '';
     $r[$c]['ultima'] = $ts;
-    $dia = substr($ts, 0, 10);
-    if ($dia === date('Y-m-d')) {
+    try {
+      $d = new DateTime($ts);
+      $d->setTimezone($tz);
+      $dia = $d->format('Y-m-d');
+    } catch (Exception $e) {
+      $dia = substr($ts, 0, 10);
+    }
+    if ($dia === $hoje) {
       $r[$c]['hoje']++;
       $r[$c]['uid'][$l['uid'] ?? ''] = 1;
     }
-    if ($dia >= date('Y-m-d', strtotime('-6 days'))) $r[$c]['semana']++;
+    if ($dia >= $inicioSemana) $r[$c]['semana']++;
   }
   uasort($r, fn($a, $b) => $b['total'] <=> $a['total']);
   return $r;
@@ -202,7 +224,10 @@ function painelCsv(array $linhas): void {
   fwrite($out, "\xEF\xBB\xBF"); // BOM p/ o Excel abrir com acentos
   fputcsv($out, array('data_hora', 'canal', 'oferta', 'origem_externa', 'dispositivo'));
   foreach ($linhas as $l) {
-    fputcsv($out, array($l['ts'] ?? '', $l['canal'] ?? '', $l['o'] ?? '', $l['ref'] ?? '', $l['movel'] ?? ''));
+    $ts = (string) ($l['ts'] ?? '');
+    // Mesma regra da tabela: exibe no fuso da dona (o log é UTC).
+    try { $ts = (new DateTime($ts))->setTimezone(tzPainel())->format('d/m/Y H:i'); } catch (Exception $e) {}
+    fputcsv($out, array($ts, $l['canal'] ?? '', $l['o'] ?? '', $l['ref'] ?? '', $l['movel'] ?? ''));
   }
   exit;
 }
