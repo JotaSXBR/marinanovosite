@@ -1,9 +1,10 @@
 <?php
 // Pilates em Casa — funções de apoio do painel.
 //
-// Só helpers PUROS (sem estado, sem I/O de arquivo, sem HTML): escape, CSRF,
-// data e o cálculo do relatório. Separados do index.php para que ele cuida só
-// de sessão, rotas e carregamento de dados (uma responsabilidade por arquivo).
+// Helpers do painel, separados do index.php para que ele cuide só de sessão,
+// rotas e carregamento de dados (uma responsabilidade por arquivo): escape,
+// CSRF, data e relatório (puros) + o estado pequeno em disco do antibrute e do
+// acesso único (tentativas.json, bloqueios.json e sessao.json em private/dados).
 //
 // Este arquivo NÃO é acessível por URL: painel/.htaccess e o FilesMatch do
 // .htaccess raiz negam acesso a *.php dentro de painel/ que não seja o index.
@@ -44,6 +45,15 @@ function lerJson(string $file): array {
 }
 
 function lerLinks(string $file): array { return lerJson($file); }
+
+// Grava JSON com o mínimo de cuidado: cria a pasta, escreve com lock (duas
+// tentativas simultâneas não se atropelam) e devolve false quando não deu.
+function gravarJson(string $file, array $d): bool {
+  $dir = dirname($file);
+  if (!is_dir($dir)) @mkdir($dir, 0755, true);
+  $json = json_encode($d, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+  return $json !== false && @file_put_contents($file, $json, LOCK_EX) !== false;
+}
 
 // "2026-10-11T15:10:00-03:00" -> "11/10 15:10"
 //
@@ -147,76 +157,113 @@ function lerVisitas(string $arq): array {
 // cada resposta limitada ocupa um worker do servidor durante toda a
 // transferência. Contar tentativas aqui é o caminho que sempre existe.
 //
+// -------------------------------------------------------------- regras
+// Os números do antibrute e do acesso único, num lugar só (o painel e o login
+// leem daqui; as mensagens e a seção de tentativas citam os mesmos valores).
+const THROTTLE_JANELA   = 3600;   // janela de observação das falhas: 1 hora
+const THROTTLE_LIMITE   = 5;      // falhas na janela que armam o bloqueio
+const THROTTLE_BLOQUEIO = 86400;  // duração do bloqueio: 24 horas
+const SESSAO_IDLE       = 1800;   // inatividade que fecha a sessão (e libera o acesso único)
+
 // Chave = HMAC do IP (LGPD: o IP nunca é gravado em texto claro, igual ao
 // identificador de visitante em private/rastreio.php). O IP só entra no
 // cálculo do HMAC.
+//
+// A chave é ESTÁVEL (sem a data no sal, como era antes): um bloqueio de 24 h
+// (e o permanente) precisa da MESMA chave amanhã — com o sal girando todo dia,
+// o bloqueio evaporava à meia-noite e o 2º bloqueio nunca era reconhecido.
+function throttlingChave(): string {
+  return substr(hash_hmac('sha256', (string) ($_SERVER['REMOTE_ADDR'] ?? ''), 'pe-throttle'), 0, 16);
+}
+
 function throttlingArquivo(): string {
   return dirname(__DIR__) . '/private/dados/tentativas.json';
 }
 
-function throttlingChave(): string {
-  $sal = 'pe-throttle|' . date('Y-m-d');
-  return substr(hash_hmac('sha256', (string) ($_SERVER['REMOTE_ADDR'] ?? ''), $sal), 0, 16);
+// Bloqueios em vigor, separados das falhas: a falha é podada depois de 1 dia,
+// mas um bloqueio de 24 h (ou permanente) precisa sobreviver à poda.
+function bloqueiosArquivo(): string {
+  return dirname(__DIR__) . '/private/dados/bloqueios.json';
 }
 
-// Janela de observação: 1 hora. Depois de uma hora, tudo zera.
 function throttlingLer(): array {
-  $f = throttlingArquivo();
-  if (!is_file($f)) return array();
-  $d = json_decode((string) @file_get_contents($f), true);
-  return is_array($d) ? $d : array();
+  return lerJson(throttlingArquivo());
 }
 
 function throttlingGravar(array $d): void {
-  $f = throttlingArquivo();
-  $dir = dirname($f);
-  if (!is_dir($dir)) @mkdir($dir, 0755, true);
-  $json = json_encode($d, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-  if ($json !== false) @file_put_contents($f, $json, LOCK_EX);
+  gravarJson(throttlingArquivo(), $d);
+}
+
+function bloqueiosLer(): array {
+  return lerJson(bloqueiosArquivo());
+}
+
+function bloqueiosGravar(array $d): void {
+  gravarJson(bloqueiosArquivo(), $d);
 }
 
 // Falhas que ainda contam: só as da última hora (a janela de observação).
 function throttlingNaJanela(array $falhas): array {
   $agora = time();
-  return array_values(array_filter(array_map('intval', $falhas), fn($t) => ($agora - $t) < 3600));
+  return array_values(array_filter(array_map('intval', $falhas), fn($t) => ($agora - $t) < THROTTLE_JANELA));
 }
 
-// Estado do bloqueio de um conjunto de falhas. `libera` é o instante em que a
-// espera acaba (0 = já liberado) e `resta`, os segundos que faltam; é o mesmo
-// cálculo para a mensagem do login ("Tente de novo em X") e para a tela do
-// painel ("Bloqueado até HH:MM"). Quem decide o tamanho da espera é o backoff
-// progressivo (throttlingLimiteSegundos).
-function throttlingBloqueio(array $falhas): array {
-  $limite = throttlingLimiteSegundos(count($falhas));
-  if ($limite === 0) return array('libera' => 0, 'resta' => 0);
-  $libera = max($falhas) + $limite;
-  $resta  = $libera - time();
-  return $resta > 0 ? array('libera' => $libera, 'resta' => $resta) : array('libera' => 0, 'resta' => 0);
-}
-
-// Quanto tempo ainda falta de bloqueio (0 = liberado).
-function throttlingRestante(): int {
-  $chave = throttlingChave();
-  $todos  = throttlingLer();
-  if (!isset($todos[$chave])) return 0;
-  $falhas = throttlingNaJanela(is_array($todos[$chave]) ? $todos[$chave] : array());
-  if (!$falhas) {
-    unset($todos[$chave]);
-    throttlingGravar($todos);
-    return 0;
+// Situação de um bloqueio gravado, calculada com o relógio que o chamador
+// passa (PURO: o painel monta todas as linhas com o mesmo `agora`).
+//   - permanente: não expira — só sai com "Apagar tentativas de login";
+//   - temporario: vale até `libera` (24 h contadas de quando foi armado);
+//   - livre: sem bloqueio (bloqueio inexistente, vencido ou já podado).
+function bloqueioSituacao(array $b, int $agora): array {
+  if (!empty($b['permanente'])) {
+    return array('estado' => 'permanente', 'libera' => 0, 'resta' => 0, 'desde' => (int) ($b['desde'] ?? 0));
   }
-  return throttlingBloqueio($falhas)['resta'];
+  $libera = (int) ($b['libera'] ?? 0);
+  if (($libera - $agora) <= 0) return array('estado' => 'livre', 'libera' => 0, 'resta' => 0, 'desde' => 0);
+  return array('estado' => 'temporario', 'libera' => $libera, 'resta' => $libera - $agora, 'desde' => (int) ($b['desde'] ?? 0));
 }
 
-// Backoff progressivo: quanto mais tentativa, maior a espera.
-function throttlingLimiteSegundos(int $falhas): int {
-  if ($falhas < 5) return 0;          // só registra, ainda não bloqueia
-  if ($falhas <= 6) return 60;         // 1 min
-  if ($falhas <= 9) return 300;        // 5 min
-  return 1800;                         // 30 min
+// Arma (ou renova) o bloqueio de uma chave e devolve a situação nova. `vezes`
+// conta quantos bloqueios este aparelho já levou — é o que transforma a
+// REINCIDÊNCIA (2º bloqueio) em permanente sem depender de ninguém lembrar.
+function bloqueioArmar(string $chave, bool $permanente): array {
+  $todos = bloqueiosLer();
+  $agora = time();
+  $atual = is_array($todos[$chave] ?? null) ? $todos[$chave] : array();
+  $sit   = bloqueioSituacao($atual, $agora);
+  $todos[$chave] = array(
+    // `desde` = começo do bloqueio ATUAL: um bloqueio vencido há semanas não
+    // pode fazer o novo parecer antigo na tela.
+    'desde'      => $sit['estado'] === 'livre' ? $agora : (int) ($atual['desde'] ?? $agora),
+    'libera'     => $permanente ? 0 : $agora + THROTTLE_BLOQUEIO,
+    'permanente' => $permanente,
+    'vezes'      => (int) ($atual['vezes'] ?? 0) + 1,
+  );
+  bloqueiosGravar($todos);
+  return bloqueioSituacao($todos[$chave], $agora);
 }
 
-function throttlingFalhou(): void {
+// Bloqueios vencidos não somem na hora: `vezes` é o histórico que reconhece a
+// reincidência. A poda tira só o que venceu há mais de 30 dias — e nunca um
+// permanente (esse não vence).
+function bloqueiosPodar(array $todos, int $agora): array {
+  foreach ($todos as $chave => $b) {
+    if (!is_array($b)) { unset($todos[$chave]); continue; }
+    if (!empty($b['permanente'])) continue;
+    $libera = (int) ($b['libera'] ?? 0);
+    if ($libera <= 0 || ($agora - $libera) > 2592000) unset($todos[$chave]);
+  }
+  return $todos;
+}
+
+// Estado do bloqueio da chave ATUAL (de quem está falando com o painel).
+function throttlingEstado(): array {
+  $bloqueios = bloqueiosLer();
+  $chave = throttlingChave();
+  return bloqueioSituacao(is_array($bloqueios[$chave] ?? null) ? $bloqueios[$chave] : array(), time());
+}
+
+// Registra uma tentativa errada e devolve quantas falhas há na janela.
+function throttlingRegistrar(): int {
   $chave = throttlingChave();
   $todos = throttlingLer();
   $agora = time();
@@ -228,39 +275,92 @@ function throttlingFalhou(): void {
     if (!is_array($ts) || !$ts || ($agora - (int) max($ts)) > 86400) unset($todos[$k]);
   }
   throttlingGravar($todos);
+  return count($falhas);
 }
 
+// Senha errada. Ao bater o limite na janela, arma o bloqueio de 24 h — ou já
+// permanente, se este aparelho já foi bloqueado antes (reincidência). Devolve
+// o estado DEPOIS do registro: o login usa isso para responder "bloqueado por
+// 24 horas; não insista" já na própria resposta do 5º erro, que é a última
+// chance de avisar antes de um próximo POST virar permanente.
+function throttlingFalhou(): array {
+  $chave = throttlingChave();
+  $qtd   = throttlingRegistrar();
+  $agora = time();
+  $b     = bloqueiosLer();
+  $atual = is_array($b[$chave] ?? null) ? $b[$chave] : array();
+  $sit   = bloqueioSituacao($atual, $agora);
+  if ($sit['estado'] === 'livre' && $qtd >= THROTTLE_LIMITE) {
+    return bloqueioArmar($chave, (int) ($atual['vezes'] ?? 0) >= 1);
+  }
+  return $sit;
+}
+
+// Insistiu DURANTE o bloqueio: registra a tentativa e torna o bloqueio
+// permanente. A resposta anterior avisou ("não insista"), então quem insiste
+// é robô ou quem ignorou o aviso.
+function throttlingInsistiu(): array {
+  throttlingRegistrar();
+  return bloqueioArmar(throttlingChave(), true);
+}
+
+// Senha certa: limpa as falhas E o bloqueio de quem acertou (deixa o registro
+// consistente; quem está bloqueado nem chega ao password_verify).
 function throttlingLimpar(): void {
+  $chave = throttlingChave();
   $todos = throttlingLer();
-  unset($todos[throttlingChave()]);
+  unset($todos[$chave]);
   throttlingGravar($todos);
+  $bloqueios = bloqueiosLer();
+  unset($bloqueios[$chave]);
+  bloqueiosGravar($bloqueios);
 }
 
-// O botão do painel: apaga TUDO. Diferente de throttlingLimpar(), que solta só
-// o identificador de quem acabou de acertar a senha. Consequência: um bloqueio
-// em vigor também acaba — o aviso na tela diz isso.
+// O botão do painel: apaga TUDO — tentativas E bloqueios, inclusive os
+// permanentes. É o caminho de volta de quem se bloqueou: entrar de outro
+// aparelho/rede e limpar aqui. Não toca no log de visitas nem nos links.
 function throttlingApagar(): void {
   throttlingGravar(array());
+  bloqueiosGravar(array());
 }
 
-// A lista que a seção "Tentativas de login" mostra: uma linha por identificador
-// (o HMAC do IP, que gira todo dia), com o total registrado, a última tentativa
-// e o bloqueio em vigor. Ordem: bloqueados primeiro; depois, o mais recente.
+// A lista que a seção "Tentativas de login" mostra: uma linha por chave,
+// juntando o registro de falhas com o de bloqueios. A junção é necessária
+// porque um bloqueio sobrevive à poda das falhas (1 dia) — sem ela, um
+// bloqueio permanente sumiria da tela depois de um dia sem novas tentativas.
+// Ordem: permanentes, depois os bloqueados, depois o mais recente.
 function throttlingTentativas(): array {
+  $agora = time();
+  $bloqueios = bloqueiosLer();
+  $podados = bloqueiosPodar($bloqueios, $agora);
+  if ($podados !== $bloqueios) bloqueiosGravar($podados);
+
+  $chaves = array();
+  $falhas = throttlingLer();
+  foreach ($falhas as $chave => $ts) if (is_array($ts) && $ts) $chaves[(string) $chave] = true;
+  foreach ($podados as $chave => $_) $chaves[(string) $chave] = true;
+
   $linhas = array();
-  foreach (throttlingLer() as $chave => $ts) {
-    if (!is_array($ts) || !$ts) continue;
-    $falhas = array_map('intval', $ts);
+  foreach (array_keys($chaves) as $chave) {
+    $ts  = is_array($falhas[$chave] ?? null) ? array_map('intval', $falhas[$chave]) : array();
+    $b   = is_array($podados[$chave] ?? null) ? $podados[$chave] : array();
+    $sit = bloqueioSituacao($b, $agora);
 
     $linhas[] = array(
       'chave'  => (string) $chave,
-      'total'  => count($falhas),
-      'ultima' => max($falhas),
-      'libera' => throttlingBloqueio(throttlingNaJanela($falhas))['libera'],
+      'total'  => count($ts),
+      // Sem falhas registradas (poda), a "última tentativa" vira o começo do
+      // bloqueio: é o que a linha ainda tem para mostrar.
+      'ultima' => $ts ? max($ts) : (int) ($b['desde'] ?? 0),
+      'estado' => $sit['estado'],
+      'libera' => $sit['libera'],
+      'vezes'  => (int) ($b['vezes'] ?? 0),
     );
   }
-  usort($linhas, function ($a, $b) {
-    if (($a['libera'] > 0) !== ($b['libera'] > 0)) return $a['libera'] > 0 ? -1 : 1;
+
+  $peso = array('permanente' => 0, 'temporario' => 1, 'livre' => 2);
+  usort($linhas, function ($a, $b) use ($peso) {
+    if ($peso[$a['estado']] !== $peso[$b['estado']]) return $peso[$a['estado']] <=> $peso[$b['estado']];
     return $b['ultima'] <=> $a['ultima'];
   });
   return $linhas;
@@ -268,19 +368,65 @@ function throttlingTentativas(): array {
 
 // Somatórios da seção de tentativas (mesmo par ler/resumir do relatório).
 function tentativasTotais(array $linhas): array {
-  $total = 0;
-  $bloqueados = 0;
+  $total = 0; $bloqueados = 0; $permanentes = 0;
   foreach ($linhas as $l) {
     $total += (int) $l['total'];
-    if ((int) $l['libera'] > 0) $bloqueados++;
+    if ($l['estado'] !== 'livre') $bloqueados++;
+    if ($l['estado'] === 'permanente') $permanentes++;
   }
-  return array('total' => $total, 'bloqueados' => $bloqueados);
+  return array('total' => $total, 'bloqueados' => $bloqueados, 'permanentes' => $permanentes);
 }
 
+// "Quanto falta da espera" em português. Só existe bloqueio de 24 h, mas a
+// função arredonda para cima e fala em horas (o texto sai certo em qualquer
+// ajuste futuro do THROTTLE_BLOQUEIO).
 function throttlingTexto(int $seg): string {
-  if ($seg >= 1800) return '30 minutos';
-  if ($seg >= 300) return '5 minutos';
-  return '1 minuto';
+  $horas = max(1, (int) ceil($seg / 3600));
+  return $horas === 1 ? '1 hora' : $horas . ' horas';
+}
+
+// ---------------------------------------------------- um acesso por vez
+// O painel é de uma pessoa só: no máximo UM acesso aberto. Um segundo login,
+// MESMO COM A SENHA CERTA, falha enquanto o primeiro estiver vivo (visto há
+// menos de SESSAO_IDLE); ninguém é expulso — quem está dentro continua dentro.
+// O carimbo é liberado no "Sair" e na expiração por inatividade, os dois
+// caminhos que derrubam a sessão.
+function sessaoArquivo(): string {
+  return dirname(__DIR__) . '/private/dados/sessao.json';
+}
+
+function sessaoLer(): array {
+  return lerJson(sessaoArquivo());
+}
+
+// Grava quem está com o acesso aberto. Chamar DEPOIS do session_regenerate_id:
+// antes dele, session_id() ainda é o id velho.
+function sessaoMarcar(): void {
+  gravarJson(sessaoArquivo(), array('id' => session_id(), 'visto' => time()));
+}
+
+// Renova o carimbo a cada request logado: é isto que mantém o acesso "vivo"
+// enquanto a dona usa o painel (e o que faz o próximo login esperar).
+function sessaoToque(): void {
+  $s = sessaoLer();
+  if (($s['id'] ?? '') === session_id()) gravarJson(sessaoArquivo(), array('id' => session_id(), 'visto' => time()));
+}
+
+// Outro acesso aberto agora? Devolve o epoch do último uso dele (0 = livre).
+// O MESMO id de sessão não conta: é este mesmo acesso recarregando a página.
+function sessaoOutroAcesso(): int {
+  $s = sessaoLer();
+  $id = (string) ($s['id'] ?? '');
+  $visto = (int) ($s['visto'] ?? 0);
+  if ($id === '' || $id === session_id()) return 0;
+  return ($visto > 0 && (time() - $visto) < SESSAO_IDLE) ? $visto : 0;
+}
+
+// Libera o carimbo (logout e expiração). Só apaga se o carimbo for DESTA
+// sessão: assim um acesso antigo que se despede não derruba o acesso atual.
+function sessaoLiberar(): void {
+  $s = sessaoLer();
+  if (($s['id'] ?? '') === session_id()) gravarJson(sessaoArquivo(), array());
 }
 
 // ------------------------------------------------------------------- CSV

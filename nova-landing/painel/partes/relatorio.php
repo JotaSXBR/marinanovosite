@@ -11,6 +11,10 @@
     </div>
   <?php else: ?>
   <div class="card scroll">
+    <?php // No celular cada célula vira rótulo + valor (data-label). Aqui o
+          // rótulo é mais curto que o <th> do desktop de propósito: "Pessoas
+          // hoje" não cabia na tira de 4 colunas e quebrava no MEIO da palavra
+          // ("PESSOA / S HOJE"). ?>
     <table>
       <thead>
         <tr>
@@ -41,7 +45,7 @@
           <td class="num tira" data-label="Hoje"><?= (int) $r['hoje'] ?></td>
           <td class="num tira" data-label="7 dias"><?= (int) $r['semana'] ?></td>
           <td class="num tira" data-label="Total"><?= (int) $r['total'] ?></td>
-          <td class="num tira" data-label="Pessoas hoje"><?= count($r['uid']) ?></td>
+          <td class="num tira" data-label="Pessoas"><?= count($r['uid']) ?></td>
           <td class="muted nowrap" data-label="Última visita"><?= e(brDataHora((string) $r['ultima'])) ?></td>
         </tr>
       <?php endforeach; ?>
@@ -54,7 +58,7 @@
           <td class="num tira" data-label="Hoje"><?= (int) $tt['hoje'] ?></td>
           <td class="num tira" data-label="7 dias"><?= (int) $tt['semana'] ?></td>
           <td class="num tira" data-label="Total"><?= (int) $tt['total'] ?></td>
-          <td class="num tira" data-label="Pessoas hoje"><?= (int) $tt['uid'] ?></td>
+          <td class="num tira" data-label="Pessoas"><?= (int) $tt['uid'] ?></td>
           <td></td>
         </tr>
       </tfoot>

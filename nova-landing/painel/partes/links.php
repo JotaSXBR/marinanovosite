@@ -24,7 +24,7 @@
     </form>
   </div>
 
-  <details class="recolhavel" id="links" <?= $editLink ? 'open' : '' ?>>
+  <details class="recolhavel" id="links" <?= $linkAberto ? 'open' : '' ?>>
     <summary><?= $editLink ? 'Editando o link: ' . e($editLink) : 'Link personalizado' ?></summary>
     <div class="recolhavel-corpo">
     <p class="muted" style="margin:6px 0 0">
@@ -46,7 +46,7 @@
         <div>
           <label for="rotulo">Nome para você reconhecer</label>
           <input id="rotulo" name="rotulo" placeholder="Bio do Instagram…" maxlength="60"
-                 value="<?= e($formLink['rotulo'] ?? '') ?>">
+                 autocomplete="off" value="<?= e($formLink['rotulo'] ?? '') ?>">
           <label for="oferta">Carrinho</label>
           <select id="oferta" name="oferta">
             <?php foreach ($ofertas as $k => $of): ?>

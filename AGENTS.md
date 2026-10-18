@@ -13,7 +13,7 @@ npm run dev:php      # Apache + PHP 8.2 (Docker) em :8080 — o PHP de verdade
 npm run dev:php:log  # erros de PHP em tempo real
 npm run dev:php:down # derruba o container
 npm test             # suíte estática → 46 passam + 2 pulados (layout/copy/CSS/fontes/srcset)
-PAINEL_SENHA='...' npm run test:php   # suíte do PHP real → 32 (sobe o container; 10 pulados sem a senha)
+PAINEL_SENHA='...' npm run test:php   # suíte do PHP real → 38 (sobe o container; 14 pulados sem a senha)
 ./ferramentas/deploy-ftp.py           # deploy manual por FTPS (ver "Deploy")
 ```
 
@@ -92,14 +92,56 @@ personalizado), export CSV, botão copiar.
 
 - **Tentativas erradas de login e bloqueios aparecem no painel** (última seção:
   `partes/seguranca.php`, alimentada por `throttlingTentativas()` em `apoio.php`):
-  identificador anônimo (HMAC do IP, gira todo dia), total de tentativas, última
-  tentativa e "Bloqueado até HH:MM" — em `America/Sao_Paulo`, como o resto do
-  painel (`brDataHoraDe()` converte o epoch que o antibrute grava).
+  identificador anônimo (**HMAC estável** do IP — sem a data no sal, de propósito:
+  um bloqueio de 24 h precisa da mesma chave amanhã; o IP continua nunca gravado),
+  total de tentativas, última tentativa e a situação ("Bloqueado até
+  dd/mm HH:MM" ou "Bloqueado permanentemente") — em `America/Sao_Paulo`, como o
+  resto do painel (`brDataHoraDe()` converte o epoch que o antibrute grava).
+- **Regras do antibrute** (`apoio.php`, constantes no topo): 5 erros em 1 h →
+  bloqueio de **24 horas** (`bloqueios.json`, estado próprio: a poda das falhas
+  em 1 dia não o derruba); **insistir durante o bloqueio → permanente**; e
+  **reincidência** (2º bloqueio da mesma chave, `vezes`) também vira permanente.
+  O 5º erro já responde "bloqueado por 24 horas — não insista"; o POST seguinte
+  nem chega ao `password_verify` (economia de CPU). O form de login tem guarda
+  de duplo toque (`onsubmit=`) justamente porque dois POSTs viram insistência.
 - A limpeza desse registro é um **botão separado** do histórico de visitas:
-  `limpar_tentativas` esvazia `private/dados/tentativas.json`
-  (`throttlingApagar()`) e, por isso, **libera bloqueio em vigor** — o aviso na
-  tela diz isso; `limpar_log` continua mexendo só nas visitas. Entrar com a senha
-  certa já limpa o registro de quem acertou (`throttlingLimpar()`).
+  `limpar_tentativas` esvazia `tentativas.json` E `bloqueios.json`
+  (`throttlingApagar()`) — **inclusive os bloqueios permanentes**. É o caminho de
+  volta de quem se bloqueou: entrar de outro aparelho/rede e limpar aqui (uma
+  chave bloqueada não passa pelo login; `limpar_log` segue mexendo só nas
+  visitas). Entrar com a senha certa limpa o registro de quem acertou
+  (`throttlingLimpar()`).
+- **Um acesso por vez** (`sessao.json`, `sessaoMarcar/Toque/OutroAcesso/Liberar`):
+  um segundo login, mesmo com a senha certa, **falha** enquanto o primeiro
+  estiver vivo (visto há menos de `SESSAO_IDLE` = 30 min — o mesmo tempo da
+  expiração por inatividade); ninguém é expulso. Liberado no "Sair" e na
+  expiração. Consequência operacional: fechar a aba sem sair segura o acesso por
+  até 30 min — usar o "Sair" (ex.: ao terminar no computador e querer entrar no
+  celular).
+- Ação do POST que falha (ex.: validação do carrinho) grava o erro em
+  `$_SESSION['painel_erro']`: o redirect do POST→GET descartava `$erro` e a
+  validação falhava em silêncio. Vão junto `painel_form` (o POST, para os campos
+  voltarem preenchidos) e **`painel_form_acao`** (qual ação falhou): sem esta, o
+  erro voltava com o bloco `<details>` **fechado** — e os dois formulários têm
+  campo "Nome", então o merge cego punha o rótulo de um no outro. Quem decide
+  reabrir é `$carrinhoAberto`/`$linkAberto` no `index.php`.
+- **UI do painel (armadilhas da revisão de design/UX, 18/10/2026):**
+  - `.sec`/`.perigo` precisam valer para **botão E link** (`button.sec,.btn.sec`):
+    com o seletor só de `<button>`, "Baixar CSV"/"Sair" (que são `<a class="btn
+    sec">`) saíam PREENCHIDOS em magenta ao lado do "Escuro" em outline, e o
+    "Editar" das linhas ficava sem borda (`.btn` nasce com `border:0`, então o
+    `border-color` sozinho não desenhava nada) — lia como texto solto.
+  - `data-label` (celular) é um texto **separado** do `<th>`: a tira de 4 colunas
+    tem ~53-57px, então o rótulo tem de ser curto ("Pessoas", não "Pessoas hoje")
+    e a `.tira::before` tem fonte/espaçamento menores — senão quebra no **meio**
+    da palavra ("PESSOA / S").
+  - Os campos curtos do carrinho ficam 2x2 no celular (`grid4`), não em coluna
+    única: o formulário virava rolagem longa à toa.
+  - Barra de seções do celular tem 4 itens ("Segurança" leva ao fim da página) e
+    o `scroll-padding-bottom` evita que a barra fixa cubra o destino de âncora/foco.
+  - Ao mexer no CSS, `php -l` não roda CSS: a conferência é **captura de tela**
+    (desktop 1280 + celular 390/360, claro e escuro) — foi assim que apareceram
+    os defeitos acima. Script de captura no temp do opencode (`painel-shots.js`).
 
 - Senha = **hash bcrypt** em `painel/config.php` (nunca texto puro). A Action
   **falha o deploy** enquanto o placeholder `COLE_AQUI_O_HASH` estiver lá (guarda
@@ -134,11 +176,12 @@ Duas suítes, porque testam coisas diferentes:
   python http.server. Layout, copy, carrosséis, tema, bônus, sincronia do artefato,
   **fontes self-hosted** (nenhuma origem externa + todo `.woff2` responde 200),
   **candidatos de `srcset`** e `canonical` absoluto.
-- **`npm run test:php`** (32) — contra o **PHP real** no container (`docker compose
+- **`npm run test:php`** (38) — contra o **PHP real** no container (`docker compose
   up -d`, :8080). O próprio script sobe o container antes. Cobre: `?o=`, repasse de
   `src` ao checkout, painel (login/carrinhos/ciclo de link/seção de tentativas com
-  limpeza separada/logout), cookie, CSRF, antibrute e os 403. Senha do painel via
-  env `PAINEL_SENHA` (nunca no repo); sem ela os **10 testes de painel** são
+  limpeza separada/acesso único/logout), cookie, CSRF, antibrute (24 h e
+  permanente) e os 403. Senha do painel via
+  env `PAINEL_SENHA` (nunca no repo); sem ela os **14 testes de painel** são
   pulados.
 
 > Rodar o Playwright do servidor **direto**, com o container fora do ar, falha com

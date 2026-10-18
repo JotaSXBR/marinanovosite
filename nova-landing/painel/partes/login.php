@@ -8,7 +8,13 @@
       <h1>Painel de Links</h1>
       <p class="sub">Pilates em Casa — área restrita da proprietária.</p>
       <?php if ($erro): ?><div class="erro"><?= e($erro) ?></div><?php endif; ?>
-      <form method="post">
+      <?php /* Trava de duplo toque: dois POSTs seguidos do login contam como
+               insistência e viram bloqueio PERMANENTE. O botão desabilita no
+               primeiro envio, então o segundo toque não acha o que clicar.
+               O rótulo vira "Entrando…" (estado de carregando): sem isso, o
+               toque parecia não ter feito nada enquanto o servidor respondia.
+               Sem JS o form continua funcionando normal. */ ?>
+      <form method="post" onsubmit="var b=this.querySelector('button[type=submit]');b.disabled=true;b.textContent='Entrando…'">
         <input type="hidden" name="csrf" value="<?= e(csrfToken()) ?>">
         <input type="hidden" name="acao" value="entrar">
         <label for="senha">Senha</label>

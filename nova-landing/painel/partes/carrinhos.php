@@ -87,7 +87,7 @@
     </p>
   </div>
 
-  <details class="recolhavel" id="carrinho" <?= $editCarrinho ? 'open' : '' ?>>
+  <details class="recolhavel" id="carrinho" <?= $carrinhoAberto ? 'open' : '' ?>>
     <summary><?= $editCarrinho ? 'Editando carrinho: ' . e($editCarrinho) : 'Cadastrar novo carrinho' ?></summary>
     <div class="recolhavel-corpo">
       <p class="muted" style="margin:6px 0 0">
@@ -108,7 +108,7 @@
         <div>
           <label for="rotulo_c">Nome</label>
           <input id="rotulo_c" name="rotulo" placeholder="WhatsApp (R$ 97 por R$ 47)…" maxlength="60"
-                 value="<?= e($formCarrinho['rotulo'] ?? '') ?>" required>
+                 autocomplete="off" value="<?= e($formCarrinho['rotulo'] ?? '') ?>" required>
         </div>
       </div>
       <label for="checkout">Checkout (URL da Kiwify)</label>
@@ -135,7 +135,9 @@
         </div>
       </div>
       <label for="parcV">Valor da parcela</label>
-      <input id="parcV" name="parcV" placeholder="10,69" value="<?= e($formCarrinho['parcV'] ?? '') ?>">
+      <?php // inputmode=decimal (e nao numeric): o valor tem vírgula (10,69) e
+            // o teclado "numeric" do iOS não oferece o separador ?>
+      <input id="parcV" name="parcV" inputmode="decimal" placeholder="10,69" value="<?= e($formCarrinho['parcV'] ?? '') ?>">
       <div class="bar" style="margin-top:18px">
         <button type="submit"><?= $editCarrinho ? 'Salvar alterações' : 'Cadastrar carrinho' ?></button>
         <?php if ($editCarrinho): ?>

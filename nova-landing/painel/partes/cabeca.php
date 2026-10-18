@@ -136,20 +136,29 @@ button,.btn{
 }
 button:hover,.btn:hover{background:var(--cta-hover)}
 button:active,.btn:active{transform:scale(.97)}
-button.sec{background:var(--campo);color:var(--cta);border:1px solid var(--borda)}
-button.sec:hover{background:var(--faixa)}
+/* `.sec` vale também para <a class="btn sec">. Sem isto o "Baixar CSV" e o
+   "Sair" (links) saíam PREENCHIDOS ao lado do "Escuro" (botão) em outline —
+   dois pesos para a mesma fileira. E no "Editar" da linha o border-color
+   sozinho não desenhava nada (`.btn` nasce com border:0), então a ação lia
+   como texto solto, sem cara de clicável. */
+button.sec,.btn.sec{background:var(--campo);color:var(--cta);border:1px solid var(--borda)}
+button.sec:hover,.btn.sec:hover{background:var(--faixa)}
 button.perigo{background:var(--campo);color:var(--perigo);border:1px solid var(--perigo-borda)}
 button.perigo:hover{background:var(--perigo-fundo)}
 table{width:100%;border-collapse:collapse;font-size:.92rem}
 th,td{text-align:left;padding:11px 9px;border-bottom:1px solid var(--faixa);vertical-align:top}
 th{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--cinza);white-space:nowrap}
 /* alinhar: numero no th e no td vao para a direita, com a mesma largura de
-   digito (tabular-nums) para as colunas ficarem retas */
-th.num,td.num{text-align:right;font-variant-numeric:tabular-nums}
+   digito (tabular-nums) para as colunas ficarem retas.
+   nowrap: na coluna estreita "R$ 97" quebrava entre o R$ e o numero e a
+   celula virava duas linhas tortas (visto na captura do painel). */
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 td.num,th.num{padding-left:16px}
 .nowrap{white-space:nowrap}
 tfoot .totais td{font-weight:700;background:var(--faixa);border-bottom:0;border-top:2px solid var(--borda)}
-.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* overscroll-x: o arrasto lateral dentro da tabela (celular) nao pode virar
+   "voltar uma tela" do navegador — quem rola aqui e o card, nao a pagina */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .linkbox{
   font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;background:var(--faixa);
   border:1px solid var(--borda);border-radius:10px;padding:11px;word-break:break-all;
@@ -212,6 +221,10 @@ td .linkbox{
 /* Etiqueta na linha de baixo. Na mesma linha, o código "padrao" e a etiqueta
    "padrão" ficavam lado a lado e o par lia como duplicata por engano. */
 .pill-bloco{display:block;width:fit-content;margin-top:4px}
+/* Linha de totais da secao de tentativas: o numero e as pilulas ficam na
+   MESMA faixa, quebrando linha juntos (no celular as pilulas descem
+   alinhadas em vez de colar no numero). */
+.tentativas-topo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0 0 14px}
 .login{max-width:400px;margin:8vh auto}
 .bar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
 .acoes-topo{display:flex;gap:10px}
@@ -258,7 +271,10 @@ td .linkbox{
 .skip:focus{top:0;color:var(--branco)}
 
 @media(max-width:640px){
-  .grid2,.grid4{grid-template-columns:1fr}
+  /* os campos curtos (De/Por/Total/Parcelas) ficam 2x2: em coluna unica o
+     formulario virava uma rolagem longa sem necessidade */
+  .grid2{grid-template-columns:1fr}
+  .grid4{grid-template-columns:1fr 1fr}
   .wrap{padding:20px 14px 50px}
 }
 
@@ -280,6 +296,9 @@ td .linkbox{
 
   /* espaço no fim da página para a barra de seções fixa + notch do iPhone */
   .wrap{padding:16px 14px calc(104px + env(safe-area-inset-bottom))}
+  /* o mesmo vão vale para âncora/foco: sem ele, o navegador rola o alvo até
+     colar na borda de baixo e a barra fixa cobre o título da seção */
+  html{scroll-padding-bottom:calc(104px + env(safe-area-inset-bottom))}
 
   h1{font-size:1.3rem}
   h2{margin:28px 0 10px;scroll-margin-top:12px}
@@ -303,8 +322,11 @@ td .linkbox{
   /* topo: titulo, subtítulo curto e acoes lado a lado */
   .bar{gap:10px}
   .sub{font-size:.88rem;margin:0 0 4px}
-  .acoes-topo{width:100%}
-  .acoes-topo .btn{flex:1 1 auto;font-size:.86rem}
+  /* com os três na mesma linha e sem wrap, o "Sair" passava alguns px da
+     viewport e saía cortado na borda (390px). Padding menor faz caber; em
+     tela estreita o último desce inteiro em vez de vazar. */
+  .acoes-topo{width:100%;flex-wrap:wrap}
+  .acoes-topo .btn{flex:1 1 auto;font-size:.86rem;padding:10px 14px}
   .confirm{width:100%}
   .confirm-corpo{max-width:none}
 
@@ -339,8 +361,12 @@ td .linkbox{
   }
   /* valor nunca quebra ("R$ 613" em duas linhas fica feio); o rotulo pode, se
      nao couber na coluna mais estreita. */
-  .tira{padding:7px 10px;white-space:nowrap}
-  .tira::before{white-space:normal}
+  .tira{padding:7px 8px;white-space:nowrap}
+  /* o rotulo da tira e o texto mais apertado do card: em 360px a coluna tem
+     ~53px e "PESSOAS" em .68rem/letter-spacing .07em nao cabia — quebrava no
+     MEIO da palavra ("PESSOA / S"). Menor e menos espacado cabe; a hierarquia
+     continua (maiusculo, negrito, cinza). */
+  .tira::before{white-space:normal;font-size:.6rem;letter-spacing:.04em}
   td::before{
     content:attr(data-label);display:block;
     font-weight:700;color:var(--cinza);font-size:.68rem;

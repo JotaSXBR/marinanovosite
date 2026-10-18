@@ -25,11 +25,13 @@
   </div>
 
   <?php // Atalhos das seções: só aparecem no celular (CSS), onde a rolagem
-        // de ~7 telas tornava "achar os carrinhos" custoso.
+        // de ~7 telas tornava "achar os carrinhos" custoso. "Segurança" leva
+        // ao fim da página (tentativas/bloqueios + as limpezas).
         // Sem ícones: glifo geométrico (▤ ▣) não é garantido nas fontes de
         // Android e vira quadradinho vazio. O rótulo já diz tudo. ?>
   <nav class="menu-secoes" aria-label="Seções do painel">
     <a href="#sec-cliques">Cliques</a>
     <a href="#sec-carrinhos">Carrinhos</a>
     <a href="#sec-links">Links</a>
+    <a href="#sec-login">Segurança</a>
   </nav>

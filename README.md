@@ -34,7 +34,7 @@ dona), `BACKLOG.md` (futuro).
 | `npm run dev:php` | Apache + PHP 8.2 (Docker) em `http://localhost:8080` — o PHP real |
 | `npm run dev:php:log` / `npm run dev:php:down` | Log de erros do PHP / derruba o container |
 | `npm test` | Suíte estática (46 passam + 2 pulados) |
-| `npm run test:php` | Suíte do PHP real no container (32; 10 pulados sem `PAINEL_SENHA`) |
+| `npm run test:php` | Suíte do PHP real no container (38; 14 pulados sem `PAINEL_SENHA`) |
 
 ## Ambiente dev
 
@@ -83,7 +83,7 @@ Duas suítes, porque testam coisas diferentes:
 npm test         # 46 passam + 2 pulados · contra o index.html estático (layout/copy/CSS/fontes/srcset)
 
 PAINEL_SENHA='...' npm run test:php
-                  # 32 · contra o PHP real no container (:8080) — o script sobe o container
+                  # 38 · contra o PHP real no container (:8080) — o script sobe o container
 ```
 
 **`npm test`** sobe o preview estático e confere o que dá para conferir sem
@@ -95,12 +95,13 @@ e todo `.woff2` em `fontes/` respondendo 200), todo **candidato de `srcset`** e 
 
 **`npm run test:php`** sobe o container e cobre o que só existe com PHP:
 oferta por `?o=`, repasse do canal para o checkout, painel (login, carrinhos,
-ciclo de criar/apagar link, seção de tentativas de login com a limpeza própria,
-logout), cookie de sessão, exigência de CSRF, antibrute e os 403 de `private/` e
-`painel/`.
+ciclo de criar/apagar link, validação que reabre o formulário com o que foi
+digitado, seção de tentativas de login com a limpeza própria, acesso único,
+logout), cookie de sessão, exigência de CSRF, antibrute (bloqueio de 24 h e o
+permanente por insistência) e os 403 de `private/` e `painel/`.
 
 A senha do painel vem da variável de ambiente `PAINEL_SENHA` — nunca fica no
-repo (no `config.php` só existe o hash bcrypt). Sem ela, os 10 testes de painel
+repo (no `config.php` só existe o hash bcrypt). Sem ela, os 14 testes de painel
 são pulados com aviso.
 
 > Detalhe do desenho: `workers: 1` na suíte do servidor. Os testes mexem em
