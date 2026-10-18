@@ -210,11 +210,13 @@ O WordPress antigo não está mais em `public_html` (`/wp-login.php`,
 > conferir o estado atual do site, sempre olhe a raiz — foi o que causou uma
 > auditoria longa achando que o deploy não funcionava.
 
-### 5. Alternativa sem GitHub Actions (créditos acabaram)
+### 5. Plano B: deploy manual, sem GitHub Actions
 
 Em 14/10/2026 os créditos de Actions da conta acabaram e o deploy automático
-parou. O caminho manual é `ferramentas/deploy-ftp.py`: mesma montagem de
-pacote, mesma conta, mesmas travas — só muda quem executa.
+parou — mas **voltou a funcionar** (conferido em 18/10/2026: o push `e6a6fbd`
+deployou em 14 s pelo `deploy-cpanel.yml`). Se parar de novo, o caminho manual é
+`ferramentas/deploy-ftp.py`: mesma montagem de pacote, mesma conta, mesmas
+travas — só muda quem executa.
 
 ```bash
 # 1. Montar o pacote (o mesmo bloco que a Action executa)

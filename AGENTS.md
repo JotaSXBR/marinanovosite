@@ -212,8 +212,10 @@ passo a passo no **`README.md`** (criar conta FTP, secrets, destino).
   `@font-face` usa caminho relativo, então não passa pelo `sed` dos `conteudo/`).
   A Action **falha o deploy** se um `fontes/*.woff2` citado no `index.html` não
   existir no pacote — fonte ausente não dá erro visível, só cai no fallback.
-- **Créditos do GitHub Actions acabaram em 14/10/2026** → caminho disponível é
-  `ferramentas/deploy-ftp.py` (lê `FTP_SERVER`/`FTP_USERNAME`/`FTP_PASSWORD` do
+- **A Action voltou a funcionar** (verificado em 18/10/2026: push `e6a6fbd`
+  deployou em 14 s e o painel novo estava no ar — os créditos tinham acabado em
+  14/10/2026). Plano B, se parar de novo: `ferramentas/deploy-ftp.py` (lê
+  `FTP_SERVER`/`FTP_USERNAME`/`FTP_PASSWORD` do
   ambiente — nenhum segredo no repo; força `AUTH TLS` + `PROT P`; **não apaga**
   nada do servidor; **nunca** sobe para `/nova/`; idempotente por tamanho). O
   login da conta FTP já cai em `public_html`, então não há `cd`. A porta 990
@@ -246,8 +248,9 @@ Gerar variante: `python3 -c "from PIL import Image; im=Image.open('x.webp'); im.
 `php -r "echo password_hash('SENHA', PASSWORD_DEFAULT), PHP_EOL;"`, colar em
 `nova-landing/painel/config.php`, commit e push.
 
-**Publicar** → `git push` na `main` (Action) ou, sem créditos, montar o `deploy/`
-como a Action faz e rodar `./ferramentas/deploy-ftp.py`.
+**Publicar** → `git push` na `main` (a Action `deploy-cpanel.yml` publica; dá para
+acompanhar com `gh run watch`). Plano B: montar o `deploy/` como a Action faz e
+rodar `./ferramentas/deploy-ftp.py`.
 
 ## Armadilhas já pagas (não repetir)
 
