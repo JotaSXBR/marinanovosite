@@ -46,7 +46,8 @@ servidor (`?o=`, repasse de `src`, painel, `.htaccess`, 403) só se prova no
 
 Docs de contexto: `README.md` (deploy passo a passo), `INVENTARIO.md` (o que veio
 do WordPress), `ANALISE-COPY.md` (**ler antes de mexer em texto**),
-`QUESTIONARIO.md` (respostas da dona), `BACKLOG.md` (futuro).
+`QUESTIONARIO.md` (respostas da dona), `BACKLOG.md` (futuro),
+`KIWIFY-TUTORIAL.md` (criar oferta na Kiwify + cadastrar carrinho no painel).
 
 ## Landing: oferta resolvida no servidor
 
