@@ -3,7 +3,7 @@
 //
 // RESPONSABILIDADE DESTE ARQUIVO (e só dele):
 //   1. iniciar a sessão e validar o login;
-//   2. despachar as ações do POST (carrinhos e links);
+//   2. despachar as ações do POST (carrinhos, links e limpezas);
 //   3. carregar os dados que as telas vão mostrar;
 //   4. delegar o HTML para partes/*.php.
 //
@@ -188,6 +188,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $logado && csrfValido()) {
     $_SESSION['painel_flash'] = 'Histórico de visitas apagado.';
   }
 
+  // Separação proposital: limpar_log mexe só nas visitas; esta mexe só no
+  // registro do antibrute (tentativas erradas e eventuais bloqueios).
+  if ($acao === 'limpar_tentativas') {
+    throttlingApagar();
+    $_SESSION['painel_flash'] = 'Registro de tentativas de login apagado.';
+  }
+
   // POST -> GET: evita reenvio ao dar F5 (boa prática de formulário).
   header('Location: ./');
   exit;
@@ -205,6 +212,10 @@ $linhas = lerVisitas($logArq);
 $resumo = resumo($linhas);
 $links  = lerJson($linksFile);
 $base   = baseUrl();
+
+// Registro do antibrute (o que a última seção mostra): tentativas erradas de
+// entrar e bloqueios em vigor.
+$tentativas = throttlingTentativas();
 
 if ($logado && isset($_GET['csv'])) painelCsv($linhas);
 
@@ -258,6 +269,7 @@ if (!$logado) {
   require $p . 'relatorio.php';
   require $p . 'carrinhos.php';
   require $p . 'links.php';
+  require $p . 'seguranca.php';
 }
 
 require $p . 'rodape.php';

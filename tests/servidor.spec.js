@@ -170,6 +170,44 @@ test.describe('com senha do painel', () => {
     await page.click('a[href="?sair=1"]');
     await expect(page.locator('#senha')).toBeVisible();
   });
+
+  test('tentativas erradas aparecem no painel e a limpeza é só delas', async ({ page }) => {
+    // Uma visita de verdade: ela TEM que sobreviver à limpeza das tentativas.
+    await page.goto('/?src=teste-limpeza');
+    const ACESSOS = path.join(DADOS, 'acessos.jsonl');
+
+    // Tentativas sintéticas, no mesmo formato que o login grava: um
+    // identificador abaixo do limite e outro já bloqueado (6 falhas na hora).
+    const agora = Math.floor(Date.now() / 1000);
+    fs.mkdirSync(DADOS, { recursive: true });
+    fs.writeFileSync(TENTATIVAS, JSON.stringify({
+      a1b2c3d4e5f60718: [agora - 300, agora - 240],
+      deadbeefdeadbeef: [agora - 120, agora - 90, agora - 60, agora - 30, agora - 20, agora - 10],
+    }));
+
+    try {
+      await login(page);
+      await expect(page.locator('h2:has-text("Tentativas de login")')).toBeVisible();
+      await expect(page.locator('b', { hasText: 'Tentativas erradas registradas' })).toContainText('8'); // 2 + 6
+      await expect(page.locator('.pill.perigo', { hasText: 'em bloqueio agora' })).toContainText('1');
+
+      const bloqueado = page.locator('tr', { hasText: 'deadbeef' });
+      await expect(bloqueado.locator('td[data-label="Tentativas"]')).toHaveText('6');
+      await expect(bloqueado.locator('td[data-label="Situação"]')).toContainText('Bloqueado até');
+      await expect(page.locator('tr', { hasText: 'a1b2c3d4' }).locator('td[data-label="Situação"]')).toContainText('sem bloqueio');
+
+      // Limpa SÓ as tentativas: o registro sai e o log de visitas fica.
+      await page.locator('summary:has-text("Apagar tentativas de login")').click();
+      await page.locator('button:has-text("Sim, apagar as tentativas")').click();
+      await page.waitForLoadState('domcontentloaded');
+      await expect(page.locator('.flash')).toContainText('tentativas de login');
+      await expect(page.locator('.vazio', { hasText: 'Nenhuma tentativa errada' })).toBeVisible();
+      await expect(page.locator('tr', { hasText: 'deadbeef' })).toHaveCount(0);
+      expect(fs.readFileSync(ACESSOS, 'utf8')).toContain('teste-limpeza');
+    } finally {
+      fs.rmSync(TENTATIVAS, { force: true });
+    }
+  });
 });
 
 // ------------------------------------------------------------ antibrute

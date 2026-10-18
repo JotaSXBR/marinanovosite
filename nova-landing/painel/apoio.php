@@ -66,6 +66,20 @@ function brDataHora(string $iso): string {
   }
 }
 
+// Mesma conversão, mas a partir do timestamp Unix — o antibrute grava epoch,
+// não ISO. O "@" da DateTime é SEMPRE UTC (a doc oficial diz que a timezone do
+// construtor é ignorada nesse formato), então o setTimezone é o que traz para
+// o fuso da dona — vale para linha antiga e futura igual.
+function brDataHoraDe(int $epoch, string $formato = 'd/m H:i'): string {
+  try {
+    $d = new DateTime('@' . $epoch);
+    $d->setTimezone(tzPainel());
+    return $d->format($formato);
+  } catch (Exception $e) {
+    return '—';
+  }
+}
+
 // --------------------------------------------------------------- relatório
 // Agrega as linhas do acessos.jsonl por canal.
 function resumo(array $linhas): array {
@@ -145,7 +159,7 @@ function throttlingChave(): string {
   return substr(hash_hmac('sha256', (string) ($_SERVER['REMOTE_ADDR'] ?? ''), $sal), 0, 16);
 }
 
-// Janela deobservation: 1 hora. Depois de uma hora, tudo zera.
+// Janela de observação: 1 hora. Depois de uma hora, tudo zera.
 function throttlingLer(): array {
   $f = throttlingArquivo();
   if (!is_file($f)) return array();
@@ -161,24 +175,37 @@ function throttlingGravar(array $d): void {
   if ($json !== false) @file_put_contents($f, $json, LOCK_EX);
 }
 
+// Falhas que ainda contam: só as da última hora (a janela de observação).
+function throttlingNaJanela(array $falhas): array {
+  $agora = time();
+  return array_values(array_filter(array_map('intval', $falhas), fn($t) => ($agora - $t) < 3600));
+}
+
+// Estado do bloqueio de um conjunto de falhas. `libera` é o instante em que a
+// espera acaba (0 = já liberado) e `resta`, os segundos que faltam; é o mesmo
+// cálculo para a mensagem do login ("Tente de novo em X") e para a tela do
+// painel ("Bloqueado até HH:MM"). Quem decide o tamanho da espera é o backoff
+// progressivo (throttlingLimiteSegundos).
+function throttlingBloqueio(array $falhas): array {
+  $limite = throttlingLimiteSegundos(count($falhas));
+  if ($limite === 0) return array('libera' => 0, 'resta' => 0);
+  $libera = max($falhas) + $limite;
+  $resta  = $libera - time();
+  return $resta > 0 ? array('libera' => $libera, 'resta' => $resta) : array('libera' => 0, 'resta' => 0);
+}
+
 // Quanto tempo ainda falta de bloqueio (0 = liberado).
 function throttlingRestante(): int {
   $chave = throttlingChave();
   $todos  = throttlingLer();
   if (!isset($todos[$chave])) return 0;
-  $agora = time();
-  $falhas = array_values(array_filter($todos[$chave], fn($t) => ($agora - (int) $t) < 3600));
+  $falhas = throttlingNaJanela(is_array($todos[$chave]) ? $todos[$chave] : array());
   if (!$falhas) {
     unset($todos[$chave]);
     throttlingGravar($todos);
     return 0;
   }
-  $n = count($falhas);
-  $limite = throttlingLimiteSegundos($n);
-  if ($limite === 0) return 0;
-  $ultima = max($falhas);
-  $resta  = ($ultima + $limite) - $agora;
-  return $resta > 0 ? $resta : 0;
+  return throttlingBloqueio($falhas)['resta'];
 }
 
 // Backoff progressivo: quanto mais tentativa, maior a espera.
@@ -193,13 +220,12 @@ function throttlingFalhou(): void {
   $chave = throttlingChave();
   $todos = throttlingLer();
   $agora = time();
-  $falhas = isset($todos[$chave]) ? $todos[$chave] : array();
-  $falhas = array_values(array_filter($falhas, fn($t) => ($agora - (int) $t) < 3600));
+  $falhas = isset($todos[$chave]) && is_array($todos[$chave]) ? throttlingNaJanela($todos[$chave]) : array();
   $falhas[] = $agora;
   $todos[$chave] = $falhas;
   // poda: limpa IPs que não falham há mais de 1 dia (o arquivo não cresce sem parar)
   foreach ($todos as $k => $ts) {
-    if (!$ts || ($agora - (int) max($ts)) > 86400) unset($todos[$k]);
+    if (!is_array($ts) || !$ts || ($agora - (int) max($ts)) > 86400) unset($todos[$k]);
   }
   throttlingGravar($todos);
 }
@@ -208,6 +234,47 @@ function throttlingLimpar(): void {
   $todos = throttlingLer();
   unset($todos[throttlingChave()]);
   throttlingGravar($todos);
+}
+
+// O botão do painel: apaga TUDO. Diferente de throttlingLimpar(), que solta só
+// o identificador de quem acabou de acertar a senha. Consequência: um bloqueio
+// em vigor também acaba — o aviso na tela diz isso.
+function throttlingApagar(): void {
+  throttlingGravar(array());
+}
+
+// A lista que a seção "Tentativas de login" mostra: uma linha por identificador
+// (o HMAC do IP, que gira todo dia), com o total registrado, a última tentativa
+// e o bloqueio em vigor. Ordem: bloqueados primeiro; depois, o mais recente.
+function throttlingTentativas(): array {
+  $linhas = array();
+  foreach (throttlingLer() as $chave => $ts) {
+    if (!is_array($ts) || !$ts) continue;
+    $falhas = array_map('intval', $ts);
+
+    $linhas[] = array(
+      'chave'  => (string) $chave,
+      'total'  => count($falhas),
+      'ultima' => max($falhas),
+      'libera' => throttlingBloqueio(throttlingNaJanela($falhas))['libera'],
+    );
+  }
+  usort($linhas, function ($a, $b) {
+    if (($a['libera'] > 0) !== ($b['libera'] > 0)) return $a['libera'] > 0 ? -1 : 1;
+    return $b['ultima'] <=> $a['ultima'];
+  });
+  return $linhas;
+}
+
+// Somatórios da seção de tentativas (mesmo par ler/resumir do relatório).
+function tentativasTotais(array $linhas): array {
+  $total = 0;
+  $bloqueados = 0;
+  foreach ($linhas as $l) {
+    $total += (int) $l['total'];
+    if ((int) $l['libera'] > 0) $bloqueados++;
+  }
+  return array('total' => $total, 'bloqueados' => $bloqueados);
 }
 
 function throttlingTexto(int $seg): string {

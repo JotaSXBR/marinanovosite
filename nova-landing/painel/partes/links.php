@@ -120,19 +120,3 @@
     </p>
   </div>
   <?php endif; ?>
-
-  <div class="card" style="margin-top:34px">
-    <b>Zona de cuidado</b>
-    <p class="muted" style="margin:6px 0 14px">Apagar o histórico não afeta vendas já registradas na Kiwify.</p>
-    <details class="confirm">
-      <summary>Apagar histórico de visitas</summary>
-      <div class="confirm-corpo">
-        <p>Apagar todas as visitas registradas? As vendas já confirmadas na Kiwify não são afetadas, mas os números deste painel voltam a zero.</p>
-        <form method="post">
-          <input type="hidden" name="csrf" value="<?= e(csrfToken()) ?>">
-          <input type="hidden" name="acao" value="limpar_log">
-          <span class="acoes"><button class="perigo" type="submit">Sim, apagar o histórico</button></span>
-        </form>
-      </div>
-    </details>
-  </div>

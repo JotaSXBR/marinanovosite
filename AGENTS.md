@@ -13,7 +13,7 @@ npm run dev:php      # Apache + PHP 8.2 (Docker) em :8080 — o PHP de verdade
 npm run dev:php:log  # erros de PHP em tempo real
 npm run dev:php:down # derruba o container
 npm test             # suíte estática → 46 passam + 2 pulados (layout/copy/CSS/fontes/srcset)
-PAINEL_SENHA='...' npm run test:php   # suíte do PHP real → 30 (sobe o container; 8 pulados sem a senha)
+PAINEL_SENHA='...' npm run test:php   # suíte do PHP real → 32 (sobe o container; 10 pulados sem a senha)
 ./ferramentas/deploy-ftp.py           # deploy manual por FTPS (ver "Deploy")
 ```
 
@@ -90,6 +90,17 @@ CMS próprio (PHP, sem framework): login por senha, relatório de cliques por ca
 **links prontos por canal** (um clique para WhatsApp/IG/TikTok/Kwai/Meta + link
 personalizado), export CSV, botão copiar.
 
+- **Tentativas erradas de login e bloqueios aparecem no painel** (última seção:
+  `partes/seguranca.php`, alimentada por `throttlingTentativas()` em `apoio.php`):
+  identificador anônimo (HMAC do IP, gira todo dia), total de tentativas, última
+  tentativa e "Bloqueado até HH:MM" — em `America/Sao_Paulo`, como o resto do
+  painel (`brDataHoraDe()` converte o epoch que o antibrute grava).
+- A limpeza desse registro é um **botão separado** do histórico de visitas:
+  `limpar_tentativas` esvazia `private/dados/tentativas.json`
+  (`throttlingApagar()`) e, por isso, **libera bloqueio em vigor** — o aviso na
+  tela diz isso; `limpar_log` continua mexendo só nas visitas. Entrar com a senha
+  certa já limpa o registro de quem acertou (`throttlingLimpar()`).
+
 - Senha = **hash bcrypt** em `painel/config.php` (nunca texto puro). A Action
   **falha o deploy** enquanto o placeholder `COLE_AQUI_O_HASH` estiver lá (guarda
   contra senha vazia).
@@ -123,11 +134,12 @@ Duas suítes, porque testam coisas diferentes:
   python http.server. Layout, copy, carrosséis, tema, bônus, sincronia do artefato,
   **fontes self-hosted** (nenhuma origem externa + todo `.woff2` responde 200),
   **candidatos de `srcset`** e `canonical` absoluto.
-- **`npm run test:php`** (30) — contra o **PHP real** no container (`docker compose
+- **`npm run test:php`** (32) — contra o **PHP real** no container (`docker compose
   up -d`, :8080). O próprio script sobe o container antes. Cobre: `?o=`, repasse de
-  `src` ao checkout, painel (login/carrinhos/ciclo de link/logout), cookie, CSRF,
-  antibrute e os 403. Senha do painel via env `PAINEL_SENHA` (nunca no repo); sem
-  ela os **8 testes de painel** são pulados.
+  `src` ao checkout, painel (login/carrinhos/ciclo de link/seção de tentativas com
+  limpeza separada/logout), cookie, CSRF, antibrute e os 403. Senha do painel via
+  env `PAINEL_SENHA` (nunca no repo); sem ela os **10 testes de painel** são
+  pulados.
 
 > Rodar o Playwright do servidor **direto**, com o container fora do ar, falha com
 > "webServer exited early": o comando `docker compose up -d` sai na hora e o

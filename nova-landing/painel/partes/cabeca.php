@@ -206,6 +206,9 @@ td .linkbox{
 .erro{background:var(--erro-fundo);border:1px solid var(--perigo-borda);color:var(--perigo)}
 .muted{color:var(--cinza);font-size:.82rem}
 .pill{display:inline-block;background:var(--faixa);border:1px solid var(--borda);border-radius:999px;padding:2px 11px;font-size:.78rem;font-weight:600}
+/* Pílula de estado ruim (ex.: bloqueio de login em vigor). Com os tokens do
+   tema, vale nos dois lados — sem cor fixa, que viraria mancha no escuro. */
+.pill.perigo{background:var(--perigo-fundo);border-color:var(--perigo-borda);color:var(--perigo)}
 /* Etiqueta na linha de baixo. Na mesma linha, o código "padrao" e a etiqueta
    "padrão" ficavam lado a lado e o par lia como duplicata por engano. */
 .pill-bloco{display:block;width:fit-content;margin-top:4px}
