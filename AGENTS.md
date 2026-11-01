@@ -170,7 +170,7 @@ convertem igual só porque cada uma carrega o próprio offset.
 
 ## Testes (`tests/`)
 
-Playwright (`@playwright/test` **1.63.0**, pinado em `tests/package-lock.json`).
+Playwright (`@playwright/test` **1.64.1**, pinado em `tests/package-lock.json`).
 Duas suítes, porque testam coisas diferentes:
 
 - **`npm test`** (47 passam + 3 pulados, 17 s) — contra o `index.html` estático, via
@@ -204,9 +204,12 @@ vazio como script, ele **sai com sucesso sem rodar teste nenhum** — silêncio
 perigoso). Conserto: `npm --prefix tests ci` (recria os shims do OS atual a partir
 de `tests/package-lock.json`). Se `npm test` passar em 0 s, desconfie disso.
 
-**Não mexer na versão por conta própria:** subir para 1.64.x exige baixar o
-Chromium novo (`npx playwright install chromium`) e muda o pin do lock — é
-atualização deliberada, não efeito colateral de rodar teste.
+**Como atualizar o Playwright (feito em 01/11/2026: 1.63.0 → 1.64.1):**
+`npm --prefix tests install --save-dev @playwright/test@latest` e depois
+`npm --prefix tests exec -- playwright install chromium` (baixa o Chromium que a
+versão nova espera). Rodar as duas suítes depois. Não é efeito colateral de rodar
+teste: mexe em `tests/package.json`, no lock e no cache de navegador
+(`%LOCALAPPDATA%\ms-playwright`).
 
 **O que NÃO é Playwright:** o MCP `chrome-devtools` (abaixo) é para **inspeção
 interativa** durante o trabalho (DOM, CSS aplicado, console, trace). Ele não roda
