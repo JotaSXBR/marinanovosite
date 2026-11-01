@@ -12,7 +12,7 @@ npm run dev          # preview ESTÁTICO (python http.server) em :8901
 npm run dev:php      # Apache + PHP 8.2 (Docker) em :8080 — o PHP de verdade
 npm run dev:php:log  # erros de PHP em tempo real
 npm run dev:php:down # derruba o container
-npm test             # suíte estática → 46 passam + 2 pulados (layout/copy/CSS/fontes/srcset)
+npm test             # suíte estática → 47 passam + 3 pulados (layout/copy/CSS/fontes/srcset)
 PAINEL_SENHA='...' npm run test:php   # suíte do PHP real → 38 (sobe o container; 14 pulados sem a senha)
 ./ferramentas/deploy-ftp.py           # deploy manual por FTPS (ver "Deploy")
 ```
@@ -170,19 +170,22 @@ convertem igual só porque cada uma carrega o próprio offset.
 
 ## Testes (`tests/`)
 
+Playwright (`@playwright/test` **1.63.0**, pinado em `tests/package-lock.json`).
 Duas suítes, porque testam coisas diferentes:
 
-- **`npm test`** (46 passam + 2 pulados) — contra o `index.html` estático, via
+- **`npm test`** (47 passam + 3 pulados, 17 s) — contra o `index.html` estático, via
   python http.server. Layout, copy, carrosséis, tema, bônus, sincronia do artefato,
   **fontes self-hosted** (nenhuma origem externa + todo `.woff2` responde 200),
-  **candidatos de `srcset`** e `canonical` absoluto.
+  **candidatos de `srcset`**, `canonical` absoluto e o giro do antes/depois no
+  celular. 25 casos × 2 projetos (desktop + Pixel 7); os 3 pulados são os testes
+  `somente mobile` rodando no projeto desktop.
 - **`npm run test:php`** (38) — contra o **PHP real** no container (`docker compose
   up -d`, :8080). O próprio script sobe o container antes. Cobre: `?o=`, repasse de
   `src` ao checkout, painel (login/carrinhos/ciclo de link/seção de tentativas com
   limpeza separada/acesso único/logout), cookie, CSRF, antibrute (24 h e
   permanente) e os 403. Senha do painel via
   env `PAINEL_SENHA` (nunca no repo); sem ela os **14 testes de painel** são
-  pulados.
+  pulados (19 casos × 2 projetos = 38; sem senha roda 24 e pula 14).
 
 > Rodar o Playwright do servidor **direto**, com o container fora do ar, falha com
 > "webServer exited early": o comando `docker compose up -d` sai na hora e o
@@ -192,6 +195,26 @@ Duas suítes, porque testam coisas diferentes:
 `workers: 1` na suíte do servidor: os testes mexem em estado compartilhado (log de
 visitas, contador de tentativas) e o antibrute bloqueia por IP — em paralelo um
 teste derrubaria o login dos outros.
+
+**Armadilha do `node_modules` (paga em 01/11/2026):** `tests/node_modules/.bin/`
+estava com `playwright` e `playwright-core` de **0 byte** e **sem os `.cmd`** —
+instalação feita em Linux e reaproveitada no Windows. Sintoma: `npm test` morria
+com "'playwright' não é reconhecido" (e, rodando de um shell que aceite o arquivo
+vazio como script, ele **sai com sucesso sem rodar teste nenhum** — silêncio
+perigoso). Conserto: `npm --prefix tests ci` (recria os shims do OS atual a partir
+de `tests/package-lock.json`). Se `npm test` passar em 0 s, desconfie disso.
+
+**Não mexer na versão por conta própria:** subir para 1.64.x exige baixar o
+Chromium novo (`npx playwright install chromium`) e muda o pin do lock — é
+atualização deliberada, não efeito colateral de rodar teste.
+
+**O que NÃO é Playwright:** o MCP `chrome-devtools` (abaixo) é para **inspeção
+interativa** durante o trabalho (DOM, CSS aplicado, console, trace). Ele não roda
+em CI e não substitui estas suítes. A suíte automatizada continua aqui.
+
+**A Action de deploy não roda os testes** (decisão de 01/11/2026): o deploy só
+faz `php -l` e as guardas de pacote. Quem publica precisa rodar `npm test` antes —
+a guarda é processo, não CI.
 
 ## Deploy
 
