@@ -11,7 +11,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      # Node 26 é a LTS atual ("Lithium") — o padrão do projeto. Os próprios
+      # actions abaixo rodam no runtime node24 do runner; este setup só garante
+      # que qualquer script node do job use exatamente o Node do projeto.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
 
       - name: Montar pasta de deploy
         run: |
@@ -105,7 +112,7 @@ jobs:
           fi
 
       - name: Enviar via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}

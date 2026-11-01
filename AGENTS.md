@@ -199,6 +199,13 @@ Push na `main` → Action `deploy-cpanel.yml` monta `deploy/` (link reescrito de
 `conteudo/` → `imagens/`/`prova/`) e envia por **FTPS**. Guardo os detalhes e o
 passo a passo no **`README.md`** (criar conta FTP, secrets, destino).
 
+- **Runtime: Node 26 LTS ("Lithium") é o padrão do projeto** — `.nvmrc` (`26`),
+  `engines.node: "26.x"` no `package.json` e `actions/setup-node@v7` na Action.
+  Os actions do job rodam no runtime **node24** do runner: `actions/checkout@v7`
+  e `SamKirkland/FTP-Deploy-Action@v4.4.0` são as versões que declaram node24 —
+  nas antigas (`v4`/`v4.3.5`, node20) o GitHub imprimia o aviso de deprecação
+  "Node.js 20 ... forced to run on Node.js 24". Ao subir a Action, conferir em
+  `action.yml` do tag qual `using:` ela declara.
 - **Destino ATUAL: raiz `public_html/`.** A variable `CPANEL_SERVER_DIR` foi
   removida de propósito (`server-dir` vazio → publica em
   `https://maricoachfit.com/`, painel em `/painel/`). Para testar numa subpasta,

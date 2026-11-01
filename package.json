@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "description": "Pilates em Casa — landing em PHP + painel da proprietaria",
+  "engines": {
+    "node": "26.x"
+  },
   "scripts": {
     "dev": "python3 -m http.server 8901 --bind 0.0.0.0",
     "dev:php": "docker compose up -d",
