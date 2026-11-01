@@ -199,6 +199,18 @@ test('cta fixo aparece no mobile apos o hero', async ({ page, isMobile }) => {
   await expect(page.locator('body')).not.toHaveClass(/com-cta/, { timeout: 5000 });
 });
 
+test('antes/depois no mobile troca de par e troca a imagem de verdade', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'somente mobile');
+  await page.goto(PAGE);
+  await page.locator('.ba-grade').scrollIntoViewIfNeeded();
+  const img = page.locator('.ba-grade .ba .ba-antes img').first();
+  const srcset1 = await img.getAttribute('srcset');
+  // Com srcset presente o navegador ignora o src: se o JS trocar so o src,
+  // o contador avanca e a foto fica congelada na 1.
+  await expect.poll(() => img.getAttribute('srcset'), { timeout: 9000 }).not.toBe(srcset1);
+  await expect(page.locator('#ba-contador')).not.toHaveText('Foto 1 de 5');
+});
+
 test('menu hamburguer no mobile, sem cta no topo', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'somente mobile');
   await page.goto(PAGE);

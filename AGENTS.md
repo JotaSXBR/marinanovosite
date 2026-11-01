@@ -300,6 +300,12 @@ rodar `./ferramentas/deploy-ftp.py`.
   `sizes="(max-width:900px) 92vw, 509px"`. Variantes: hero `nath-hero-v2-640.webp`
   (53 KB, era 106), `dp1..dp8-360.webp` (8→11 KB, eram 29→54) e
   `1/2/1-1/2-1/3-1-360.webp` (17→21 KB, eram 48→80). **`sizes` e CSS andam juntos.**
+- **Trocar imagem por JS exige trocar `srcset` junto (pago em 01/11/2026):** o
+  quadrado rotativo do antes/depois no celular trocava só o `src` do `<img>`; com
+  `srcset` presente o navegador **ignora o `src`** — o contador ia a "Foto 3 de 5"
+  e a foto ficava presa na 1. `mostraPar()` agora troca `srcset` E `src`. O teste
+  "antes/depois no mobile troca de par e troca a imagem de verdade" (`npm test`)
+  cobre isso.
 
 ### Imagens e conteúdo
 
@@ -450,6 +456,21 @@ Usar a skill certa **antes** de começar, conforme o tipo de trabalho:
 - Instaladas via `npx skills`, pin em `skills-lock.json`.
 - **`find-skills` é a ÚNICA chamada manual**: só quando não houver skill para o
   pedido — nunca carregar todas de uma vez.
+
+### MCP `chrome-devtools` (Chrome DevTools MCP)
+
+Configurado em **`opencode.json` na raiz do projeto** (`npx -y
+chrome-devtools-mcp@latest`), então só carrega em sessão aberta nesta pasta.
+Dá Chrome real com a página: snapshot de acessibilidade, CSS aplicado, console,
+trace de performance/Core Web Vitals, emulação de viewport e rede.
+
+- Roda **`--headless=true --isolated=true`**: não abre janela e não usa o perfil
+  pessoal do Chrome (nada de login/cookies seus). Para ver o navegador, trocar
+  para `--headless=false` no `command` do `opencode.json`.
+- Windows: o comando é `cmd /c npx …` (com `"command": "npx"` o OpenCode não
+  acha o `.cmd` e o servidor cai com "Connection closed").
+- Complementa, não substitui, o Playwright: aqui é para **inspecionar** (DOM,
+  estilo, trace); a suíte de regressão continua no `npm test`.
 
 ## Documentação (Context7 é regra, não sugestão)
 

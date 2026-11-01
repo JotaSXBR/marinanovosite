@@ -842,6 +842,8 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
     return {
       antes: a ? a.getAttribute('src') : '',
       depois: d ? d.getAttribute('src') : '',
+      antesSet: a ? a.getAttribute('srcset') : '',
+      depoisSet: d ? d.getAttribute('srcset') : '',
       altAntes: a ? a.getAttribute('alt') : 'Foto de antes',
       altDepois: d ? d.getAttribute('alt') : 'Foto de depois'
     };
@@ -895,8 +897,9 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
     var imgD = box.querySelector('.ba-depois img');
     var range = box.querySelector('input');
     var troca = function(){
-      if(imgA){ imgA.src = pares[indice].antes; imgA.alt = pares[indice].altAntes; }
-      if(imgD){ imgD.src = pares[indice].depois; imgD.alt = pares[indice].altDepois; }
+      // Troca srcset junto: com srcset presente o navegador ignora o src.
+      if(imgA){ imgA.srcset = pares[indice].antesSet; imgA.src = pares[indice].antes; imgA.alt = pares[indice].altAntes; }
+      if(imgD){ imgD.srcset = pares[indice].depoisSet; imgD.src = pares[indice].depois; imgD.alt = pares[indice].altDepois; }
       if(range) range.setAttribute('aria-label', 'Arrastar para comparar antes e depois — aluna ' + (indice + 1) + ' de ' + pares.length);
       if(contador) contador.textContent = 'Foto ' + (indice + 1) + ' de ' + pares.length;
       if(dotsBox) Array.prototype.forEach.call(dotsBox.children, function(d, k){
