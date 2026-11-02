@@ -333,6 +333,12 @@ rodar `./ferramentas/deploy-ftp.py`.
   `sizes="(max-width:900px) 92vw, 509px"`. Variantes: hero `nath-hero-v2-640.webp`
   (53 KB, era 106), `dp1..dp8-360.webp` (8→11 KB, eram 29→54) e
   `1/2/1-1/2-1/3-1-360.webp` (17→21 KB, eram 48→80). **`sizes` e CSS andam juntos.**
+- **`srcset` do bento dos bônus** (02/11/2026): `cha-secreto-360.webp` e
+  `mockup-e-book-1-360.webp` com `sizes="(max-width:900px) 76vw, 170px"` (a coluna
+  da imagem tem 170px e vira 1 coluna a 76vw do card abaixo de 900px); o app é
+  `app-plataforma-240.webp` com `sizes="82px"` (`.cel.app-cel .phone` tem 96px com
+  7px de padding). Desktop escolhe as três pequenas (−67 KB); no celular retina só
+  o app economiza, porque chá e planner ainda pedem 520w de propósito.
 - **Trocar imagem por JS exige trocar `srcset` junto (pago em 01/11/2026):** o
   quadrado rotativo do antes/depois no celular trocava só o `src` do `<img>`; com
   `srcset` presente o navegador **ignora o `src`** — o contador ia a "Foto 3 de 5"
@@ -364,8 +370,11 @@ rodar `./ferramentas/deploy-ftp.py`.
   `&display=swap` que o Google usava).
 - **Montserrat normal é fonte VARIÁVEL** (`wght 100–900`, conferido com fontTools):
   um arquivo cobre 400/500/600/700 — daí o `@font-face` declarar
-  `font-weight:100 900`. A itálica é instância estática 400 (é o que o Google
-  serve para `1,400`).
+  `font-weight:100 900`.
+- **A itálica foi cortada em 02/11/2026** (decisão do dono): ela existia só para a
+  ressalva do Chá Secreto, que agora sai em redondo (`.cel .ressalva` sem
+  `font-style:italic`). Sobraram **4** `@font-face` — o teste "fontes self-hosted"
+  confere esse número.
 - Subsets: só `latin` + `latin-ext`. Todo o pt-BR cai em `latin` (inclusive `ã`,
   `õ`, `ç`, `−`); `-ext` fica de reserva. Descartei cyrillic/vietnamese.
 - Trocar arquivo de fonte **exige mudar o nome** (mesma armadilha do `immutable`).

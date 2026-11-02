@@ -122,27 +122,23 @@ $baseUrl = 'https://' . $host . ($basePath === '' ? '' : $basePath);
 <style>
 /* Fontes self-hosted (woff2). Antes vinham do Google Fonts: 2 origens externas
    + 1 folha bloqueando a renderizacao. Montserrat normal e fonte VARIAVEL (um
-   arquivo cobre 400-700); a italica e instancia 400. Subsets latin/latin-ext.
+   arquivo cobre 400-700); sem italica (a ressalva do cha usa o mesmo redondo). Subsets latin/latin-ext.
    Trocar arquivo de fonte = MUDAR O NOME (cache immutable de 1 ano). */
 @font-face{font-family:"Anton";font-style:normal;font-weight:400;font-display:swap;src:url("fontes/anton-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:"Anton";font-style:normal;font-weight:400;font-display:swap;src:url("fontes/anton-normal-ext.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
 @font-face{font-family:"Montserrat";font-style:normal;font-weight:100 900;font-display:swap;src:url("fontes/montserrat-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:"Montserrat";font-style:normal;font-weight:100 900;font-display:swap;src:url("fontes/montserrat-normal-ext.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
-@font-face{font-family:"Montserrat";font-style:italic;font-weight:400;font-display:swap;src:url("fontes/montserrat-italic.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-@font-face{font-family:"Montserrat";font-style:italic;font-weight:400;font-display:swap;src:url("fontes/montserrat-italic-ext.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
 /* Tokens da marca original preservados: rosa #FF51C9, roxo #3F0142, Anton + Montserrat.
    Paleta Opcao C (monocromo disciplinado): CTA magenta, fundos e bordas neutros */
 :root{
   color-scheme:light dark;
-  --rosa:#FF51C9; --rosa-claro:#F87DFF; --roxo:#3F0142; --roxo-2:#820088;
+  /* Iguais nos dois temas (cor de FUNDO, nunca de texto: --cta sobre superficie
+     escura da 1,84:1; quem serve de texto e --cta-texto). */
+  --rosa:#FF51C9; --rosa-claro:#F87DFF; --roxo-2:#820088;
   --cta:#A80077; --cta-hover:#86025F;
-  --rosa-texto:#C4008B;
-  --tinta:#2B1226; --cinza:#6B5565;
-  --fundo:#F8FAFC; --branco:#FFFFFF; --faixa:#F1F5F9;
-  --sup:#FFFFFF; --borda:#E2E8F0; --borda-suave:#E9EEF5;
   --raio:18px; --max:1120px;
-}
-:root{
+  /* Quem escolhe o lado do light-dark() e o color-scheme (sistema ou o toggle
+     sol/lua, que so troca html[data-tema]). */
   --rosa-texto:light-dark(#C4008B,#F470C4);
   --roxo:light-dark(#3F0142,#E3A9D4);
   --tinta:light-dark(#2B1226,#F8EAF3);
@@ -173,7 +169,7 @@ p,h1,h2,h3,.sub,.eyebrow,.carrossel-titulo,.trans-lista{text-align:center}
 .trans-lista li{border-left:0;padding-left:0}
 section{padding:72px 0}
 .eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cta-texto);margin-bottom:12px}
-h2{font-size:clamp(1.7rem,3.4vw,2.5rem);margin-bottom:14px}
+h2{font-size:clamp(1.7rem,3.4vw,2.5rem);margin-bottom:14px;text-wrap:balance}
 .sub{color:var(--cinza);max-width:62ch;margin-left:auto;margin-right:auto}
 /* Botoes: um rotulo unico de compra na pagina inteira */
 .btn{display:inline-block;background:var(--cta);color:#fff;font-weight:700;font-size:1.05rem;padding:16px 38px;border-radius:999px;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;position:relative;overflow:hidden;box-shadow:0 10px 26px rgba(168,0,119,.30);transition:transform .25s ease,background .25s ease,box-shadow .25s ease}
@@ -225,8 +221,7 @@ html[data-tema="escuro"] .tema-toggle .icone-lua{display:none}
      sombra quadrada em volta dos joelhos.
    O brilho rosa substitui os tres. */
 .hero-foto img{width:100%}
-.hero-h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(1.25rem,2.6vw,1.8rem);line-height:1.15;color:var(--rosa-texto);margin:0 0 16px;text-wrap:balance}
-h2{text-wrap:balance}
+.hero-h2{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(1.05rem,2.1vw,1.35rem);line-height:1.2;color:var(--rosa-texto);margin:0 0 16px;text-wrap:balance}
 /* Faixa de numeros */
 .faixa{background:var(--branco);padding:34px 0}
 .faixa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
@@ -267,12 +262,12 @@ h2{text-wrap:balance}
 .ba-antes b{left:14px}
 .ba-depois b{right:14px}
 .ba-camada span{font-size:.9rem}
-.ba-camada img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ba-camada img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .22s ease}
 .ba-depois{clip-path:inset(0 0 0 50%)}
 .ba-linha{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;box-shadow:0 0 12px rgba(63,1,66,.35);transform:translateX(-50%);pointer-events:none}
 .ba-puxador{position:absolute;top:50%;left:50%;width:48px;height:48px;border-radius:50%;background:var(--cta);color:#fff;font-weight:700;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 4px 16px rgba(63,1,66,.35)}
 .ba input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
-/* Antes/depois no celular: 1 quadrado rotativo (só indexnovo) */
+/* Antes/depois no celular: 1 quadrado rotativo */
 .ba-mobile-nav{display:none}
 .ba-contador{display:none}
 .ba-seta{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--borda);background:var(--sup);color:var(--cta-texto);font-size:1.5rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
@@ -281,7 +276,6 @@ h2{text-wrap:balance}
 .ba-dots button{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:none;border:0;cursor:pointer;padding:0}
 .ba-dots button::after{content:"";width:11px;height:11px;border-radius:50%;background:var(--borda)}
 .ba-dots button[aria-current="true"]::after{background:var(--cta);transform:scale(1.3)}
-.ba-camada img{transition:opacity .22s ease}
 .ba.trocando .ba-camada img{opacity:.15}
 @media (max-width:900px){
   .ba-grade.so-um{grid-template-columns:1fr;max-width:420px;margin-left:auto;margin-right:auto}
@@ -291,7 +285,7 @@ h2{text-wrap:balance}
   .ba-fileira{display:flex;align-items:center;justify-content:center;gap:16px}
   .ba-contador.ativo{display:block;flex:1;text-align:center;font-size:.85rem;color:var(--cinza);margin:0}
 }
-/* Depoimentos e grupo VIP no celular: 1 foto por vez (só indexnovo) */
+/* Depoimentos e grupo VIP no celular: 1 foto por vez */
 .foto-nav{display:none}
 .foto-contador{display:none}
 .carrossel.so-um figure.ativo{animation:fotoEntra .35s ease}
@@ -312,7 +306,7 @@ h2{text-wrap:balance}
 .cel h3{font-family:"Montserrat",sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:8px}
 .cel p{font-size:.93rem;color:var(--cinza)}
 .cel .vale{font-size:.85rem;font-weight:700;color:var(--cta-texto);margin-top:10px}
-.cel .ressalva{font-size:.7rem;font-style:italic}
+.cel .ressalva{font-size:.7rem}
 .cel .vale s{color:var(--cinza);font-weight:400;margin-right:6px}
 .cel.app-cel .vale,.cel.comunidade-cel .vale{color:#fff}
 .cel.app-cel .vale s,.cel.comunidade-cel .vale s{color:#F2D3EA}
@@ -333,12 +327,12 @@ h2{text-wrap:balance}
 .oferta{background:linear-gradient(120deg,#2B0530,#5A0B57);color:#fff;border:1px solid rgba(255,81,201,.25);border-radius:18px;padding:clamp(28px,4vw,52px);display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:start}
 .oferta h2{color:#fff;margin-bottom:6px}
 .oferta .oferta-sub{color:#F2D3EA;font-size:.94rem;margin-bottom:18px}
-.oferta ul{list-style:none}
-.oferta li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.16);font-size:.95rem}
-.oferta li:first-child{font-size:1.02rem}
-.oferta li:first-child b{color:#FFD9EF}
-.oferta li b{white-space:nowrap}
-.oferta li b s{opacity:.55;font-weight:400}
+.oferta-valores{list-style:none}
+.oferta-valores li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.16);font-size:.95rem}
+.oferta-valores li:first-child{font-size:1.02rem}
+.oferta-valores li:first-child b{color:#FFD9EF}
+.oferta-valores li b{white-space:nowrap}
+.oferta-valores li b s{opacity:.55;font-weight:400}
 .oferta-total{margin-top:16px;font-size:1.05rem}
 .oferta-total s{opacity:.6}
 .oferta-card{background:var(--sup);color:var(--tinta);border-radius:18px;padding:34px 28px;text-align:center}
@@ -457,7 +451,6 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
   .marca{white-space:nowrap;font-size:1.1rem;margin-right:auto}
   .nav-toggle{order:3}
   .tema-toggle{order:2}
-  h2{text-wrap:balance}
   .nav-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:0;padding:10px;cursor:pointer}
   .nav-toggle span{display:block;width:24px;height:2px;background:var(--roxo);border-radius:2px;transition:transform .25s ease,opacity .25s ease}
   body.menu-aberto .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
@@ -469,7 +462,9 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
   .nav-links a:first-child{border-top:0}
   .nav-links .nav-cta{display:none}
   .hero-grid{grid-template-columns:1fr;gap:32px;text-align:center}
-  .hero-foto img{max-height:520px}
+  /* Limite por LARGURA, nao por altura: width:100% + max-height espreme a foto
+     na vertical (medido: 1,65:1 de proporcao a 900px de tela, rosto alargado). */
+  .hero-foto img{max-width:min(100%,520px);margin:0 auto}
   .bio{grid-template-columns:1fr}
   .bio img{max-width:300px}
   .trans-lista{grid-template-columns:1fr}
@@ -478,9 +473,8 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
   .recebe-grid{grid-template-columns:1fr}
   .cel,.cel.cha-cel,.cel.mini,.cel.duo,.cel.comunidade-cel,.cel.planner-cel,.cel.app-cel{grid-column:span 6}
   .cel.cha-cel,.cel.planner-cel,.cel.app-cel{grid-template-columns:1fr}
-  .cel.planner-cel img{transform:translateX(12px)}
   .oferta{grid-template-columns:1fr}
-  .oferta li b{white-space:normal;text-align:right;flex:none}
+  .oferta-valores li b{white-space:normal;text-align:right;flex:none}
   .oferta-card .selo-oferta{width:68px}
   .oferta-card{padding:30px 20px}
   .oferta-card .micro{font-size:.9rem;text-align:left}
@@ -673,7 +667,7 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
       <div class="bento" id="bento-bonus">
         <div class="cel cha-cel">
           <div><h3>Chá Secreto</h3><p>A receita que desincha e acelera o metabolismo de forma natural.</p><p class="ressalva">Gestantes, lactantes e hipertensas: consulte seu médico antes.</p><p class="vale"><s>R$ 47</s> incluso hoje</p></div>
-          <img src="../conteudo/imagens/cha-secreto.webp" alt="Xícara do chá secreto" loading="lazy" width="520" height="397">
+          <img src="../conteudo/imagens/cha-secreto.webp" srcset="../conteudo/imagens/cha-secreto-360.webp 360w, ../conteudo/imagens/cha-secreto.webp 520w" sizes="(max-width:900px) 76vw, 170px" alt="Xícara do chá secreto" loading="lazy" width="520" height="397">
         </div>
         <div class="cel mini"><h3>Plano Alimentar</h3><p>Coma bem sem dieta maluca, com comida de verdade e opções veganas e vegetarianas.</p><p class="vale"><s>R$ 67</s> incluso hoje</p></div>
         <div class="cel mini"><h3>380+ Receitas Saudáveis</h3><p>Nunca mais fique sem ideia do que comer para manter o resultado.</p><p class="vale"><s>R$ 97</s> incluso hoje</p></div>
@@ -682,12 +676,12 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
         <div class="cel mini duo"><h3>Marmita Fitness</h3><p>Semana alimentar organizada com marmitas práticas, sem esforço.</p><p class="vale"><s>R$ 37</s> incluso hoje</p></div>
         <div class="cel comunidade-cel"><h3>Grupo VIP</h3><p>Apoio diário meu e das alunas: tire dúvidas, troque experiências e comemore resultados, com acesso vitalício ao grupo.</p><p class="vale"><s>R$ 147</s> incluso hoje</p></div>
         <div class="cel planner-cel">
-          <img src="../conteudo/imagens/mockup-e-book-1.webp" alt="Planner de Resultados do Pilates em Casa" loading="lazy" width="520" height="924">
+          <img src="../conteudo/imagens/mockup-e-book-1.webp" srcset="../conteudo/imagens/mockup-e-book-1-360.webp 360w, ../conteudo/imagens/mockup-e-book-1.webp 520w" sizes="(max-width:900px) 76vw, 170px" alt="Planner de Resultados do Pilates em Casa" loading="lazy" width="520" height="924">
           <div><h3>Planner de Resultados</h3><p>Tem dificuldade de manter a constância? Este diário de transformação registra cada treino para você ver sua evolução nos seus próprios registros.</p><p class="vale"><s>R$ 37</s> incluso hoje</p></div>
         </div>
         <div class="cel app-cel">
           <div><h3>Sua plataforma de treino</h3><p>Aulas organizadas passo a passo com a instrutora, para assistir em qualquer tela, com app para Android e Apple.</p></div>
-          <div class="phone"><img src="../conteudo/imagens/app-plataforma.webp" alt="Aplicativo com as aulas do Pilates em Casa" loading="lazy" width="300" height="652"></div>
+          <div class="phone"><img src="../conteudo/imagens/app-plataforma.webp" srcset="../conteudo/imagens/app-plataforma-240.webp 240w, ../conteudo/imagens/app-plataforma.webp 300w" sizes="82px" alt="Aplicativo com as aulas do Pilates em Casa" loading="lazy" width="300" height="652"></div>
         </div>
       </div>
       <div class="btn-centro"><a class="btn" href="<?= $checkout ?>">Começar agora</a></div>
@@ -701,7 +695,7 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
         <div>
           <h2>O que você leva hoje:</h2>
           <p class="oferta-sub">Programa completo com 28 aulas gravadas + todos os bônus, com 1 ano de acesso à plataforma.</p>
-          <ul>
+          <ul class="oferta-valores">
             <li><span>Acesso ao Pilates em Casa</span><b>R$ <?= (int) $of['cheio'] ?></b></li>
             <li><span>App Pilates em Casa</span><b>grátis</b></li>
             <li><span>Chá Secreto</span><b><s>R$ 47</s> grátis</b></li>
@@ -715,7 +709,7 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
           </ul>
           <p class="oferta-total">Total: <s>R$&nbsp;<?= (int) $of['total'] ?></s> em programa e bônus</p>
         </div>
-        <div class="oferta-card" aria-live="polite">
+        <div class="oferta-card">
           <p class="de">De&nbsp;R$&nbsp;<?= (int) $of['cheio'] ?></p>
           <p class="por">por&nbsp;R$&nbsp;<?= (int) $of['preco'] ?></p>
           <p class="off-linha"><span class="off-pill">−<?= $offPerc ?>% hoje</span></p>
@@ -924,7 +918,7 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
 // Antes/depois: range controla a divisoria; autoplay vai e volta em 3.5s por
 // lado com easing cossenoidal (desacelera nas pontas, acelera no meio) e
 // pequena mola no puxador ao virar de lado. Pausa no toque e fora da tela.
-// No celular (indexnovo): 1 quadrado rotativo — a cada virada da barra troca
+// No celular: 1 quadrado rotativo — a cada virada da barra troca
 // para o próximo par (5 fotos em sequência num quadrado só).
 (function(){
   var reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -947,11 +941,22 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
       altDepois: d ? d.getAttribute('alt') : 'Foto de depois'
     };
   });
-  pares.forEach(function(p){
+  // Prequenta UM par adiante, e deixa o srcset escolher a variante que a tela
+  // vai usar. Antes daqui saiam os 10 arquivos de 720w no load (398 KB que o
+  // desktop/mobile nem exibem), porque `new Image()` sem srcset ignora o
+  // loading="lazy" do <img> que esta no DOM.
+  var preaquece = function(i){
+    var p = pares[(i + 1) % pares.length];
+    if(!p) return;
     ['antes', 'depois'].forEach(function(k){
-      if(p[k]){ var im = new Image(); im.src = p[k]; }
+      if(!p[k]) return;
+      var im = new Image();
+      im.sizes = '(max-width:760px) 92vw, 350px';
+      im.srcset = p[k + 'Set'];
+      im.src = p[k];
     });
-  });
+  };
+  preaquece(0);
   var itens = [];
   boxes.forEach(function(box, idx){
     var range = box.querySelector('input');
@@ -1012,6 +1017,7 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
       setTimeout(troca, 110);
       setTimeout(function(){ box.classList.remove('trocando'); }, 280);
     }
+    preaquece(indice);
   };
   var manualPara = function(i){
     if(!mq.matches) return;
@@ -1158,7 +1164,7 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
     }, 4000);
   });
 })();
-// Depoimentos e grupo VIP no celular: 1 foto por vez em rotação (só indexnovo).
+// Depoimentos e grupo VIP no celular: 1 foto por vez em rotação.
 // No computador mantém o carrossel de rolagem original.
 (function(){
   var reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1241,7 +1247,7 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
   rotativo({lista:'#carrossel-depo', nav:'depo-nav', dots:'depo-dots', contador:'depo-contador', rotulo:'Mostrar depoimento', atraso:500});
   rotativo({lista:'.carrossel.grupo', nav:'grupo-nav', dots:'grupo-dots', contador:'grupo-contador', rotulo:'Mostrar conversa', atraso:2500});
 })();
-// Fecho com efeito de digitação rotativo (só indexdesign; estático sem
+// Fecho com efeito de digitação rotativo (estático sem
 // movimento ou sem JS, com texto alternativo para leitor de tela)
 (function(){
   var alvo = document.getElementById('fecho-typer');
@@ -1283,8 +1289,12 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
       botao.textContent = pausado ? 'Retomar movimento' : 'Pausar movimento';
     });
   });
-  document.querySelectorAll('main a.btn[href*="kiwify"], footer a[href*="kiwify"]').forEach(function(a){
+  // Rotulo distinto por CTA (sao 8 "Começar agora" identicos). Casa pelo TEXTO,
+  // nao por `href*="kiwify"`: o checkout vem do painel e pode ser de outra
+  // plataforma — com o filtro por host os rotulos sumiam em silencio.
+  document.querySelectorAll('main a.btn, footer nav a').forEach(function(a){
     if(a.getAttribute('aria-label')) return;
+    if(!/começar agora/i.test(a.textContent)) return;
     var sec = a.closest('section');
     var h = sec ? sec.querySelector('h1,h2') : null;
     a.setAttribute('aria-label', 'Começar agora' + (h ? ' — ' + h.textContent.trim().replace(/\s+/g, ' ').slice(0, 60) : ' — Pilates em Casa'));
@@ -1307,7 +1317,7 @@ footer nav a:hover{color:var(--cta-texto);text-decoration:underline}
     }
   }
 })();
-// FAQ sanfona: 1 resposta aberta por vez + fecha sozinho após 5s (só indexnovo;
+// FAQ sanfona: 1 resposta aberta por vez + fecha sozinho após 5s (
 // sem auto-fecho em movimento reduzido)
 (function(){
   var lista = document.querySelector('.faq-lista');

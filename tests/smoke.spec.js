@@ -85,7 +85,7 @@ test('fontes self-hosted: nenhuma origem externa e todo woff2 responde 200', asy
   expect(fonte).not.toContain('rel="preconnect" href="https://fonts');
 
   const fontes = [...new Set([...fonte.matchAll(/url\("(fontes\/[^"]+\.woff2)"\)/g)].map((m) => m[1]))];
-  expect(fontes.length).toBe(6);
+  expect(fontes.length).toBe(4);
   for (const f of fontes) {
     const res = await page.request.get(new URL(f, baseURL + PAGE).href);
     expect(res.status(), f).toBe(200);
