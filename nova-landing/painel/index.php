@@ -121,7 +121,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $logado && csrfValido()) {
 
   if ($acao === 'salvar_link') {
     $canal  = substr(preg_replace('/[^a-z0-9_\-]/', '', strtolower((string) ($_POST['canal'] ?? ''))), 0, 40);
-    $rotulo = substr(trim((string) ($_POST['rotulo'] ?? '')), 0, 60);
+    // mb_substr: substr cortaria um acento no meio e o json_encode do arquivo
+    // inteiro falharia (perdia todos os links) — ver gravarJson abaixo.
+    $rotulo = mb_substr(trim((string) ($_POST['rotulo'] ?? '')), 0, 60);
     $oferta = (string) ($_POST['oferta'] ?? carrinhosChavePadrao());
 
     // Link rápido: o canal veio de um botão sugerido e o rótulo ficou vazio.
@@ -135,12 +137,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $logado && csrfValido()) {
     if ($canal === '') {
       $erro = 'Informe um código de canal (ex.: ig-bio).';
     } else {
-      if (!is_dir($logDir)) @mkdir($logDir, 0755, true);
       $links = lerJson($linksFile);
       $links[$canal] = array('rotulo' => $rotulo, 'oferta' => $oferta);
       ksort($links);
-      $json = json_encode($links, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-      if (@file_put_contents($linksFile, $json) === false) {
+      // gravarJson (e não file_put_contents direto): ele confere se o
+      // json_encode deu certo. Sem isso, um caractere inválido esvaziava o
+      // links.json inteiro (json_encode devolve false e o arquivo era
+      // sobrescrito com vazio).
+      if (!gravarJson($linksFile, $links)) {
         $erro = 'Não consegui gravar o link (a pasta private/dados está sem escrita?).';
       } else {
         $_SESSION['painel_flash'] = 'Link salvo: ' . $canal;
@@ -152,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $logado && csrfValido()) {
     $canal  = (string) ($_POST['canal'] ?? '');
     $links  = lerJson($linksFile);
     unset($links[$canal]);
-    @file_put_contents($linksFile, json_encode($links, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    gravarJson($linksFile, $links);
     $_SESSION['painel_flash'] = 'Link removido.';
   }
 

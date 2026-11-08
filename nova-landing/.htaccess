@@ -149,7 +149,10 @@ DirectoryIndex index.php index.html
 </IfModule>
 
 # Arquivos que nunca devem ser servidos (dump de banco, log, backup, config).
-<FilesMatch "\.(?i:log|sql|bak|old|orig|swp|save|ini|sh|inc|md5|sha1|jsonl)$">
+# `json`/`jsonl` incluem private/dados/{ofertas,links,sessao,tentativas}.json e
+# acessos.jsonl: proteção extra caso o private/.htaccess seja ignorado (é o
+# mesmo motivo do FilesMatch de .php abaixo). Nenhum .json é público no site.
+<FilesMatch "\.(?i:log|sql|bak|old|orig|swp|save|ini|sh|inc|md5|sha1|json|jsonl)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
